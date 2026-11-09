@@ -85,14 +85,14 @@ export default function ProductCard({
                   className="w-full px-3.5 py-1.5 text-xs text-left font-medium text-[#171717] hover:bg-neutral-50 flex items-center gap-2"
                 >
                   <Eye className="w-3.5 h-3.5 text-[#888888]" />
-                  <span>View Details</span>
+                  <span>{t('view')}</span>
                 </button>
                 <button
                   onClick={handleQuickSale}
                   className="w-full px-3.5 py-1.5 text-xs text-left font-medium text-[#FF7900] hover:bg-orange-50 flex items-center gap-2"
                 >
                   <ShoppingBag className="w-3.5 h-3.5" />
-                  <span>Quick POS Sale</span>
+                  <span>{t('quickSellBtn')}</span>
                 </button>
                 <button
                   onClick={() => {
@@ -102,7 +102,7 @@ export default function ProductCard({
                   className="w-full px-3.5 py-1.5 text-xs text-left font-medium text-[#171717] hover:bg-neutral-50 flex items-center gap-2"
                 >
                   <Edit3 className="w-3.5 h-3.5 text-[#888888]" />
-                  <span>Edit Product</span>
+                  <span>{t('editProductBtn')}</span>
                 </button>
                 <div className="border-t border-[#EAEAEA] my-1" />
                 <button
@@ -113,7 +113,7 @@ export default function ProductCard({
                   className="w-full px-3.5 py-1.5 text-xs text-left font-medium text-[#E5484D] hover:bg-red-50 flex items-center gap-2"
                 >
                   <Trash2 className="w-3.5 h-3.5 text-[#E5484D]" />
-                  <span>Delete Product</span>
+                  <span>{t('deleteProductBtn')}</span>
                 </button>
               </div>
             </>
@@ -139,10 +139,10 @@ export default function ProductCard({
         <button
           onClick={handleQuickSale}
           className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#FF7900] text-white p-2 rounded-xl shadow-md hover:bg-[#EA6E00] flex items-center gap-1.5 text-xs font-semibold"
-          title="Sell in POS"
+          title={t('sellBtn')}
         >
           <ShoppingBag className="w-3.5 h-3.5" />
-          <span>Sell</span>
+          <span>{t('sellBtn')}</span>
         </button>
       </div>
 

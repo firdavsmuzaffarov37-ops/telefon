@@ -10,11 +10,9 @@ import {
   TrendingUp, 
   DollarSign, 
   Smartphone, 
-  CreditCard, 
   Receipt, 
   Plus, 
   Trash2, 
-  History,
   Archive,
   AlertCircle
 } from 'lucide-react';
@@ -84,13 +82,12 @@ export default function DailyReportsPage() {
 
   // Payment Breakdown
   const paymentBreakdown = useMemo(() => {
-    const res = { Cash: 0, Card: 0, 'Bank Transfer': 0 };
+    const res = { Card: 0, Cash: 0, 'Bank Transfer': 0 };
     dayTxns.forEach(t => {
-      if (res[t.paymentMethod] !== undefined) {
-        res[t.paymentMethod] += Number(t.revenue);
-      } else {
-        res[t.paymentMethod] = (res[t.paymentMethod] || 0) + Number(t.revenue);
-      }
+      const key = t.paymentMethod?.includes('Card') ? 'Card' :
+                  t.paymentMethod?.includes('Cash') ? 'Cash' :
+                  t.paymentMethod?.includes('Transfer') ? 'Bank Transfer' : t.paymentMethod;
+      res[key] = (res[key] || 0) + Number(t.revenue);
     });
     return res;
   }, [dayTxns]);
@@ -101,28 +98,12 @@ export default function DailyReportsPage() {
     dayTxns.forEach(t => {
       counts[t.productName] = (counts[t.productName] || 0) + Number(t.quantity);
     });
-    let best = "None sold";
+    let best = "—";
     let max = 0;
     Object.entries(counts).forEach(([name, c]) => {
       if (c > max) {
         max = c;
         best = name;
-      }
-    });
-    return best;
-  }, [dayTxns]);
-
-  const bestPerformingBrand = useMemo(() => {
-    const revs = {};
-    dayTxns.forEach(t => {
-      revs[t.brand] = (revs[t.brand] || 0) + Number(t.revenue);
-    });
-    let best = "None";
-    let max = 0;
-    Object.entries(revs).forEach(([b, r]) => {
-      if (r > max) {
-        max = r;
-        best = b;
       }
     });
     return best;
@@ -184,12 +165,12 @@ export default function DailyReportsPage() {
         {existingReport ? (
           <div className="flex items-center gap-2 text-xs text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-            <span>Official report generated & archived for this date</span>
+            <span>{t('reportOfficialArchived')}</span>
           </div>
         ) : (
           <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200">
             <AlertCircle className="w-4 h-4 text-amber-600" />
-            <span>Open day: Not closed yet. Review figures below.</span>
+            <span>{t('reportOpenDay')}</span>
           </div>
         )}
       </div>
@@ -199,43 +180,43 @@ export default function DailyReportsPage() {
         {/* Total Phones Sold */}
         <div className="bg-white rounded-3xl border border-[#EAEAEA] p-5 shadow-card">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#888888]">Phones Sold</span>
+            <span className="text-xs font-semibold text-[#888888]">{t('phonesSold')}</span>
             <Smartphone className="w-5 h-5 text-[#FF7900]" />
           </div>
           <h3 className="text-2xl font-black text-[#171717] mt-3 font-['Plus_Jakarta_Sans']">
-            {phonesSold} <span className="text-xs font-semibold text-[#888888]">units</span>
+            {phonesSold} <span className="text-xs font-semibold text-[#888888]">{t('reportUnits')}</span>
           </h3>
-          <p className="text-xs text-[#888888] mt-1 truncate">Best: {bestSellingPhone}</p>
+          <p className="text-xs text-[#888888] mt-1 truncate">Top: {bestSellingPhone}</p>
         </div>
 
         {/* Total Revenue */}
         <div className="bg-white rounded-3xl border border-[#EAEAEA] p-5 shadow-card">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#888888]">Total Revenue</span>
+            <span className="text-xs font-semibold text-[#888888]">{t('statRevenueToday')}</span>
             <DollarSign className="w-5 h-5 text-[#0284C7]" />
           </div>
           <h3 className="text-xl sm:text-2xl font-black text-[#171717] mt-3 font-['Plus_Jakarta_Sans'] truncate">
             {formatCurrency(revenue)}
           </h3>
-          <p className="text-xs text-[#888888] mt-1">Discounts: {formatCurrency(discounts)}</p>
+          <p className="text-xs text-[#888888] mt-1">{t('discount')}: {formatCurrency(discounts)}</p>
         </div>
 
         {/* Gross Profit */}
         <div className="bg-white rounded-3xl border border-[#EAEAEA] p-5 shadow-card">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#888888]">Gross Profit</span>
+            <span className="text-xs font-semibold text-[#888888]">{t('grossProfit')}</span>
             <TrendingUp className="w-5 h-5 text-[#16A36A]" />
           </div>
           <h3 className="text-xl sm:text-2xl font-black text-emerald-600 mt-3 font-['Plus_Jakarta_Sans'] truncate">
             +{formatCurrency(grossProfit)}
           </h3>
-          <p className="text-xs text-[#888888] mt-1">Cost of Goods: {formatCurrency(purchaseCost)}</p>
+          <p className="text-xs text-[#888888] mt-1">{t('purchaseCost')}: {formatCurrency(purchaseCost)}</p>
         </div>
 
-        {/* Net Profit (Separated clearly!) */}
+        {/* Net Profit */}
         <div className="bg-white rounded-3xl border border-orange-200 bg-orange-50/20 p-5 shadow-card">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-[#FF7900]">Net Profit (After Expenses)</span>
+            <span className="text-xs font-bold text-[#FF7900]">{t('netProfit')}</span>
             <Receipt className="w-5 h-5 text-[#FF7900]" />
           </div>
           <h3 className={`text-xl sm:text-2xl font-black mt-3 font-['Plus_Jakarta_Sans'] truncate ${
@@ -243,7 +224,7 @@ export default function DailyReportsPage() {
           }`}>
             {netProfit >= 0 ? `+${formatCurrency(netProfit)}` : formatCurrency(netProfit)}
           </h3>
-          <p className="text-xs text-[#888888] mt-1">Expenses: {formatCurrency(totalDayExpenses)}</p>
+          <p className="text-xs text-[#888888] mt-1">{t('operatingExpenses')}: {formatCurrency(totalDayExpenses)}</p>
         </div>
       </div>
 
@@ -252,32 +233,32 @@ export default function DailyReportsPage() {
         {/* Left: Store Performance Breakdown */}
         <div className="bg-white rounded-3xl border border-[#EAEAEA] p-6 shadow-card space-y-4">
           <h3 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
-            Performance Breakdown ({formatDate(selectedDate)})
+            {t('reportPerformanceBreakdown')} ({formatDate(selectedDate)})
           </h3>
 
           <div className="space-y-3 text-xs">
             <div className="flex justify-between py-2 border-b border-[#F0F0F0]">
-              <span className="text-[#888888]">Total Selling Price Revenue:</span>
+              <span className="text-[#888888]">{t('reportSellingRevenue')}</span>
               <span className="font-bold text-[#171717]">{formatCurrency(revenue + discounts)}</span>
             </div>
             <div className="flex justify-between py-2 border-b border-[#F0F0F0]">
-              <span className="text-[#888888]">Total Customer Discounts:</span>
+              <span className="text-[#888888]">{t('reportDiscounts')}</span>
               <span className="font-semibold text-[#E5484D]">-{formatCurrency(discounts)}</span>
             </div>
             <div className="flex justify-between py-2 border-b border-[#F0F0F0]">
-              <span className="text-[#888888]">Direct Smartphone Purchase Cost:</span>
+              <span className="text-[#888888]">{t('reportPurchaseCost')}</span>
               <span className="font-semibold text-[#666666]">-{formatCurrency(purchaseCost)}</span>
             </div>
             <div className="flex justify-between py-2 border-b border-[#F0F0F0] font-bold text-[#171717]">
-              <span>Gross Profit (Margin {revenue > 0 ? Math.round((grossProfit / revenue) * 100) : 0}%):</span>
+              <span>{t('reportGrossProfit')} ({revenue > 0 ? Math.round((grossProfit / revenue) * 100) : 0}%):</span>
               <span className="text-emerald-600">+{formatCurrency(grossProfit)}</span>
             </div>
             <div className="flex justify-between py-2 border-b border-[#F0F0F0]">
-              <span className="text-[#888888]">Operating Expenses Deducted:</span>
+              <span className="text-[#888888]">{t('reportOperatingExpensesDeducted')}</span>
               <span className="font-semibold text-[#E5484D]">-{formatCurrency(totalDayExpenses)}</span>
             </div>
             <div className="flex justify-between py-2.5 bg-orange-50/60 px-3 rounded-xl font-bold text-sm text-[#171717]">
-              <span>Net Business Profit:</span>
+              <span>{t('reportNetProfit')}</span>
               <span className={netProfit >= 0 ? "text-emerald-700" : "text-red-600"}>
                 {formatCurrency(netProfit)}
               </span>
@@ -286,23 +267,33 @@ export default function DailyReportsPage() {
 
           {/* Payment Method Breakdown */}
           <div className="pt-3 border-t border-[#EAEAEA]">
-            <h4 className="text-xs font-bold text-[#171717] mb-2">Payment Method Split</h4>
+            <h4 className="text-xs font-bold text-[#171717] mb-2">{t('reportPaymentSplit')}</h4>
             <div className="grid grid-cols-3 gap-2">
-              {Object.entries(paymentBreakdown).map(([method, amount]) => (
-                <div key={method} className="p-2.5 rounded-2xl bg-neutral-50 border border-[#EAEAEA] text-center">
-                  <span className="text-[11px] font-semibold text-[#888888] block">{method}</span>
-                  <span className="text-xs font-bold text-[#171717] mt-0.5 block truncate">
-                    {formatCurrency(amount)}
-                  </span>
-                </div>
-              ))}
+              <div className="p-2.5 rounded-2xl bg-neutral-50 border border-[#EAEAEA] text-center">
+                <span className="text-[11px] font-semibold text-[#888888] block">{t('paymentCard')}</span>
+                <span className="text-xs font-bold text-[#171717] mt-0.5 block truncate">
+                  {formatCurrency(paymentBreakdown.Card || 0)}
+                </span>
+              </div>
+              <div className="p-2.5 rounded-2xl bg-neutral-50 border border-[#EAEAEA] text-center">
+                <span className="text-[11px] font-semibold text-[#888888] block">{t('paymentCash')}</span>
+                <span className="text-xs font-bold text-[#171717] mt-0.5 block truncate">
+                  {formatCurrency(paymentBreakdown.Cash || 0)}
+                </span>
+              </div>
+              <div className="p-2.5 rounded-2xl bg-neutral-50 border border-[#EAEAEA] text-center">
+                <span className="text-[11px] font-semibold text-[#888888] block">{t('paymentTransfer')}</span>
+                <span className="text-xs font-bold text-[#171717] mt-0.5 block truncate">
+                  {formatCurrency(paymentBreakdown['Bank Transfer'] || 0)}
+                </span>
+              </div>
             </div>
           </div>
 
           {/* Remaining Inventory status */}
           <div className="pt-3 border-t border-[#EAEAEA] flex items-center justify-between text-xs text-[#888888]">
-            <span>Remaining Physical Stock: <strong className="text-[#171717]">{remainingCount} units</strong></span>
-            <span>Warehouse Valuation: <strong className="text-[#171717]">{formatCurrency(remainingValue)}</strong></span>
+            <span>{t('reportPhysicalStock')} <strong className="text-[#171717]">{remainingCount} {t('reportUnits')}</strong></span>
+            <span>{t('reportValuation')} <strong className="text-[#171717]">{formatCurrency(remainingValue)}</strong></span>
           </div>
         </div>
 
@@ -312,23 +303,23 @@ export default function DailyReportsPage() {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
-                  Operating Expenses
+                  {t('operatingExpenses')}
                 </h3>
-                <p className="text-xs text-[#888888]">Rent, electricity, salaries, marketing & utilities</p>
+                <p className="text-xs text-[#888888]">Ijara, elektr, maoshlar, marketing va xizmatlar</p>
               </div>
               <button
                 onClick={() => setIsExpenseModalOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#171717] hover:bg-neutral-800 text-white text-xs font-semibold transition"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#171717] hover:bg-neutral-800 text-white text-xs font-semibold transition cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Add Expense</span>
+                <span>{t('addExpenseBtn')}</span>
               </button>
             </div>
 
             <div className="space-y-2.5 max-h-72 overflow-y-auto pr-1">
               {dayExpenses.length === 0 ? (
                 <div className="py-8 text-center text-[#888888] text-xs">
-                  No operating expenses logged on {formatDate(selectedDate)}.
+                  {t('reportNoExpenses')}
                 </div>
               ) : (
                 dayExpenses.map(exp => (
@@ -348,8 +339,8 @@ export default function DailyReportsPage() {
                       </span>
                       <button
                         onClick={() => deleteExpense(exp.id)}
-                        className="text-[#888888] hover:text-[#E5484D] transition"
-                        title="Delete expense"
+                        className="text-[#888888] hover:text-[#E5484D] transition cursor-pointer"
+                        title={t('delete')}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -364,10 +355,10 @@ export default function DailyReportsPage() {
           <div className="pt-4 border-t border-[#EAEAEA] mt-4">
             <button
               onClick={handleGenerateReport}
-              className="w-full py-3 rounded-2xl bg-[#FF7900] hover:bg-[#EA6E00] active:scale-[0.98] text-white text-xs font-bold shadow-md shadow-orange-500/15 flex items-center justify-center gap-2 transition"
+              className="w-full py-3 rounded-2xl bg-[#FF7900] hover:bg-[#EA6E00] active:scale-[0.98] text-white text-xs font-bold shadow-md shadow-orange-500/15 flex items-center justify-center gap-2 transition cursor-pointer"
             >
               <CheckCircle2 className="w-4 h-4 stroke-[2.2]" />
-              <span>{existingReport ? 'Re-Generate & Update Report' : 'Close Day & Generate Report'}</span>
+              <span>{existingReport ? "Hisobotni Yangilash" : t('closeDayBtn')}</span>
             </button>
           </div>
         </div>
@@ -379,11 +370,11 @@ export default function DailyReportsPage() {
           <div className="flex items-center gap-2">
             <Archive className="w-4 h-4 text-[#FF7900]" />
             <h3 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
-              Archived Daily Business Reports
+              {t('reportArchivedTitle')}
             </h3>
           </div>
           <span className="text-xs text-[#888888]">
-            {dailyReports.length} saved reports
+            {dailyReports.length} {t('reportSavedReports')}
           </span>
         </div>
 
@@ -391,14 +382,14 @@ export default function DailyReportsPage() {
           <table className="w-full text-xs text-left">
             <thead>
               <tr className="border-b border-[#EAEAEA] text-[#888888]">
-                <th className="py-2.5 px-3 font-semibold">Report Date</th>
-                <th className="py-2.5 px-3 font-semibold">Phones Sold</th>
-                <th className="py-2.5 px-3 font-semibold">Revenue</th>
-                <th className="py-2.5 px-3 font-semibold">Gross Profit</th>
-                <th className="py-2.5 px-3 font-semibold">Expenses</th>
-                <th className="py-2.5 px-3 font-semibold">Net Profit</th>
-                <th className="py-2.5 px-3 font-semibold">Best Seller</th>
-                <th className="py-2.5 px-3 font-semibold text-right">Action</th>
+                <th className="py-2.5 px-3 font-semibold">{t('date')}</th>
+                <th className="py-2.5 px-3 font-semibold">{t('phonesSold')}</th>
+                <th className="py-2.5 px-3 font-semibold">{t('statRevenueToday')}</th>
+                <th className="py-2.5 px-3 font-semibold">{t('grossProfit')}</th>
+                <th className="py-2.5 px-3 font-semibold">{t('operatingExpenses')}</th>
+                <th className="py-2.5 px-3 font-semibold">{t('netProfit')}</th>
+                <th className="py-2.5 px-3 font-semibold">Top Smartfon</th>
+                <th className="py-2.5 px-3 font-semibold text-right">{t('actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#F0F0F0]">
@@ -408,7 +399,7 @@ export default function DailyReportsPage() {
                     {formatDate(rep.date)}
                   </td>
                   <td className="py-3 px-3 font-semibold text-[#171717]">
-                    {rep.phonesSold} units
+                    {rep.phonesSold} {t('reportUnits')}
                   </td>
                   <td className="py-3 px-3 font-bold text-[#171717]">
                     {formatCurrency(rep.revenue)}
@@ -428,9 +419,9 @@ export default function DailyReportsPage() {
                   <td className="py-3 px-3 text-right">
                     <button
                       onClick={() => setSelectedDate(rep.date)}
-                      className="text-xs font-semibold text-[#FF7900] hover:underline"
+                      className="text-xs font-semibold text-[#FF7900] hover:underline cursor-pointer"
                     >
-                      View Day
+                      {t('reportViewDay')}
                     </button>
                   </td>
                 </tr>
@@ -445,61 +436,70 @@ export default function DailyReportsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in">
           <div className="bg-white rounded-3xl border border-[#EAEAEA] shadow-2xl w-full max-w-md p-6">
             <h3 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans'] mb-1">
-              Add Operating Expense
+              {t('reportAddExpenseTitle')}
             </h3>
             <p className="text-xs text-[#888888] mb-4">
-              Record daily overhead for {formatDate(selectedDate)}
+              {formatDate(selectedDate)} sanasi uchun xarajatni kiriting
             </p>
 
-            <form onSubmit={handleCreateExpense} className="space-y-4">
+            <form onSubmit={handleCreateExpense} className="space-y-3.5">
               <div>
-                <label className="text-xs font-semibold text-[#171717] block mb-1">Category</label>
+                <label className="text-xs font-semibold text-[#171717] block mb-1">
+                  {t('reportExpenseCategory')}
+                </label>
                 <select
                   value={newExpense.category}
                   onChange={(e) => setNewExpense({ ...newExpense, category: e.target.value })}
-                  className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-xl px-3 py-2 text-xs text-[#171717]"
+                  className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-xl px-3 py-2 text-xs font-semibold text-[#171717] focus:outline-none"
                 >
-                  <option value="Rent">Rent</option>
-                  <option value="Electricity">Electricity</option>
-                  <option value="Salaries">Employee Salaries</option>
-                  <option value="Marketing">Marketing & Ads</option>
-                  <option value="Supplies">Store Supplies</option>
-                  <option value="Other">Other Expenses</option>
+                  <option value="Rent">Ijara (Rent)</option>
+                  <option value="Electricity">Elektr & Kommunal</option>
+                  <option value="Salaries">Xodimlar Maoshi</option>
+                  <option value="Marketing">Marketing & Reklama</option>
+                  <option value="Logistics">Yetkazib berish & Logistika</option>
+                  <option value="Other">Boshqa xarajatlar</option>
                 </select>
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#171717] block mb-1">Expense Title *</label>
+                <label className="text-xs font-semibold text-[#171717] block mb-1">
+                  {t('reportExpenseName')} *
+                </label>
                 <input
                   type="text"
-                  placeholder="e.g. Navoi Branch Electric Bill"
+                  placeholder="masalan: Do'kon ijarasi"
                   value={newExpense.name}
                   onChange={(e) => setNewExpense({ ...newExpense, name: e.target.value })}
-                  className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-xl px-3 py-2 text-xs text-[#171717]"
+                  className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-xl px-3 py-2 text-xs text-[#171717] focus:bg-white focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#171717] block mb-1">Amount (so'm) *</label>
+                <label className="text-xs font-semibold text-[#171717] block mb-1">
+                  {t('reportExpenseAmount')} *
+                </label>
                 <input
                   type="number"
-                  placeholder="e.g. 1500000"
+                  min="0"
+                  placeholder="masalan: 2500000"
                   value={newExpense.amount}
                   onChange={(e) => setNewExpense({ ...newExpense, amount: e.target.value })}
-                  className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-xl px-3 py-2 text-xs text-[#171717] font-semibold"
+                  className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-xl px-3 py-2 text-xs font-bold text-[#171717] focus:bg-white focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#171717] block mb-1">Notes</label>
+                <label className="text-xs font-semibold text-[#171717] block mb-1">
+                  {t('reportExpenseNotes')}
+                </label>
                 <input
                   type="text"
-                  placeholder="Optional details..."
+                  placeholder="Chek raqami yoki izoh..."
                   value={newExpense.notes}
                   onChange={(e) => setNewExpense({ ...newExpense, notes: e.target.value })}
-                  className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-xl px-3 py-2 text-xs text-[#171717]"
+                  className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-xl px-3 py-2 text-xs text-[#171717] focus:bg-white focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
                 />
               </div>
 
@@ -507,15 +507,15 @@ export default function DailyReportsPage() {
                 <button
                   type="button"
                   onClick={() => setIsExpenseModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-[#666666] hover:bg-neutral-100"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-[#666666] hover:bg-neutral-100 cursor-pointer"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-[#FF7900] hover:bg-[#EA6E00] text-xs font-bold text-white shadow-sm"
+                  className="px-5 py-2 rounded-xl bg-[#FF7900] hover:bg-[#EA6E00] text-white text-xs font-bold transition shadow-sm cursor-pointer"
                 >
-                  Save Expense
+                  Saqlash
                 </button>
               </div>
             </form>
@@ -525,4 +525,3 @@ export default function DailyReportsPage() {
     </div>
   );
 }
-

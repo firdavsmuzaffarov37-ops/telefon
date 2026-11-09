@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { X, Smartphone, DollarSign, Image, Hash, AlertCircle, Check } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function ProductModal({ isOpen, onClose, productToEdit = null }) {
   const { addProduct, updateProduct } = useApp();
+  const { t } = useLanguage();
 
   const [formData, setFormData] = useState({
     brand: 'Apple',
@@ -67,15 +69,15 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
 
   const validate = () => {
     const errs = {};
-    if (!formData.model.trim()) errs.model = "Model name is required (e.g. iPhone 16 Pro)";
-    if (!formData.brand) errs.brand = "Brand is required";
-    if (!formData.purchasePrice || Number(formData.purchasePrice) <= 0) errs.purchasePrice = "Valid purchase cost required";
-    if (!formData.sellingPrice || Number(formData.sellingPrice) <= 0) errs.sellingPrice = "Valid selling price required";
+    if (!formData.model.trim()) errs.model = "Model nomini kiritish shart (masalan, iPhone 16 Pro)";
+    if (!formData.brand) errs.brand = "Brendni tanlash shart";
+    if (!formData.purchasePrice || Number(formData.purchasePrice) <= 0) errs.purchasePrice = "Tannarxni to'g'ri kiriting";
+    if (!formData.sellingPrice || Number(formData.sellingPrice) <= 0) errs.sellingPrice = "Sotish narxini to'g'ri kiriting";
     if (Number(formData.sellingPrice) < Number(formData.purchasePrice)) {
-      errs.sellingPrice = "Selling price should exceed purchase cost";
+      errs.sellingPrice = "Sotish narxi tannarxdan yuqori bo'lishi kerak";
     }
-    if (formData.stock === '' || Number(formData.stock) < 0) errs.stock = "Quantity cannot be negative";
-    if (!formData.imei || formData.imei.length < 8) errs.imei = "Valid IMEI/Serial is required";
+    if (formData.stock === '' || Number(formData.stock) < 0) errs.stock = "Miqdor manfiy bo'lishi mumkin emas";
+    if (!formData.imei || formData.imei.length < 8) errs.imei = "To'g'ri IMEI / Seriya raqamini kiriting";
     
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -110,10 +112,10 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
         <div className="sticky top-0 bg-white/95 backdrop-blur-sm px-6 py-4 border-b border-[#EAEAEA] flex items-center justify-between z-10">
           <div>
             <h2 className="text-lg font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
-              {productToEdit ? 'Edit Smartphone' : 'Add New Smartphone'}
+              {productToEdit ? t('modalEditTitle') : t('modalAddTitle')}
             </h2>
             <p className="text-xs text-[#888888]">
-              {productToEdit ? 'Update stock, prices, or technical specifications' : 'Enter smartphone details to expand store inventory'}
+              {t('modalSubtitle')}
             </p>
           </div>
           <button
@@ -130,7 +132,7 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                Brand *
+                {t('fieldBrand')} *
               </label>
               <select
                 value={formData.brand}
@@ -149,11 +151,11 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
 
             <div>
               <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                Model Name *
+                {t('fieldModel')} *
               </label>
               <input
                 type="text"
-                placeholder="e.g. iPhone 16 Pro, Galaxy S24"
+                placeholder="masalan: iPhone 16 Pro, Galaxy S24"
                 value={formData.model}
                 onChange={(e) => setFormData({ ...formData, model: e.target.value })}
                 className={`w-full bg-[#FAFAFA] border rounded-xl px-3.5 py-2.5 text-xs text-[#171717] focus:ring-1 focus:ring-[#FF7900] focus:bg-white focus:outline-none ${
@@ -168,7 +170,7 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                Storage
+                {t('fieldStorage')}
               </label>
               <select
                 value={formData.storage}
@@ -184,7 +186,7 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
 
             <div>
               <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                RAM
+                {t('fieldRAM')}
               </label>
               <select
                 value={formData.ram}
@@ -200,16 +202,15 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
 
             <div>
               <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                Color
+                {t('fieldColor')}
               </label>
               <input
                 type="text"
-                placeholder="e.g. Desert Titanium"
+                placeholder="masalan: Qora, Desert Titanium"
                 value={formData.color}
                 onChange={(e) => setFormData({ ...formData, color: e.target.value })}
                 className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-xl px-3 py-2.5 text-xs text-[#171717] focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
-              >
-              </input>
+              />
             </div>
           </div>
 
@@ -217,11 +218,11 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-orange-50/40 border border-orange-200/50">
             <div>
               <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                Purchase Cost (so'm) *
+                {t('fieldPurchaseCost')} *
               </label>
               <input
                 type="number"
-                placeholder="e.g. 13500000"
+                placeholder="masalan: 13500000"
                 value={formData.purchasePrice}
                 onChange={(e) => setFormData({ ...formData, purchasePrice: e.target.value })}
                 className={`w-full bg-white border rounded-xl px-3.5 py-2.5 text-xs text-[#171717] font-semibold focus:ring-1 focus:ring-[#FF7900] focus:outline-none ${
@@ -233,11 +234,11 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
 
             <div>
               <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                Selling Price (so'm) *
+                {t('fieldSellingPrice')} *
               </label>
               <input
                 type="number"
-                placeholder="e.g. 15900000"
+                placeholder="masalan: 15900000"
                 value={formData.sellingPrice}
                 onChange={(e) => setFormData({ ...formData, sellingPrice: e.target.value })}
                 className={`w-full bg-white border rounded-xl px-3.5 py-2.5 text-xs text-[#171717] font-semibold focus:ring-1 focus:ring-[#FF7900] focus:outline-none ${
@@ -249,7 +250,7 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
 
             {formData.purchasePrice && formData.sellingPrice && (
               <div className="col-span-1 sm:col-span-2 text-xs flex items-center justify-between pt-1">
-                <span className="text-[#888888]">Estimated Unit Profit:</span>
+                <span className="text-[#888888]">{t('unitProfit')}:</span>
                 <span className="font-bold text-emerald-600">
                   +{(Number(formData.sellingPrice) - Number(formData.purchasePrice)).toLocaleString()} so'm
                 </span>
@@ -261,7 +262,7 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                Available Stock *
+                {t('fieldAvailableStock')} *
               </label>
               <input
                 type="number"
@@ -275,7 +276,7 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
 
             <div>
               <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                Low Stock Warning At
+                {t('fieldLowStockAlert')}
               </label>
               <input
                 type="number"
@@ -288,16 +289,16 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
 
             <div>
               <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                Display Badge
+                {t('fieldBadge')}
               </label>
               <select
                 value={formData.tag}
                 onChange={(e) => setFormData({ ...formData, tag: e.target.value })}
                 className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-xl px-3 py-2.5 text-xs text-[#171717] focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
               >
-                <option value="New Arrival">New Arrival</option>
-                <option value="Popular">Popular</option>
-                <option value="Best Seller">Best Seller</option>
+                <option value="New Arrival">{t('tagNewArrival')}</option>
+                <option value="Popular">{t('tagPopular')}</option>
+                <option value="Best Seller">{t('tagBestSeller')}</option>
               </select>
             </div>
           </div>
@@ -306,11 +307,11 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                IMEI / Serial Number *
+                {t('fieldIMEI')} *
               </label>
               <input
                 type="text"
-                placeholder="15-digit hardware IMEI"
+                placeholder="15 xonali apparat IMEI raqami"
                 value={formData.imei}
                 onChange={(e) => setFormData({ ...formData, imei: e.target.value })}
                 className={`w-full bg-[#FAFAFA] border rounded-xl px-3.5 py-2.5 text-xs text-[#171717] font-mono focus:ring-1 focus:ring-[#FF7900] focus:outline-none ${
@@ -322,7 +323,7 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
 
             <div>
               <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                Product Image URL
+                {t('fieldImageURL')}
               </label>
               <input
                 type="text"
@@ -337,11 +338,11 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
           {/* Product Description */}
           <div>
             <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-              Description / Notes
+              {t('fieldDescription')}
             </label>
             <textarea
               rows={2}
-              placeholder="Features, box accessories, packaging details..."
+              placeholder="Qadoq tarkibi, kafolat shartlari va boshqalar..."
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-xl p-3 text-xs text-[#171717] focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
@@ -355,13 +356,13 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
               onClick={onClose}
               className="px-4 py-2 rounded-xl border border-[#EAEAEA] text-xs font-semibold text-[#666666] hover:bg-neutral-100 transition"
             >
-              Cancel
+              {t('cancel')}
             </button>
             <button
               type="submit"
               className="px-6 py-2 rounded-xl bg-[#FF7900] hover:bg-[#EA6E00] text-white text-xs font-bold shadow-md shadow-orange-500/10 transition"
             >
-              {productToEdit ? 'Save Changes' : 'Add Smartphone'}
+              {productToEdit ? t('btnSaveProduct') : t('btnAddProduct')}
             </button>
           </div>
         </form>

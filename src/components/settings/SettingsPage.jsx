@@ -3,34 +3,28 @@ import Header from '../layout/Header';
 import { useApp } from '../../context/AppContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { 
-  Settings, 
   Store, 
-  DollarSign, 
-  Bell, 
   RotateCcw, 
   Download, 
-  Upload, 
-  Check, 
   ShieldAlert,
   Save,
   Database,
-  CloudUpload,
-  ExternalLink
+  CloudUpload
 } from 'lucide-react';
 
 export default function SettingsPage() {
-  const { settings, setSettings, resetToDemoData, showToast, supabaseStatus, syncToSupabase } = useApp();
+  const { settings, setSettings, resetToDemoData, showToast, syncToSupabase } = useApp();
   const { t } = useLanguage();
 
   const [formData, setFormData] = useState({
     storeName: settings.storeName || 'PhoneLytics Premium Store',
-    tagline: settings.tagline || 'Official Smartphone Retail & Distribution',
-    ownerName: settings.ownerName || 'Manager Sherzod',
+    tagline: settings.tagline || "Rasmiy Smartfonlar Do'koni va Servis Markazi",
+    ownerName: settings.ownerName || 'Sherzod Rahimov',
     phone: settings.phone || '+998 71 200 00 24',
-    address: settings.address || 'Tashkent City Mall, Level 2',
+    address: settings.address || 'Toshkent sh., Navoiy ko\'chasi, 12-uy',
     currency: settings.currency || "so'm",
     lowStockThreshold: settings.lowStockThreshold || 5,
-    receiptFooter: settings.receiptFooter || 'Thank you for shopping with PhoneLytics! 1 Year Official Warranty Included.'
+    receiptFooter: settings.receiptFooter || "PhoneLytics do'konini tanlaganingiz uchun rahmat! 1 Yillik Rasmiy Kafolat Beriladi."
   });
 
   const handleSave = (e) => {
@@ -40,7 +34,7 @@ export default function SettingsPage() {
       ...formData,
       lowStockThreshold: Number(formData.lowStockThreshold)
     }));
-    showToast('Store settings saved successfully!', 'success');
+    showToast("Do'kon sozlamalari muvaffaqiyatli saqlandi!", 'success');
   };
 
   const handleExportBackup = () => {
@@ -59,7 +53,7 @@ export default function SettingsPage() {
     a.href = url;
     a.download = `phonelytics-backup-${new Date().toISOString().split('T')[0]}.json`;
     a.click();
-    showToast('Backup JSON exported successfully!', 'success');
+    showToast("Zaxira nusxasi muvaffaqiyatli yuklab olindi!", 'success');
   };
 
   return (
@@ -74,11 +68,17 @@ export default function SettingsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         {/* Left 2 Cols: Store Details Form */}
         <div className="lg:col-span-2 bg-white rounded-3xl border border-[#EAEAEA] p-6 shadow-card space-y-6">
-          <div className="flex items-center gap-2 pb-4 border-b border-[#EAEAEA]">
-            <Store className="w-5 h-5 text-[#FF7900]" />
-            <h3 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
-              Retail Profile & Localization
-            </h3>
+          <div className="flex items-center justify-between pb-4 border-b border-[#EAEAEA]">
+            <div className="flex items-center gap-2">
+              <Store className="w-5 h-5 text-[#FF7900]" />
+              <h3 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
+                Do'kon Profili & Ma'lumotlari
+              </h3>
+            </div>
+            {/* Store Icon Preview */}
+            <div className="w-10 h-10 rounded-2xl overflow-hidden border border-[#EAEAEA] shadow-sm">
+              <img src="/logo.png" alt="Store Icon" className="w-full h-full object-cover" />
+            </div>
           </div>
 
           <form onSubmit={handleSave} className="space-y-4">
@@ -142,15 +142,15 @@ export default function SettingsPage() {
                   onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
                   className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-xl px-3.5 py-2.5 text-xs text-[#171717] focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
                 >
-                  <option value="so'm">Uzbekistani Som (so'm)</option>
-                  <option value="$">US Dollar ($)</option>
+                  <option value="so'm">O'zbekiston So'mi (so'm)</option>
+                  <option value="$">AQSH Dollari ($)</option>
                 </select>
               </div>
             </div>
 
             <div>
               <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                Physical Retail Location
+                Do'kon Manzili (Filial)
               </label>
               <input
                 type="text"
@@ -174,13 +174,13 @@ export default function SettingsPage() {
                   className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-xl px-3.5 py-2.5 text-xs text-[#171717] focus:bg-white focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
                 />
                 <span className="text-[11px] text-[#888888] mt-1 block">
-                  Triggers orange notification badges when stock falls to this count or below.
+                  Ombordagi zaxira ushbu miqdorga yoki undan pastga tushganda ogohlantirish beriladi.
                 </span>
               </div>
 
               <div>
                 <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                  POS Receipt Footer Note
+                  Chek Tagidagi Kafolat Matni
                 </label>
                 <input
                   type="text"
@@ -194,7 +194,7 @@ export default function SettingsPage() {
             <div className="pt-4 border-t border-[#EAEAEA] flex justify-end">
               <button
                 type="submit"
-                className="px-6 py-2.5 rounded-xl bg-[#FF7900] hover:bg-[#EA6E00] text-white text-xs font-bold shadow-md shadow-orange-500/10 flex items-center gap-2 transition"
+                className="px-6 py-2.5 rounded-xl bg-[#FF7900] hover:bg-[#EA6E00] text-white text-xs font-bold shadow-md shadow-orange-500/10 flex items-center gap-2 transition cursor-pointer"
               >
                 <Save className="w-4 h-4" />
                 <span>{t('saveSettingsBtn')}</span>
@@ -211,55 +211,55 @@ export default function SettingsPage() {
               <div className="flex items-center gap-2">
                 <Database className="w-5 h-5 text-emerald-600" />
                 <h3 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
-                  Supabase Cloud
+                  Supabase Buluti
                 </h3>
               </div>
               <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-                Active
+                Ulangan
               </span>
             </div>
 
             <div className="space-y-2 text-xs">
               <div className="flex justify-between text-[#888888]">
-                <span>Project URL:</span>
+                <span>Loyiha URL:</span>
                 <span className="font-mono text-[#171717] truncate max-w-[170px]" title="https://igpkeqbbaluqhjleennx.supabase.co">
                   igpkeqbbaluqhjleennx...
                 </span>
               </div>
               <div className="flex justify-between text-[#888888]">
-                <span>Status:</span>
-                <span className="font-semibold text-emerald-700">Connected</span>
+                <span>Holat:</span>
+                <span className="font-semibold text-emerald-700">Faol (Sinxron)</span>
               </div>
             </div>
 
             <button
               onClick={syncToSupabase}
-              className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-2 transition shadow-sm"
+              className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
             >
               <CloudUpload className="w-4 h-4" />
-              <span>Sync All Data to Supabase</span>
+              <span>{t('syncSupabaseBtn')}</span>
             </button>
 
             <p className="text-[11px] text-[#888888] leading-tight">
-              A database schema file (<code>supabase_schema.sql</code>) has been prepared in your project root. You can execute it in the Supabase SQL Editor anytime.
+              Loyiha ildizida <code>supabase_schema.sql</code> tayyorlangan. Istalgan paytda SQL Editor orqali jadvallarni kengaytirishingiz mumkin.
             </p>
           </div>
 
           <div className="bg-white rounded-3xl border border-[#EAEAEA] p-6 shadow-card space-y-4">
             <h3 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
-              Data Management & Backup
+              Ma'lumotlar Boshqaruvi
             </h3>
             <p className="text-xs text-[#888888]">
-              All smartphone inventory, sales logs, and daily reports persist in browser LocalStorage.
+              Barcha smartfonlar ombori, savdo cheklari va kunlik hisobotlar xavfsiz saqlanadi.
             </p>
 
             <button
               onClick={handleExportBackup}
-              className="w-full py-2.5 px-4 rounded-xl border border-[#EAEAEA] bg-neutral-50 hover:bg-neutral-100 text-[#171717] text-xs font-semibold flex items-center justify-center gap-2 transition"
+              className="w-full py-2.5 px-4 rounded-xl border border-[#EAEAEA] bg-neutral-50 hover:bg-neutral-100 text-[#171717] text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer"
             >
               <Download className="w-4 h-4 text-[#888888]" />
-              <span>Export Full Store Backup (.json)</span>
+              <span>Do'kon Zaxira Nusxasini Yuklab Olish (.json)</span>
             </button>
           </div>
 
@@ -267,23 +267,23 @@ export default function SettingsPage() {
             <div className="flex items-center gap-2">
               <ShieldAlert className="w-5 h-5 text-[#E5484D]" />
               <h3 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
-                Reset Demo Data
+                {t('resetDemoBtn')}
               </h3>
             </div>
             <p className="text-xs text-[#888888]">
-              Reset all inventory products, initial transactions, sample expenses, and daily reports back to official factory demo data.
+              Barcha smartfonlar, tranzaksiyalar va hisobotlarni zavod demo holatiga qaytarish.
             </p>
 
             <button
               onClick={() => {
-                if (window.confirm("Are you sure you want to reset all store data back to demo defaults?")) {
+                if (window.confirm("Barcha ma'lumotlarni demo holatiga qaytarishni tasdiqlaysizmi?")) {
                   resetToDemoData();
                 }
               }}
-              className="w-full py-2.5 px-4 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-[#E5484D] text-xs font-bold flex items-center justify-center gap-2 transition"
+              className="w-full py-2.5 px-4 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-[#E5484D] text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer"
             >
               <RotateCcw className="w-4 h-4" />
-              <span>Reset to Demo Data</span>
+              <span>{t('resetDemoBtn')}</span>
             </button>
           </div>
         </div>
@@ -291,4 +291,3 @@ export default function SettingsPage() {
     </div>
   );
 }
-

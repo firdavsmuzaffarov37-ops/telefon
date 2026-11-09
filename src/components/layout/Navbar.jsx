@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutGrid, 
@@ -13,9 +13,8 @@ import {
   Sparkles,
   Menu,
   X,
-  Database,
   LogOut,
-  User
+  Camera
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
@@ -25,13 +24,14 @@ import LanguageSelector from '../common/LanguageSelector';
 export default function Navbar({ onOpenAI }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { settings, getTodayStats, supabaseStatus } = useApp();
-  const { user, logout, isAuthenticated } = useAuth();
+  const { settings, getTodayStats } = useApp();
+  const { user, logout, updateUserAvatar, isAuthenticated } = useAuth();
   const { t } = useLanguage();
   const stats = getTodayStats();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const fileInputRef = useRef(null);
 
   const navItems = [
     { name: t('navDashboard'), path: '/dashboard', icon: LayoutGrid },
@@ -41,17 +41,37 @@ export default function Navbar({ onOpenAI }) {
     { name: t('navHistory'), path: '/history', icon: History },
   ];
 
+  // Dynamic Avatar computation
+  const avatarUrl = user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.fullName || user?.email || 'User')}&background=171717&color=FF7900&bold=true&size=128`;
+
+  const handleAvatarUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result;
+      if (dataUrl && updateUserAvatar) {
+        updateUserAvatar(dataUrl);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#EAEAEA] px-4 md:px-8 py-3">
       <div className="max-w-[1720px] mx-auto flex items-center justify-between">
         {/* Left: Brand Logo */}
         <div className="flex items-center gap-3">
           <NavLink to="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl bg-[#FF7900] flex items-center justify-center text-white shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform duration-200">
-              <Smartphone className="w-5 h-5 text-white stroke-[2.2]" />
+            <div className="w-10 h-10 rounded-2xl overflow-hidden bg-black/5 p-0.5 border border-black/10 shadow-md group-hover:scale-105 transition-transform duration-200 flex items-center justify-center">
+              <img
+                src="/logo.png"
+                alt="PhoneLytics Icon"
+                className="w-full h-full object-cover rounded-xl"
+              />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-bold tracking-tight text-[#171717] font-['Plus_Jakarta_Sans'] flex items-center gap-1">
+              <span className="text-xl font-black tracking-tight text-[#171717] font-['Plus_Jakarta_Sans'] flex items-center gap-1">
                 Phone<span className="text-[#FF7900]">Lytics</span>
               </span>
             </div>
@@ -89,31 +109,21 @@ export default function Navbar({ onOpenAI }) {
           {/* Language Switcher */}
           <LanguageSelector />
 
-          {/* Supabase Connection Status Badge */}
-          <NavLink
-            to="/settings"
-            className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-50/80 border border-emerald-200 text-[11px] font-semibold text-emerald-700 hover:bg-emerald-100/80 transition"
-            title="Connected to Supabase PostgreSQL"
-          >
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Supabase</span>
-          </NavLink>
-
           {/* AI Insights Button */}
           <button
             onClick={onOpenAI}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-orange-200 bg-orange-50/70 hover:bg-orange-100/70 text-[#FF7900] text-xs font-semibold transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-orange-200 bg-orange-50/70 hover:bg-orange-100/70 text-[#FF7900] text-xs font-semibold transition cursor-pointer"
             title="AI Business Assistant"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#FF7900]" />
             <span className="hidden sm:inline">{t('navAI')}</span>
           </button>
 
-          {/* Quick Chat / Notes icon from screenshot */}
+          {/* Quick Chat / Notes icon */}
           <button 
             onClick={onOpenAI}
-            className="w-9 h-9 rounded-xl border border-[#EAEAEA] bg-white hover:bg-neutral-50 flex items-center justify-center text-[#666666] hover:text-[#171717] transition relative"
-            title="AI Store Advice"
+            className="w-9 h-9 rounded-xl border border-[#EAEAEA] bg-white hover:bg-neutral-50 flex items-center justify-center text-[#666666] hover:text-[#171717] transition relative cursor-pointer"
+            title="AI Maslahatchi"
           >
             <MessageSquare className="w-4 h-4" />
           </button>
@@ -122,8 +132,8 @@ export default function Navbar({ onOpenAI }) {
           <div className="relative">
             <button
               onClick={() => setNotificationsOpen(!notificationsOpen)}
-              className="w-9 h-9 rounded-xl border border-[#EAEAEA] bg-white hover:bg-neutral-50 flex items-center justify-center text-[#666666] hover:text-[#171717] transition relative"
-              title="Store Alerts"
+              className="w-9 h-9 rounded-xl border border-[#EAEAEA] bg-white hover:bg-neutral-50 flex items-center justify-center text-[#666666] hover:text-[#171717] transition relative cursor-pointer"
+              title="Do'kon Bildirishnomalari"
             >
               <Bell className="w-4 h-4" />
               {stats.lowStockCount > 0 && (
@@ -135,24 +145,24 @@ export default function Navbar({ onOpenAI }) {
             {notificationsOpen && (
               <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-[#EAEAEA] p-4 z-50 animate-in fade-in slide-in-from-top-2">
                 <div className="flex items-center justify-between pb-3 border-b border-[#EAEAEA]">
-                  <h4 className="text-sm font-semibold text-[#171717]">Store Notifications</h4>
+                  <h4 className="text-sm font-semibold text-[#171717]">Do'kon Bildirishnomalari</h4>
                   <span className="text-xs bg-orange-50 text-[#FF7900] font-medium px-2 py-0.5 rounded-full">
-                    {stats.lowStockCount} alerts
+                    {stats.lowStockCount} ta
                   </span>
                 </div>
                 <div className="mt-3 space-y-2.5 max-h-64 overflow-y-auto">
                   {stats.lowStockCount > 0 ? (
                     <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200/80 text-xs">
-                      <p className="font-semibold text-amber-900">Low Stock Warning</p>
+                      <p className="font-semibold text-amber-900">{t('lowStockWarning')}</p>
                       <p className="text-amber-700 mt-0.5">
-                        {stats.lowStockCount} smartphone models are below threshold ({settings.lowStockThreshold} units). Restock advised!
+                        {stats.lowStockCount} ta smartfon modeli chegaradan ({settings.lowStockThreshold} dona) past. Omborni to'ldiring!
                       </p>
                     </div>
                   ) : null}
                   <div className="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80 text-xs">
-                    <p className="font-semibold text-emerald-900">Today's Sales</p>
+                    <p className="font-semibold text-emerald-900">Bugungi Savdolar</p>
                     <p className="text-emerald-700 mt-0.5">
-                      {stats.phonesSoldToday} smartphones sold today. Gross profit looks solid!
+                      Bugun {stats.phonesSoldToday} ta smartfon sotildi. Tushum va foyda a'lo darajada!
                     </p>
                   </div>
                 </div>
@@ -178,13 +188,17 @@ export default function Navbar({ onOpenAI }) {
                 <button
                   type="button"
                   onClick={() => setProfileMenuOpen(!profileMenuOpen)}
-                  className="flex items-center gap-2 focus:outline-none group"
+                  className="flex items-center gap-2 focus:outline-none group cursor-pointer"
                 >
                   <div className="relative">
                     <img
-                      src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"}
-                      alt={user?.fullName || "Store Manager"}
-                      className="w-9 h-9 rounded-full object-cover ring-2 ring-[#FF7900]/20 group-hover:ring-[#FF7900] transition"
+                      src={avatarUrl}
+                      alt={user?.fullName || "User"}
+                      className="w-9 h-9 rounded-full object-cover ring-2 ring-[#FF7900]/30 group-hover:ring-[#FF7900] transition shadow-sm"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.fullName || user?.email || 'User')}&background=171717&color=FF7900&bold=true`;
+                      }}
                     />
                     <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-white" />
                   </div>
@@ -193,14 +207,43 @@ export default function Navbar({ onOpenAI }) {
                 {profileMenuOpen && (
                   <>
                     <div className="fixed inset-0 z-30" onClick={() => setProfileMenuOpen(false)} />
-                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-[#EAEAEA] py-2 z-40 animate-in fade-in">
-                      <div className="px-4 py-2 border-b border-[#F0F0F0]">
-                        <p className="text-xs font-bold text-[#171717] truncate">{user?.fullName || 'Manager Sherzod'}</p>
-                        <p className="text-[11px] text-[#888888] truncate">{user?.email || 'admin@phonelytics.uz'}</p>
-                        <span className="inline-block mt-1 text-[10px] font-semibold bg-orange-50 text-[#FF7900] px-2 py-0.5 rounded-full">
-                          {user?.role || 'Store Manager'}
-                        </span>
+                    <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-[#EAEAEA] py-2 z-40 animate-in fade-in">
+                      <div className="px-4 py-3 border-b border-[#F0F0F0] flex items-center gap-3">
+                        <img
+                          src={avatarUrl}
+                          alt={user?.fullName || "User"}
+                          className="w-11 h-11 rounded-full object-cover ring-2 ring-[#FF7900]/40 flex-shrink-0"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.fullName || user?.email || 'User')}&background=171717&color=FF7900&bold=true`;
+                          }}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-bold text-[#171717] truncate">{user?.fullName || 'Foydalanuvchi'}</p>
+                          <p className="text-[11px] text-[#888888] truncate">{user?.email || 'admin@phonelytics.uz'}</p>
+                          <span className="inline-block mt-0.5 text-[10px] font-semibold bg-orange-50 text-[#FF7900] px-2 py-0.5 rounded-full">
+                            {user?.role || 'Do\'kon Boshqaruvchisi'}
+                          </span>
+                        </div>
                       </div>
+
+                      {/* Change Profile Photo Button */}
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="w-full px-4 py-2 text-xs font-medium text-[#FF7900] hover:bg-orange-50 flex items-center gap-2 cursor-pointer transition"
+                      >
+                        <Camera className="w-3.5 h-3.5" />
+                        <span>Rasmni almashtirish (Fayl yuklash)</span>
+                      </button>
+
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleAvatarUpload}
+                        accept="image/*"
+                        className="hidden"
+                      />
 
                       <NavLink
                         to="/settings"
@@ -219,7 +262,7 @@ export default function Navbar({ onOpenAI }) {
                           logout();
                           navigate('/login');
                         }}
-                        className="w-full px-4 py-2 text-xs font-medium text-[#E5484D] hover:bg-red-50 flex items-center gap-2 text-left"
+                        className="w-full px-4 py-2 text-xs font-medium text-[#E5484D] hover:bg-red-50 flex items-center gap-2 text-left cursor-pointer"
                       >
                         <LogOut className="w-3.5 h-3.5" />
                         <span>{t('navLogout')}</span>
@@ -241,7 +284,7 @@ export default function Navbar({ onOpenAI }) {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden w-9 h-9 rounded-xl border border-[#EAEAEA] bg-white flex items-center justify-center text-[#171717]"
+            className="lg:hidden w-9 h-9 rounded-xl border border-[#EAEAEA] bg-white flex items-center justify-center text-[#171717] cursor-pointer"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -273,4 +316,3 @@ export default function Navbar({ onOpenAI }) {
     </header>
   );
 }
-

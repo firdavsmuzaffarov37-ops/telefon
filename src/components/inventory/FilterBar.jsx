@@ -113,8 +113,8 @@ export default function FilterBar({
       {showMoreFilters && (
         <div className="p-4 bg-white rounded-2xl border border-[#EAEAEA] shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-in fade-in">
           <div>
-            <label className="text-xs font-medium text-[#666666] block mb-1.5">
-              Max Price: {Number(priceRange.max).toLocaleString()} so'm
+            <label className="text-xs font-semibold text-[#666666] block mb-1.5">
+              {t('maxPrice')}: {Number(priceRange.max).toLocaleString()} so'm
             </label>
             <input
               type="range"
@@ -127,18 +127,18 @@ export default function FilterBar({
             />
           </div>
           <div className="flex items-center gap-2 pt-4">
-            <span className="text-xs text-[#888888]">Quick presets:</span>
+            <span className="text-xs text-[#888888] font-medium">Tezkor:</span>
             <button
               onClick={() => setPriceRange({ min: 0, max: 5000000 })}
-              className="text-xs px-2.5 py-1 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-[#171717]"
+              className="text-xs px-2.5 py-1 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-[#171717] font-medium"
             >
-              Under 5M
+              5 mln gacha
             </button>
             <button
               onClick={() => setPriceRange({ min: 0, max: 15000000 })}
-              className="text-xs px-2.5 py-1 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-[#171717]"
+              className="text-xs px-2.5 py-1 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-[#171717] font-medium"
             >
-              Under 15M
+              15 mln gacha
             </button>
           </div>
         </div>

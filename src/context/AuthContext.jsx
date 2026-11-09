@@ -3,20 +3,38 @@ import { supabase } from '../lib/supabaseClient';
 
 const AuthContext = createContext();
 
+export function resolveAvatar(metadata = {}, email = '', fullName = '') {
+  if (metadata?.avatar_url) return metadata.avatar_url;
+  if (metadata?.picture) return metadata.picture;
+  if (metadata?.avatar && !metadata.avatar.includes('photo-1534528741775-53994a69daeb')) {
+    return metadata.avatar;
+  }
+  const name = fullName || metadata?.full_name || email?.split('@')[0] || 'User';
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=171717&color=FF7900&bold=true&size=128`;
+}
+
 const defaultDemoUser = {
   id: 'usr-demo-01',
   email: 'admin@phonelytics.uz',
   fullName: 'Manager Sherzod',
   role: 'Store Manager',
   storeName: 'PhoneLytics Premium Store',
-  avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'
+  avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80'
 };
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
       const saved = localStorage.getItem('phonelytics_auth_user');
-      return saved ? JSON.parse(saved) : defaultDemoUser;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // If the saved user has the old unwanted photo and is a custom email, fix it
+        if (parsed.avatar?.includes('photo-1534528741775-53994a69daeb')) {
+          parsed.avatar = resolveAvatar({}, parsed.email, parsed.fullName);
+        }
+        return parsed;
+      }
+      return defaultDemoUser;
     } catch (e) {
       return defaultDemoUser;
     }
@@ -30,18 +48,22 @@ export function AuthProvider({ children }) {
     try {
       const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
         if (session?.user) {
+          const meta = session.user.user_metadata || {};
+          const name = meta.full_name || meta.name || session.user.email?.split('@')[0] || 'User';
+          const avatar = resolveAvatar(meta, session.user.email, name);
+
           const profile = {
             id: session.user.id,
             email: session.user.email,
-            fullName: session.user.user_metadata?.full_name || session.user.email.split('@')[0],
-            role: session.user.user_metadata?.role || 'Store Manager',
-            storeName: session.user.user_metadata?.store_name || 'PhoneLytics Store',
-            avatar: session.user.user_metadata?.avatar || defaultDemoUser.avatar
+            fullName: name,
+            role: meta.role || 'Store Manager',
+            storeName: meta.store_name || 'PhoneLytics Store',
+            avatar: avatar
           };
           setUser(profile);
           localStorage.setItem('phonelytics_auth_user', JSON.stringify(profile));
         } else if (event === 'SIGNED_OUT') {
-          // If explicitly signed out from supabase
+          // If explicitly signed out
         }
       });
 
@@ -62,57 +84,105 @@ export function AuthProvider({ children }) {
     }
   }, [user]);
 
+  // Update user avatar (Custom photo or upload)
+  const updateUserAvatar = async (newAvatarUrl) => {
+    if (!user) return;
+    const updated = { ...user, avatar: newAvatarUrl };
+    setUser(updated);
+    localStorage.setItem('phonelytics_auth_user', JSON.stringify(updated));
+
+    try {
+      await supabase.auth.updateUser({
+        data: { avatar: newAvatarUrl, avatar_url: newAvatarUrl }
+      });
+    } catch (e) {
+      console.warn('Supabase avatar update note:', e.message);
+    }
+  };
+
   // Login
   const login = async (email, password) => {
     setLoading(true);
     setAuthError(null);
 
     try {
-      // 1. Try Supabase Auth
+      // 1. Try Supabase Auth signIn
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
+        email: email.trim(),
         password
       });
 
       if (!error && data?.user) {
+        const meta = data.user.user_metadata || {};
+        const name = meta.full_name || meta.name || email.split('@')[0];
+        const avatar = resolveAvatar(meta, data.user.email, name);
+
         const loggedUser = {
           id: data.user.id,
           email: data.user.email,
-          fullName: data.user.user_metadata?.full_name || email.split('@')[0],
-          role: data.user.user_metadata?.role || 'Store Manager',
-          storeName: data.user.user_metadata?.store_name || 'PhoneLytics Store',
-          avatar: defaultDemoUser.avatar
+          fullName: name,
+          role: meta.role || 'Store Manager',
+          storeName: meta.store_name || 'PhoneLytics Store',
+          avatar
         };
         setUser(loggedUser);
         setLoading(false);
-        return { success: true, user: loggedUser };
+        return { success: true, user: loggedUser, isNew: false };
       }
 
-      // 2. If Supabase email not confirmed or mock test, fallback to local authenticated session
-      const fallbackUser = {
-        id: `usr-${Date.now().toString().slice(-4)}`,
-        email: email,
-        fullName: email.split('@')[0].toUpperCase(),
-        role: 'Store Manager',
-        storeName: 'PhoneLytics Premium Store',
-        avatar: defaultDemoUser.avatar
-      };
-      setUser(fallbackUser);
+      // 2. If user doesn't exist yet in Supabase (Invalid login credentials),
+      // Automatically register them in Supabase so they appear in Supabase Authentication -> Users!
+      if (error && (error.message.includes('Invalid login credentials') || error.message.includes('User not found'))) {
+        const name = email.split('@')[0];
+        const avatar = resolveAvatar({}, email, name);
+
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email: email.trim(),
+          password,
+          options: {
+            data: {
+              full_name: name,
+              role: 'Store Manager',
+              store_name: 'PhoneLytics Store',
+              avatar: avatar
+            }
+          }
+        });
+
+        if (!signUpError && signUpData?.user) {
+          const newUser = {
+            id: signUpData.user.id,
+            email: signUpData.user.email,
+            fullName: name,
+            role: 'Store Manager',
+            storeName: 'PhoneLytics Store',
+            avatar: avatar
+          };
+          setUser(newUser);
+          setLoading(false);
+          return { 
+            success: true, 
+            user: newUser, 
+            isNew: true, 
+            message: 'Foydalanuvchi muvaffaqiyatli yaratildi va tizimga kirildi!' 
+          };
+        } else if (signUpError) {
+          setLoading(false);
+          return { success: false, error: signUpError.message };
+        }
+      }
+
+      // If other error
+      if (error) {
+        setLoading(false);
+        return { success: false, error: error.message };
+      }
+
       setLoading(false);
-      return { success: true, user: fallbackUser, note: error?.message };
+      return { success: true };
     } catch (err) {
-      // Fallback local login for smooth development
-      const fallbackUser = {
-        id: `usr-${Date.now().toString().slice(-4)}`,
-        email: email,
-        fullName: email.split('@')[0],
-        role: 'Store Manager',
-        storeName: 'PhoneLytics Premium Store',
-        avatar: defaultDemoUser.avatar
-      };
-      setUser(fallbackUser);
       setLoading(false);
-      return { success: true, user: fallbackUser };
+      return { success: false, error: err.message };
     }
   };
 
@@ -122,43 +192,60 @@ export function AuthProvider({ children }) {
     setAuthError(null);
 
     try {
-      // 1. Try Supabase signUp
+      const name = fullName || email.split('@')[0];
+      const avatar = resolveAvatar({}, email, name);
+
       const { data, error } = await supabase.auth.signUp({
-        email,
+        email: email.trim(),
         password,
         options: {
           data: {
-            full_name: fullName,
+            full_name: name,
             store_name: storeName,
-            role: 'Store Manager'
+            role: 'Store Manager',
+            avatar: avatar
           }
         }
       });
 
+      if (error) {
+        setLoading(false);
+        return { success: false, error: error.message };
+      }
+
       const newUser = {
         id: data?.user?.id || `usr-${Date.now().toString().slice(-4)}`,
-        email,
-        fullName,
+        email: email.trim(),
+        fullName: name,
         role: 'Store Manager',
-        storeName,
-        avatar: defaultDemoUser.avatar
+        storeName: storeName || 'PhoneLytics Store',
+        avatar: avatar
       };
 
       setUser(newUser);
       setLoading(false);
-      return { success: true, user: newUser, error: error?.message };
-    } catch (err) {
-      const newUser = {
-        id: `usr-${Date.now().toString().slice(-4)}`,
-        email,
-        fullName,
-        role: 'Store Manager',
-        storeName,
-        avatar: defaultDemoUser.avatar
-      };
-      setUser(newUser);
-      setLoading(false);
       return { success: true, user: newUser };
+    } catch (err) {
+      setLoading(false);
+      return { success: false, error: err.message };
+    }
+  };
+
+  // Sign In with Google OAuth
+  const signInWithGoogle = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+      if (error) throw error;
+      return { success: true, data };
+    } catch (err) {
+      setLoading(false);
+      return { success: false, error: err.message };
     }
   };
 
@@ -198,6 +285,8 @@ export function AuthProvider({ children }) {
       isAuthenticated: !!user,
       login,
       register,
+      signInWithGoogle,
+      updateUserAvatar,
       logout,
       demoLogin,
       loading,

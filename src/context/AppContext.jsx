@@ -16,7 +16,26 @@ export function AppProvider({ children }) {
   const [products, setProducts] = useState(() => {
     try {
       const saved = localStorage.getItem('phonelytics_products');
-      return saved ? JSON.parse(saved) : initialProducts;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Automatically patch legacy cached images so phones always show authentic phone images
+        return parsed.map(p => {
+          if (p.id === 'prod-012') {
+            return {
+              ...p,
+              image: 'https://images.unsplash.com/photo-1585060544812-6b45742d762f?auto=format&fit=crop&w=800&q=85'
+            };
+          }
+          if (p.id === 'prod-010') {
+            return {
+              ...p,
+              image: 'https://images.unsplash.com/photo-1591337676887-a217a6970a8a?auto=format&fit=crop&w=800&q=85'
+            };
+          }
+          return p;
+        });
+      }
+      return initialProducts;
     } catch (e) {
       console.error('Error loading products from LocalStorage', e);
       return initialProducts;

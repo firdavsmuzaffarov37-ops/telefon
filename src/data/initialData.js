@@ -22,20 +22,20 @@ export const initialProducts = [
     stock: 24,
     minStockThreshold: 5,
     tag: "Best Seller",
-    tagType: "best-seller", // emerald/green
+    tagType: "best-seller",
     status: "in_stock",
-    image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=700&q=80",
-    description: "The iPhone 16 Pro features a Grade 5 titanium design with a refined microblasted texture. Powered by the groundbreaking A18 Pro chip with 48MP Fusion camera and 4K 120fps Dolby Vision recording.",
+    image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=800&q=85",
+    description: "iPhone 16 Pro korpusi titan grade 5 qotishmasidan ishlangan. A18 Pro protsessori, 48MP Fusion kamerasi va professional video suratga olish imkoniyati.",
     views: "4.8k",
     rating: 4.9,
     unitsSold: 142,
     specs: {
-      display: "6.3-inch Super Retina XDR OLED 120Hz ProMotion",
+      display: "6.3 dyuym Super Retina XDR OLED 120Hz ProMotion",
       chipset: "Apple A18 Pro (3nm)",
-      camera: "48MP Main + 48MP Ultra Wide + 12MP 5x Telephoto",
-      battery: "3,582 mAh with 25W MagSafe Fast Charging",
+      camera: "48MP Asosiy + 48MP Ultra Keng + 12MP 5x Telefoto",
+      battery: "3,582 mAh MagSafe tezkor quvvatlash bilan",
       os: "iOS 18",
-      condition: "Brand New Sealed"
+      condition: "Yangi Qadoqda (Sealed)"
     }
   },
   {
@@ -60,20 +60,20 @@ export const initialProducts = [
     stock: 15,
     minStockThreshold: 6,
     tag: "Popular",
-    tagType: "popular", // blue
+    tagType: "popular",
     status: "in_stock",
-    image: "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?auto=format&fit=crop&w=700&q=80",
-    description: "Equipped with the new Action button and Camera Control. Apple Intelligence ready with A18 chip and 48MP Fusion 2x optical-quality telephoto sensor.",
+    image: "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?auto=format&fit=crop&w=800&q=85",
+    description: "Yangi Camera Control va Action tugmasi bilan jihozlangan. Apple Intelligence quvvatiga ega A18 protsessori va 48MP Fusion kamerasi.",
     views: "3.2k",
     rating: 4.8,
     unitsSold: 98,
     specs: {
-      display: "6.1-inch Super Retina XDR OLED, Dynamic Island",
+      display: "6.1 dyuym Super Retina XDR OLED, Dynamic Island",
       chipset: "Apple A18 (3nm)",
-      camera: "48MP Fusion + 12MP Ultra Wide with Macro",
+      camera: "48MP Fusion + 12MP Ultra Keng",
       battery: "3,561 mAh",
       os: "iOS 18",
-      condition: "Brand New Sealed"
+      condition: "Yangi Qadoqda (Sealed)"
     }
   },
   {
@@ -97,20 +97,20 @@ export const initialProducts = [
     stock: 4,
     minStockThreshold: 5,
     tag: "New Arrival",
-    tagType: "new-arrival", // orange
+    tagType: "new-arrival",
     status: "low_stock",
-    image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=700&q=80",
-    description: "Dynamic Island comes to iPhone 15. All-day battery life, durable color-infused glass, textured matte finish, and USB-C connector.",
+    image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=800&q=85",
+    description: "Dynamic Island ekrani, kun bo'yi yetuvchi batareya quvvati, USB-C ulagichi va 48MP asosiy kamera.",
     views: "2.9k",
     rating: 4.7,
     unitsSold: 185,
     specs: {
-      display: "6.1-inch Super Retina XDR OLED",
+      display: "6.1 dyuym Super Retina XDR OLED",
       chipset: "Apple A16 Bionic (4nm)",
-      camera: "48MP Main + 12MP Ultra Wide",
+      camera: "48MP Asosiy + 12MP Ultra Keng",
       battery: "3,349 mAh",
-      os: "iOS 17 upgradable to iOS 18",
-      condition: "Brand New Sealed"
+      os: "iOS 17 / iOS 18",
+      condition: "Yangi Qadoqda (Sealed)"
     }
   },
   {
@@ -136,18 +136,18 @@ export const initialProducts = [
     tag: "Best Seller",
     tagType: "best-seller",
     status: "in_stock",
-    image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&w=700&q=80",
-    description: "The peak of Galaxy AI. Titanium shield exterior, flat 6.8-inch Dynamic AMOLED 2X display, built-in S Pen, and 200MP camera system with 100x Space Zoom.",
+    image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&w=800&q=85",
+    description: "Galaxy AI imkoniyatlari cho'qqisi. Titan korpus, yassi 6.8 dyuymli Dynamic AMOLED 2X ekran, S Pen qalami va 200MP kamera tizimi.",
     views: "5.1k",
     rating: 4.9,
     unitsSold: 114,
     specs: {
-      display: "6.8-inch Dynamic AMOLED 2X, 120Hz, 2600 nits",
+      display: "6.8 dyuym Dynamic AMOLED 2X, 120Hz, 2600 nits",
       chipset: "Snapdragon 8 Gen 3 for Galaxy (4nm)",
-      camera: "200MP + 50MP Periscope + 10MP Telephoto + 12MP Ultra Wide",
-      battery: "5,000 mAh with 45W Fast Charging",
-      os: "One UI 6.1 (Android 14) with 7 years OS updates",
-      condition: "Brand New Sealed"
+      camera: "200MP + 50MP Periskop + 10MP Telefoto + 12MP Ultra Keng",
+      battery: "5,000 mAh 45W Tezkor quvvatlash",
+      os: "One UI 6.1 (Android 14)",
+      condition: "Yangi Qadoqda (Sealed)"
     }
   },
   {
@@ -161,8 +161,7 @@ export const initialProducts = [
     colors: [
       { name: "Onyx Black", hex: "#202124", active: true },
       { name: "Marble Gray", hex: "#D6D7DC" },
-      { name: "Cobalt Violet", hex: "#4C4656" },
-      { name: "Amber Yellow", hex: "#F2E8CF" }
+      { name: "Cobalt Violet", hex: "#4C4656" }
     ],
     sku: "SAM-S24-256",
     imei: "359102839102847",
@@ -173,18 +172,18 @@ export const initialProducts = [
     tag: "Popular",
     tagType: "popular",
     status: "in_stock",
-    image: "https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=700&q=80",
-    description: "Compact flagship packed with Galaxy AI features. Circle to Search, Live Call Translation, and ultra-bright 2,600 nits Dynamic AMOLED display.",
+    image: "https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=800&q=85",
+    description: "Ixcham flagman Galaxy AI bilan. Jonli suhbat tarjimasi, Circle to Search qidiruvi va 2600 nits yorqinlikdagi AMOLED displey.",
     views: "2.4k",
     rating: 4.8,
     unitsSold: 76,
     specs: {
-      display: "6.2-inch Dynamic AMOLED 2X, 1-120Hz",
-      chipset: "Exynos 2400 / Snapdragon 8 Gen 3",
-      camera: "50MP Dual Pixel OIS + 10MP Telephoto + 12MP Ultra Wide",
-      battery: "4,000 mAh with 25W Charging",
+      display: "6.2 dyuym Dynamic AMOLED 2X, 1-120Hz",
+      chipset: "Snapdragon 8 Gen 3 / Exynos 2400",
+      camera: "50MP Dual Pixel OIS + 10MP Telefoto + 12MP Ultra Keng",
+      battery: "4,000 mAh",
       os: "One UI 6.1 (Android 14)",
-      condition: "Brand New Sealed"
+      condition: "Yangi Qadoqda (Sealed)"
     }
   },
   {
@@ -198,8 +197,7 @@ export const initialProducts = [
     colors: [
       { name: "Awesome Navy", hex: "#1C2434", active: true },
       { name: "Awesome Iceblue", hex: "#D8E6F0" },
-      { name: "Awesome Lilac", hex: "#E0D7EE" },
-      { name: "Awesome Lemon", hex: "#FAF3CE" }
+      { name: "Awesome Lilac", hex: "#E0D7EE" }
     ],
     sku: "SAM-A55-256",
     imei: "356782910293847",
@@ -210,18 +208,18 @@ export const initialProducts = [
     tag: "Best Seller",
     tagType: "best-seller",
     status: "in_stock",
-    image: "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=700&q=80",
-    description: "Premium metal frame, Gorilla Glass Victus+, Knox Vault security, and crisp 50MP camera with enhanced low-light photography.",
+    image: "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=800&q=85",
+    description: "Metall ramka, Gorilla Glass Victus+ himoyasi, Knox Vault xavfsizlik tizimi va 50MP tungi suratga olish kamerasi.",
     views: "4.1k",
     rating: 4.7,
     unitsSold: 210,
     specs: {
-      display: "6.6-inch Super AMOLED 120Hz, 1000 nits",
-      chipset: "Exynos 1480 (4nm) with AMD Xclipse 530 GPU",
-      camera: "50MP OIS + 12MP Ultra Wide + 5MP Macro",
-      battery: "5,000 mAh with 25W Fast Charging",
+      display: "6.6 dyuym Super AMOLED 120Hz",
+      chipset: "Exynos 1480 (4nm)",
+      camera: "50MP OIS + 12MP Ultra Keng + 5MP Makro",
+      battery: "5,000 mAh 25W Tezkor quvvatlash",
       os: "One UI 6.1 (Android 14)",
-      condition: "Brand New Sealed"
+      condition: "Yangi Qadoqda (Sealed)"
     }
   },
   {
@@ -246,18 +244,18 @@ export const initialProducts = [
     tag: "Popular",
     tagType: "popular",
     status: "in_stock",
-    image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=700&q=80",
-    description: "Leica Summilux optical lens, Snapdragon 8 Gen 3 flagship performance, ultra-compact 6.36-inch form factor, and Xiaomi HyperOS.",
+    image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=85",
+    description: "Leica optik linzalari, Snapdragon 8 Gen 3 flagman protsessori, ixcham 6.36 dyuymli ekran va Xiaomi HyperOS tizimi.",
     views: "3.7k",
     rating: 4.8,
     unitsSold: 64,
     specs: {
-      display: "6.36-inch LTPO OLED, 1-120Hz, 3000 nits peak",
+      display: "6.36 dyuym LTPO OLED, 1-120Hz, 3000 nits",
       chipset: "Snapdragon 8 Gen 3 (4nm)",
-      camera: "Leica 50MP Main (Light Fusion 900) + 50MP Tele + 50MP Ultra Wide",
-      battery: "4,610 mAh with 90W HyperCharge + 50W Wireless",
+      camera: "Leica 50MP Asosiy + 50MP Telefoto + 50MP Ultra Keng",
+      battery: "4,610 mAh 90W Tezkor quvvatlash",
       os: "Xiaomi HyperOS",
-      condition: "Brand New Sealed"
+      condition: "Yangi Qadoqda (Sealed)"
     }
   },
   {
@@ -282,18 +280,18 @@ export const initialProducts = [
     tag: "Best Seller",
     tagType: "best-seller",
     status: "in_stock",
-    image: "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?auto=format&fit=crop&w=700&q=80",
-    description: "Ultra-clear 200MP camera with OIS, 1.5K 120Hz AMOLED curved display, 67W turbo charging, and in-screen fingerprint sensor.",
+    image: "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?auto=format&fit=crop&w=800&q=85",
+    description: "200MP ultra-aniq kamera OIS bilan, 1.5K 120Hz AMOLED qayrilma ekran va 67W turbo tezkor quvvatlash.",
     views: "6.3k",
     rating: 4.8,
     unitsSold: 280,
     specs: {
-      display: "6.67-inch 1.5K AMOLED 120Hz, Corning Gorilla Glass Victus",
+      display: "6.67 dyuym 1.5K AMOLED 120Hz",
       chipset: "Snapdragon 7s Gen 2 (4nm)",
-      camera: "200MP OIS + 8MP Ultra Wide + 2MP Macro",
-      battery: "5,100 mAh with 67W Turbo Charge",
-      os: "MIUI 14 / HyperOS",
-      condition: "Brand New Sealed"
+      camera: "200MP OIS + 8MP Ultra Keng + 2MP Makro",
+      battery: "5,100 mAh 67W Turbo Charge",
+      os: "HyperOS / MIUI 14",
+      condition: "Yangi Qadoqda (Sealed)"
     }
   },
   {
@@ -306,8 +304,7 @@ export const initialProducts = [
     color: "Sunrise Orange",
     colors: [
       { name: "Sunrise Orange", hex: "#D45D28", active: true },
-      { name: "Midnight Black", hex: "#1C1C1E" },
-      { name: "Emerald Green", hex: "#2E5544" }
+      { name: "Midnight Black", hex: "#1C1C1E" }
     ],
     sku: "HON-X9B-256",
     imei: "359918273645120",
@@ -318,18 +315,18 @@ export const initialProducts = [
     tag: "Popular",
     tagType: "popular",
     status: "low_stock",
-    image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=700&q=80",
-    description: "Honor Ultra-Bounce Anti-Drop Display with 360° drop resistance. Massive 5800mAh 3-day battery and 108MP lossless capture camera.",
+    image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=800&q=85",
+    description: "Honor 360° zarbalarga chidamli mustahkam ekran, katta 5800mAh 3 kunlik batareya va 108MP kamera.",
     views: "2.1k",
     rating: 4.7,
     unitsSold: 89,
     specs: {
-      display: "6.78-inch AMOLED 1.5K curved, 120Hz",
+      display: "6.78 dyuym AMOLED 1.5K 120Hz qayrilma",
       chipset: "Snapdragon 6 Gen 1 (4nm)",
-      camera: "108MP Ultra-Clear + 5MP Wide + 2MP Macro",
-      battery: "5,800 mAh with 35W SuperCharge",
-      os: "MagicOS 7.2 (Android 13/14)",
-      condition: "Brand New Sealed"
+      camera: "108MP Asosiy + 5MP Keng + 2MP Makro",
+      battery: "5,800 mAh 35W SuperCharge",
+      os: "MagicOS 7.2",
+      condition: "Yangi Qadoqda (Sealed)"
     }
   },
   {
@@ -354,18 +351,18 @@ export const initialProducts = [
     tag: "New Arrival",
     tagType: "new-arrival",
     status: "out_of_stock",
-    image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=700&q=80",
-    description: "Largest 6.9-inch display on iPhone with thinnest borders ever. Best battery life on iPhone, titanium grade 5 chassis, and next-gen Photonic Engine.",
+    image: "https://images.unsplash.com/photo-1591337676887-a217a6970a8a?auto=format&fit=crop&w=800&q=85",
+    description: "iPhone tarixidagi eng katta 6.9 dyuymli ekran va eng uzoq ishlovchi batareya quvvati. Titan korpus va A18 Pro protsessori.",
     views: "7.9k",
     rating: 5.0,
     unitsSold: 92,
     specs: {
-      display: "6.9-inch Super Retina XDR OLED 120Hz ProMotion",
+      display: "6.9 dyuym Super Retina XDR OLED 120Hz ProMotion",
       chipset: "Apple A18 Pro (3nm)",
-      camera: "48MP Fusion + 48MP Ultra Wide + 12MP 5x Telephoto",
+      camera: "48MP Fusion + 48MP Ultra Keng + 12MP 5x Telefoto",
       battery: "4,685 mAh",
       os: "iOS 18",
-      condition: "Brand New Sealed"
+      condition: "Yangi Qadoqda (Sealed)"
     }
   },
   {
@@ -379,8 +376,7 @@ export const initialProducts = [
     colors: [
       { name: "Porcelain", hex: "#ECEBE4", active: true },
       { name: "Obsidian", hex: "#222326" },
-      { name: "Hazel", hex: "#878880" },
-      { name: "Rose Quartz", hex: "#E9D0D0" }
+      { name: "Hazel", hex: "#878880" }
     ],
     sku: "GOO-PIX9P-256",
     imei: "356619283748291",
@@ -391,18 +387,18 @@ export const initialProducts = [
     tag: "New Arrival",
     tagType: "new-arrival",
     status: "in_stock",
-    image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=700&q=80",
-    description: "Gemini Nano built-in, Super Actua display, Pro camera triple lens system with 30x Super Res Zoom and 8K Video Boost.",
+    image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=800&q=85",
+    description: "Google Gemini sun'iy intellekti, Super Actua 3000 nits displey, 30x Super Res Zoom va 8K video takomillashtirish.",
     views: "2.8k",
     rating: 4.8,
     unitsSold: 45,
     specs: {
-      display: "6.3-inch Super Actua LTPO OLED, 1-120Hz, 3000 nits",
-      chipset: "Google Tensor G4 (4nm) with Titan M2",
-      camera: "50MP Wide + 48MP Ultra Wide + 48MP 5x Telephoto",
-      battery: "4,700 mAh with 27W Fast Charging",
-      os: "Android 15 (7 years OS updates)",
-      condition: "Brand New Sealed"
+      display: "6.3 dyuym Super Actua LTPO OLED, 1-120Hz",
+      chipset: "Google Tensor G4 (4nm)",
+      camera: "50MP Keng + 48MP Ultra Keng + 48MP 5x Telefoto",
+      battery: "4,700 mAh 27W Tezkor quvvatlash",
+      os: "Android 15",
+      condition: "Yangi Qadoqda (Sealed)"
     }
   },
   {
@@ -427,18 +423,18 @@ export const initialProducts = [
     tag: "Popular",
     tagType: "popular",
     status: "low_stock",
-    image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=700&q=80",
-    description: "Budget bestseller with smooth 90Hz 6.74-inch display, 50MP AI triple camera, and massive 5000mAh battery with 18W fast charging.",
+    image: "https://images.unsplash.com/photo-1585060544812-6b45742d762f?auto=format&fit=crop&w=800&q=85",
+    description: "Hamyonbop xit model. 90Hz 6.74 dyuymli ekran, 50MP AI kamera va 5000mAh batareya.",
     views: "1.9k",
     rating: 4.6,
     unitsSold: 320,
     specs: {
-      display: "6.74-inch 90Hz Dot Drop Display",
+      display: "6.74 dyuym 90Hz Dot Drop Display",
       chipset: "MediaTek Helio G85",
-      camera: "50MP AI Main + 2MP Macro",
-      battery: "5,000 mAh with Type-C 18W",
-      os: "MIUI 14 based on Android 13",
-      condition: "Brand New Sealed"
+      camera: "50MP AI Asosiy + 2MP Makro",
+      battery: "5,000 mAh Type-C 18W",
+      os: "MIUI 14 / Android 13",
+      condition: "Yangi Qadoqda (Sealed)"
     }
   }
 ];

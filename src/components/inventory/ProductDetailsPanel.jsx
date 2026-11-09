@@ -217,23 +217,23 @@ export default function ProductDetailsPanel({
           {openSections.specs && (
             <div className="p-3.5 space-y-2 text-xs bg-white">
               <div className="flex justify-between py-1 border-b border-[#F5F5F4]">
-                <span className="text-[#888888]">Storage / RAM:</span>
+                <span className="text-[#888888]">Xotira / RAM:</span>
                 <span className="font-semibold text-[#171717]">{product.storage} / {product.ram}</span>
               </div>
               <div className="flex justify-between py-1 border-b border-[#F5F5F4]">
-                <span className="text-[#888888]">Display:</span>
+                <span className="text-[#888888]">Ekran:</span>
                 <span className="font-semibold text-[#171717] text-right max-w-[200px] truncate">{product.specs?.display || 'Super Retina XDR OLED'}</span>
               </div>
               <div className="flex justify-between py-1 border-b border-[#F5F5F4]">
-                <span className="text-[#888888]">Chipset:</span>
+                <span className="text-[#888888]">Protsessor:</span>
                 <span className="font-semibold text-[#171717]">{product.specs?.chipset || 'High-End 3nm'}</span>
               </div>
               <div className="flex justify-between py-1 border-b border-[#F5F5F4]">
-                <span className="text-[#888888]">Camera:</span>
+                <span className="text-[#888888]">Kamera:</span>
                 <span className="font-semibold text-[#171717] text-right max-w-[200px] truncate">{product.specs?.camera || '50MP Triple System'}</span>
               </div>
               <div className="flex justify-between py-1">
-                <span className="text-[#888888]">Battery:</span>
+                <span className="text-[#888888]">Batareya:</span>
                 <span className="font-semibold text-[#171717]">{product.specs?.battery || '5,000 mAh'}</span>
               </div>
             </div>
@@ -248,7 +248,7 @@ export default function ProductDetailsPanel({
           >
             <div className="flex items-center gap-2">
               <FileText className="w-4 h-4 text-[#FF7900]" />
-              <span className="text-xs font-bold text-[#171717]">Product Description</span>
+              <span className="text-xs font-bold text-[#171717]">{t('descriptionLabel')}</span>
             </div>
             {openSections.description ? <ChevronUp className="w-4 h-4 text-[#888888]" /> : <ChevronDown className="w-4 h-4 text-[#888888]" />}
           </button>
@@ -296,12 +296,12 @@ export default function ProductDetailsPanel({
 
           <button
             onClick={() => {
-              if (window.confirm(`Are you sure you want to delete ${product.name}?`)) {
+              if (window.confirm(`${product.name} - ${t('delete')}?`)) {
                 onDelete(product.id);
               }
             }}
             className="py-2 px-3 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-[#E5484D] text-xs font-semibold flex items-center justify-center gap-1.5 transition"
-            title="Delete product"
+            title={t('delete')}
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>

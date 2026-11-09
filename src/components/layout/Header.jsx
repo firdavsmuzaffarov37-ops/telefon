@@ -42,13 +42,13 @@ export default function Header({
           </div>
         )}
 
-        {(actionText || defaultActionText) && (
+        {actionText && (
           <button
             onClick={onActionClick}
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#FF7900] hover:bg-[#EA6E00] active:scale-[0.98] text-white text-sm font-semibold shadow-sm transition-all duration-150"
           >
             <ActionIcon className="w-4 h-4 stroke-[2.5]" />
-            <span>{actionText !== undefined ? actionText : defaultActionText}</span>
+            <span>{actionText}</span>
           </button>
         )}
       </div>
