@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Header from '../layout/Header';
 import { useApp } from '../../context/AppContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { 
   Settings, 
   Store, 
@@ -19,6 +20,7 @@ import {
 
 export default function SettingsPage() {
   const { settings, setSettings, resetToDemoData, showToast, supabaseStatus, syncToSupabase } = useApp();
+  const { t } = useLanguage();
 
   const [formData, setFormData] = useState({
     storeName: settings.storeName || 'PhoneLytics Premium Store',
@@ -63,8 +65,8 @@ export default function SettingsPage() {
   return (
     <div className="max-w-[1720px] mx-auto px-4 md:px-8 py-6 space-y-6">
       <Header
-        title="Store Settings & Configuration"
-        subtitle="Manage business branding, threshold alerts, receipt headers, and store database."
+        title={t('settingsTitle')}
+        subtitle={t('settingsSubtitle')}
         showDate={false}
         actionText=""
       />
@@ -83,7 +85,7 @@ export default function SettingsPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                  Store Legal Name
+                  {t('storeLegalName')}
                 </label>
                 <input
                   type="text"
@@ -95,7 +97,7 @@ export default function SettingsPage() {
 
               <div>
                 <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                  Store Tagline
+                  {t('storeTagline')}
                 </label>
                 <input
                   type="text"
@@ -109,7 +111,7 @@ export default function SettingsPage() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                  Store Manager
+                  {t('storeManager')}
                 </label>
                 <input
                   type="text"
@@ -121,7 +123,7 @@ export default function SettingsPage() {
 
               <div>
                 <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                  Contact Phone
+                  {t('contactPhone')}
                 </label>
                 <input
                   type="text"
@@ -133,7 +135,7 @@ export default function SettingsPage() {
 
               <div>
                 <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                  Primary Currency
+                  {t('primaryCurrency')}
                 </label>
                 <select
                   value={formData.currency}
@@ -161,7 +163,7 @@ export default function SettingsPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
               <div>
                 <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                  Low Stock Threshold Alert (Units)
+                  {t('lowStockThreshold')}
                 </label>
                 <input
                   type="number"
@@ -195,7 +197,7 @@ export default function SettingsPage() {
                 className="px-6 py-2.5 rounded-xl bg-[#FF7900] hover:bg-[#EA6E00] text-white text-xs font-bold shadow-md shadow-orange-500/10 flex items-center gap-2 transition"
               >
                 <Save className="w-4 h-4" />
-                <span>Save Store Settings</span>
+                <span>{t('saveSettingsBtn')}</span>
               </button>
             </div>
           </form>

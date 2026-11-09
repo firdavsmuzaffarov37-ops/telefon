@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import Header from '../layout/Header';
 import { useApp } from '../../context/AppContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { formatCurrency, formatDate, getTodayDateString } from '../../utils/formatters';
 import { 
   FileText, 
@@ -28,6 +29,7 @@ export default function DailyReportsPage() {
     dailyReports, 
     closeDayAndGenerateReport 
   } = useApp();
+  const { t } = useLanguage();
 
   const [selectedDate, setSelectedDate] = useState(getTodayDateString());
   const [reportNotes, setReportNotes] = useState('');
@@ -158,10 +160,10 @@ export default function DailyReportsPage() {
     <div className="max-w-[1720px] mx-auto px-4 md:px-8 py-6 space-y-6">
       {/* Header */}
       <Header
-        title="Daily Business Summary"
-        subtitle="End-of-day reconciliation, audited profit margins, expenses, and official closing reports."
+        title={t('reportsTitle')}
+        subtitle={t('reportsSubtitle')}
         showDate={false}
-        actionText="Close Day & Generate Report"
+        actionText={t('closeDayBtn')}
         actionIcon={CheckCircle2}
         onActionClick={handleGenerateReport}
       />
@@ -170,7 +172,7 @@ export default function DailyReportsPage() {
       <div className="bg-white rounded-3xl border border-[#EAEAEA] p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Calendar className="w-5 h-5 text-[#FF7900]" />
-          <span className="text-xs font-bold text-[#171717]">Select Reporting Date:</span>
+          <span className="text-xs font-bold text-[#171717]">{t('selectReportDate')}</span>
           <input
             type="date"
             value={selectedDate}

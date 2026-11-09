@@ -290,4 +290,33 @@ export default function ProductDetailsPanel({
             className="flex-1 py-2 px-2.5 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold flex items-center justify-center gap-1.5 transition"
             title="Restock shipment"
           >
-            <PackageCheck className="w-3.5 h-3.5 text-emerald-6
+            <PackageCheck className="w-3.5 h-3.5 text-emerald-600" />
+            <span>{t('restockBtn')}</span>
+          </button>
+
+          <button
+            onClick={() => {
+              if (window.confirm(`Are you sure you want to delete ${product.name}?`)) {
+                onDelete(product.id);
+              }
+            }}
+            className="py-2 px-3 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-[#E5484D] text-xs font-semibold flex items-center justify-center gap-1.5 transition"
+            title="Delete product"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Restock Modal */}
+      {isRestockOpen && (
+        <RestockModal
+          isOpen={isRestockOpen}
+          onClose={() => setIsRestockOpen(false)}
+          product={product}
+        />
+      )}
+    </div>
+  );
+}
+

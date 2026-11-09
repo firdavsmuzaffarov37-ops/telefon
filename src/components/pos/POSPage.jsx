@@ -26,6 +26,7 @@ import { useSearchParams } from 'react-router-dom';
 
 export default function POSPage() {
   const { products, recordSale, settings } = useApp();
+  const { t } = useLanguage();
   const [searchParams] = useSearchParams();
 
   // Search & Brand Filter for fast product selection
@@ -138,8 +139,8 @@ export default function POSPage() {
   return (
     <div className="max-w-[1720px] mx-auto px-4 md:px-8 py-6">
       <Header
-        title="Point of Sale (POS)"
-        subtitle="Process smartphone checkout, print receipts, and track instant revenue & profits."
+        title={t('posTitle')}
+        subtitle={t('posSubtitle')}
         showDate={true}
         actionText=""
       />
@@ -153,7 +154,7 @@ export default function POSPage() {
               <Search className="w-4 h-4 text-[#888888] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
-                placeholder="Scan IMEI, SKU, or search model (e.g. iPhone 16, S24 Ultra)..."
+                placeholder={t('posSearchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-2xl pl-10 pr-4 py-2.5 text-xs text-[#171717] placeholder:text-[#888888] focus:bg-white focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
@@ -230,7 +231,7 @@ export default function POSPage() {
               <div className="flex items-center gap-2">
                 <ShoppingCart className="w-5 h-5 text-[#FF7900]" />
                 <h3 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
-                  Checkout Register
+                  {t('activeOrder')}
                 </h3>
               </div>
               <span className="text-xs bg-orange-50 text-[#FF7900] font-bold px-2.5 py-1 rounded-full">
@@ -252,7 +253,7 @@ export default function POSPage() {
 
                 {/* Quantity Controls */}
                 <div className="flex items-center justify-between p-3 rounded-2xl border border-[#EAEAEA]">
-                  <span className="text-xs font-semibold text-[#171717]">Quantity</span>
+                  <span className="text-xs font-semibold text-[#171717]">{t('quantity')}</span>
                   <div className="flex items-center gap-3">
                     <button
                       type="button"
@@ -276,7 +277,7 @@ export default function POSPage() {
                 {/* Discount Field */}
                 <div>
                   <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                    Discount (so'm)
+                    {t('discount')}
                   </label>
                   <input
                     type="number"
@@ -292,7 +293,7 @@ export default function POSPage() {
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <label className="text-[11px] font-semibold text-[#666666] block mb-1">
-                      Customer Name
+                      {t('customerName')}
                     </label>
                     <input
                       type="text"
@@ -304,7 +305,7 @@ export default function POSPage() {
                   </div>
                   <div>
                     <label className="text-[11px] font-semibold text-[#666666] block mb-1">
-                      Phone Number
+                      {t('customerPhone')}
                     </label>
                     <input
                       type="text"
@@ -319,13 +320,13 @@ export default function POSPage() {
                 {/* Payment Methods */}
                 <div>
                   <label className="text-xs font-semibold text-[#171717] block mb-2">
-                    Payment Method
+                    {t('paymentMethod')}
                   </label>
                   <div className="grid grid-cols-3 gap-2">
                     {[
-                      { id: 'Card', label: 'Card', icon: CreditCard },
-                      { id: 'Cash', label: 'Cash', icon: Banknote },
-                      { id: 'Bank Transfer', label: 'Transfer', icon: Landmark },
+                      { id: 'Card', label: t('paymentCard'), icon: CreditCard },
+                      { id: 'Cash', label: t('paymentCash'), icon: Banknote },
+                      { id: 'Bank Transfer', label: t('paymentTransfer'), icon: Landmark },
                     ].map(method => {
                       const Icon = method.icon;
                       const isSelected = paymentMethod === method.id;
@@ -355,21 +356,21 @@ export default function POSPage() {
                     <span className="font-semibold text-[#171717]">{formatCurrency(unitPrice)}</span>
                   </div>
                   <div className="flex justify-between text-[#888888]">
-                    <span>Quantity:</span>
+                    <span>{t('quantity')}:</span>
                     <span className="font-semibold text-[#171717]">{quantity}x</span>
                   </div>
                   {Number(discount) > 0 && (
                     <div className="flex justify-between text-[#E5484D]">
-                      <span>Discount:</span>
+                      <span>{t('discount')}:</span>
                       <span className="font-semibold">-{formatCurrency(discount)}</span>
                     </div>
                   )}
                   <div className="border-t border-[#EAEAEA] pt-2 flex justify-between text-sm font-bold text-[#171717]">
-                    <span>Total Amount:</span>
+                    <span>{t('totalAmount')}:</span>
                     <span className="text-[#FF7900] text-base">{formatCurrency(totalAmount)}</span>
                   </div>
                   <div className="flex justify-between text-[11px] text-emerald-600 font-semibold pt-1">
-                    <span>Estimated Gross Profit:</span>
+                    <span>{t('estimatedProfit')}:</span>
                     <span>+{formatCurrency(estimatedProfit)}</span>
                   </div>
                 </div>
@@ -381,7 +382,7 @@ export default function POSPage() {
                   className="w-full py-3 rounded-2xl bg-[#FF7900] hover:bg-[#EA6E00] active:scale-[0.98] text-white text-sm font-bold shadow-md shadow-orange-500/20 flex items-center justify-center gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <CheckCircle2 className="w-4 h-4 stroke-[2.2]" />
-                  <span>Confirm Sale & Record</span>
+                  <span>{t('confirmSaleBtn')}</span>
                 </button>
               </form>
             ) : (
@@ -470,3 +471,10 @@ export default function POSPage() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+

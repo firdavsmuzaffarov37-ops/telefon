@@ -479,4 +479,10 @@ export default function DashboardPage() {
             className="w-full mt-4 py-2 text-xs font-bold text-white bg-[#FF7900] hover:bg-[#EA6E00] rounded-xl transition text-center shadow-md shadow-orange-500/10"
           >
             Open POS Register
-      
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
