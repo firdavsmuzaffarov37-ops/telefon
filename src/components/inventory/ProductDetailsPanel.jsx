@@ -19,7 +19,8 @@ import {
   PackageCheck,
   Sparkles,
   Layers,
-  Award
+  Award,
+  Calendar
 } from 'lucide-react';
 import { formatCurrency, calculateMargin } from '../../utils/formatters';
 import { useNavigate } from 'react-router-dom';
@@ -120,6 +121,10 @@ export default function ProductDetailsPanel({
               <span className="font-semibold text-[#555]">{product.storage} • {product.ram}</span>
               <span>•</span>
               <span className="font-mono text-[11px]">{product.sku}</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-[11px] text-[#666] mt-1 font-medium">
+              <Calendar className="w-3.5 h-3.5 text-[#FF7900]" />
+              <span>Kelib tushgan sana: <strong className="text-[#171717]">{product.arrivalDate || "08.11.2026"}</strong></span>
             </div>
           </div>
           <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border ${stockBadgeClass} whitespace-nowrap`}>
@@ -268,29 +273,29 @@ export default function ProductDetailsPanel({
           /* ISHCHI / DOKON REJIMI: Full cost breakdown */
           <div className="p-3.5 rounded-2xl bg-orange-50/60 border border-orange-200/60 space-y-2">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-[#888888] font-medium">{t('sellingPrice')}:</span>
-              <span className="text-sm font-bold text-[#171717]">
+              <span className="text-[#888888] font-bold">Sotuv narxi:</span>
+              <span className="text-sm font-black text-[#171717]">
                 {formatCurrency(product.sellingPrice)}
               </span>
             </div>
             <div className="flex items-center justify-between text-xs">
-              <span className="text-[#888888] font-medium">{t('purchaseCost')}:</span>
-              <span className="text-xs font-semibold text-[#666666]">
+              <span className="text-[#888888] font-bold">Xarid (Tan) narxi:</span>
+              <span className="text-xs font-bold text-[#666666]">
                 {formatCurrency(product.purchasePrice)}
               </span>
             </div>
             <div className="border-t border-orange-200/50 pt-2 flex items-center justify-between text-xs">
-              <span className="text-emerald-700 font-semibold flex items-center gap-1">
-                <TrendingUp className="w-3 h-3 text-emerald-600" />
-                {t('unitProfit')} ({marginPercent}%):
+              <span className="text-emerald-700 font-bold flex items-center gap-1">
+                <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
+                Sof foyda ({marginPercent}%):
               </span>
-              <span className="text-xs font-bold text-emerald-600">
-                +{formatCurrency(profitPerUnit)}
+              <span className="text-xs font-black text-emerald-600">
+                +{formatCurrency(profitPerUnit)} / dona
               </span>
             </div>
-            <div className="flex items-center justify-between text-[11px] text-[#888888] pt-1">
-              <span>{t('totalStockVal')}:</span>
-              <span className="font-semibold text-[#171717]">{formatCurrency(totalStockValue)}</span>
+            <div className="flex items-center justify-between text-[11px] text-[#888888] pt-1 border-t border-orange-200/30">
+              <span>Ombordagi umumiy tovar qiymati:</span>
+              <span className="font-bold text-[#171717]">{formatCurrency(totalStockValue)}</span>
             </div>
           </div>
         )}

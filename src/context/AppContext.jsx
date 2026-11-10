@@ -19,19 +19,23 @@ export function AppProvider({ children }) {
       const saved = localStorage.getItem('phonelytics_products');
       
       // Agar versiya yangilanmagan bo'lsa yoki birorta telefon 30 tadan kam bo'lsa, yangi omabop ro'yxatni yuklaymiz
-      if (version === 'v4_min30_omabop' && saved) {
+      if (version === 'v5_arrival_and_staff' && saved) {
         const parsed = JSON.parse(saved);
         const hasLowInitial = parsed.some(p => p.stock < 30);
         if (!hasLowInitial) {
-          return parsed;
+          return parsed.map(p => ({ ...p, arrivalDate: p.arrivalDate || '2026-11-08' }));
         }
       }
       
       // Yangi ro'yxatni saqlab qo'yamiz
-      localStorage.setItem('phonelytics_data_version', 'v4_min30_omabop');
-      localStorage.setItem('phonelytics_products', JSON.stringify(initialProducts));
+      const productsWithArrival = initialProducts.map(p => ({
+        ...p,
+        arrivalDate: p.arrivalDate || '2026-11-08'
+      }));
+      localStorage.setItem('phonelytics_data_version', 'v5_arrival_and_staff');
+      localStorage.setItem('phonelytics_products', JSON.stringify(productsWithArrival));
       localStorage.setItem('phonelytics_transactions', JSON.stringify(initialTransactions));
-      return initialProducts;
+      return productsWithArrival;
     } catch (e) {
       console.error('Error loading products from LocalStorage', e);
       return initialProducts;
@@ -435,7 +439,17 @@ export function AppProvider({ children }) {
   };
 
   // POS / Sale transaction execution
-  const recordSale = ({ productId, quantity, color = null, discount = 0, paymentMethod = 'Card', customerName = 'Mijoz', customerPhone = '' }) => {
+  const recordSale = ({ 
+    productId, 
+    quantity, 
+    color = null, 
+    discount = 0, 
+    paymentMethod = 'Card', 
+    customerName = 'Mijoz', 
+    customerPhone = '',
+    cashierName = 'Sardor Rahimov',
+    cashierRole = 'Katta Sotuvchi'
+  }) => {
     const product = products.find(p => p.id === productId);
     if (!product) {
       showToast('Smartfon topilmadi!', 'error');
@@ -484,6 +498,8 @@ export function AppProvider({ children }) {
       paymentMethod,
       customerName: customerName || 'Do\'kon mijozi',
       customerPhone: customerPhone || '-',
+      cashierName: cashierName || 'Sardor Rahimov',
+      cashierRole: cashierRole || 'Katta Sotuvchi',
       imei: product.imei || 'IMEI-N/A',
       date: new Date().toISOString(),
       status: 'Completed'

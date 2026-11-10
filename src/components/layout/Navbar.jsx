@@ -17,9 +17,7 @@ import {
   Camera,
   Sun,
   Moon,
-  Receipt,
-  Briefcase,
-  ShoppingBag
+  Receipt
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
@@ -64,36 +62,26 @@ export default function Navbar({ onOpenAI }) {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#EAEAEA] px-4 md:px-8 py-3">
-      <div className="max-w-[1720px] mx-auto flex items-center justify-between">
-        {/* Left: Brand Logo & Ishchi Paneli Badge */}
-        <div className="flex items-center gap-3">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#EAEAEA] px-4 md:px-8 py-3.5">
+      <div className="max-w-[1720px] mx-auto flex items-center justify-between gap-6 xl:gap-10">
+        {/* Left: Clean Brand Logo */}
+        <div className="flex items-center gap-3 flex-shrink-0">
           <NavLink to="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-2xl overflow-hidden bg-black/5 p-0.5 border border-black/10 shadow-md group-hover:scale-105 transition-transform duration-200 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-2xl overflow-hidden bg-black/5 p-0.5 border border-black/10 shadow-sm group-hover:scale-105 transition-transform duration-200 flex items-center justify-center">
               <img
                 src="/logo.png"
-                alt="PhoneLytics Icon"
+                alt="PhoneLytics"
                 className="w-full h-full object-cover rounded-xl"
               />
             </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-1.5">
-                <span className="text-xl font-black tracking-tight text-[#171717] font-['Plus_Jakarta_Sans'] flex items-center gap-1">
-                  Phone<span className="text-[#FF7900]">Lytics</span>
-                </span>
-                <span className="text-[10px] font-black uppercase tracking-wider bg-[#FF7900] text-white px-2 py-0.5 rounded-full shadow-sm hidden sm:inline-block">
-                  Ishchi Paneli
-                </span>
-              </div>
-              <span className="text-[10px] text-[#888888] font-semibold -mt-0.5 hidden xl:block">
-                Magazin Xodimi Boshqaruvi
-              </span>
-            </div>
+            <span className="text-xl font-black tracking-tight text-[#171717] font-['Plus_Jakarta_Sans']">
+              Phone<span className="text-[#FF7900]">Lytics</span>
+            </span>
           </NavLink>
         </div>
 
-        {/* Center: Reference-Inspired Pill Navigation (Desktop) */}
-        <nav className="hidden lg:flex items-center bg-[#F5F5F4] p-1 rounded-2xl border border-[#EAEAEA]/80 shadow-inner">
+        {/* Center: Reference-Inspired Pill Navigation (Spacious & Clean) */}
+        <nav className="hidden lg:flex items-center bg-[#F5F5F4] p-1.5 rounded-2xl border border-[#EAEAEA]/80 shadow-inner gap-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path || (item.path === '/' && location.pathname === '');
@@ -102,41 +90,31 @@ export default function Navbar({ onOpenAI }) {
               <NavLink
                 key={item.name}
                 to={item.path}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs xl:text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
+                className={`flex items-center gap-2 px-3.5 xl:px-4 py-2 rounded-xl text-xs xl:text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
                   isActive
                     ? 'bg-[#171717] text-white shadow-sm'
                     : 'text-[#666666] hover:text-[#171717] hover:bg-white/60'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 xl:w-4 xl:h-4 ${isActive ? 'text-white' : 'text-[#888888]'}`} />
+                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-[#888888]'}`} />
                 <span>{item.name}</span>
                 {item.hasDropdown && (
-                  <ChevronDown className={`w-3 h-3 xl:w-3.5 xl:h-3.5 ml-0.5 opacity-70 ${isActive ? 'text-white' : 'text-[#888888]'}`} />
+                  <ChevronDown className={`w-3.5 h-3.5 ml-0.5 opacity-70 ${isActive ? 'text-white' : 'text-[#888888]'}`} />
                 )}
               </NavLink>
             );
           })}
         </nav>
 
-        {/* Right Actions */}
-        <div className="flex items-center gap-1.5 xl:gap-2.5">
-          {/* Switch to Customer Online Store */}
-          <NavLink
-            to="/shop"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white text-xs font-bold transition shadow-sm cursor-pointer whitespace-nowrap"
-            title="Mijozlar uchun mo'ljallangan internet-do'kon vitrinasiga o'tish"
-          >
-            <ShoppingBag className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Mijoz Do'koni</span>
-          </NavLink>
-
+        {/* Right Actions: Relaxed & Well-Spaced */}
+        <div className="flex items-center gap-2.5 xl:gap-3 flex-shrink-0">
           {/* Language Switcher */}
           <LanguageSelector />
 
           {/* Theme Toggle Button: Tungi (Dark) va Kunduzgi (Light) Rejim */}
           <button
             onClick={toggleTheme}
-            className="w-8.5 h-8.5 xl:w-9 xl:h-9 rounded-xl border border-[#EAEAEA] bg-white hover:bg-neutral-50 flex items-center justify-center text-[#171717] transition cursor-pointer shadow-sm active:scale-95"
+            className="w-9 h-9 rounded-xl border border-[#EAEAEA] bg-white hover:bg-neutral-50 flex items-center justify-center text-[#171717] transition cursor-pointer shadow-sm active:scale-95"
             title={theme === 'dark' ? "Kunduzgi rejimga o'tish (Light Mode)" : "Tungi rejimga o'tish (Dark Mode)"}
           >
             {theme === 'dark' ? (
@@ -149,11 +127,11 @@ export default function Navbar({ onOpenAI }) {
           {/* AI Insights Button */}
           <button
             onClick={onOpenAI}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-orange-200 bg-orange-50/70 hover:bg-orange-100/70 text-[#FF7900] text-xs font-bold transition cursor-pointer whitespace-nowrap"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-orange-200 bg-orange-50/70 hover:bg-orange-100/70 text-[#FF7900] text-xs font-bold transition cursor-pointer whitespace-nowrap shadow-xs"
             title="AI Maslahatchi"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#FF7900]" />
-            <span className="hidden 2xl:inline">{t('navAI')}</span>
+            <span>{t('navAI')}</span>
           </button>
 
           {/* Notifications Bell */}
@@ -339,14 +317,6 @@ export default function Navbar({ onOpenAI }) {
               </NavLink>
             );
           })}
-          <NavLink
-            to="/shop"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold bg-[#FF7900] text-white mt-2"
-          >
-            <ShoppingBag className="w-4 h-4" />
-            <span>Mijoz Do'koniga O'tish</span>
-          </NavLink>
         </div>
       )}
 

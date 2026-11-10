@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MoreVertical, Smartphone, ShoppingBag, Edit3, Trash2, Eye, ShieldCheck, Sparkles, CheckCircle2 } from 'lucide-react';
+import { MoreVertical, Smartphone, ShoppingBag, Edit3, Trash2, Eye, ShieldCheck, Sparkles, CheckCircle2, Calendar } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatters';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
@@ -72,9 +72,15 @@ export default function ProductCard({
               1 Yil Kafolat
             </span>
           ) : (
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-neutral-100 text-[#555] border border-neutral-200">
-              {product.brand}
-            </span>
+            <>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-neutral-100 text-[#555] border border-neutral-200">
+                {product.brand}
+              </span>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-neutral-100 text-[#555] border border-neutral-200 flex items-center gap-1" title="Omborga kelib tushgan sana">
+                <Calendar className="w-3 h-3 text-[#FF7900]" />
+                <span>{product.arrivalDate || "08.11.2026"}</span>
+              </span>
+            </>
           )}
         </div>
 
@@ -257,25 +263,25 @@ export default function ProductCard({
               </div>
             </div>
           ) : (
-            /* ISHCHI / DOKON REJIMI: Sotuv, Tannarx va Foyda */
+            /* ISHCHI / DOKON REJIMI: Sotuv, Xarid Narxi, Sof Foyda va Avtomatik Qoldiq */
             <div>
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] text-[#888888] font-semibold block">Sotuv narxi:</span>
-                  <span className="font-bold text-sm text-[#171717]">
+                  <span className="text-[10px] text-[#888888] font-bold block">Sotuv narxi:</span>
+                  <span className="font-black text-sm text-[#171717]">
                     {formatCurrency(product.sellingPrice)}
                   </span>
                 </div>
                 <div className="text-right">
-                  <span className="text-[10px] text-[#888888] font-semibold block">Holati:</span>
-                  <span className={`text-xs font-bold ${stockColor}`}>
+                  <span className="text-[10px] text-[#888888] font-bold block">Ombordagi qoldiq:</span>
+                  <span className={`text-xs font-black ${stockColor}`}>
                     {stockText}
                   </span>
                 </div>
               </div>
-              <div className="flex items-center justify-between mt-1 pt-1 border-t border-dashed border-[#EAEAEA] text-[10.5px]">
-                <span className="text-[#888888]">Tannarxi: <strong className="text-[#555]">{formatCurrency(product.purchasePrice)}</strong></span>
-                <span className="text-emerald-700 font-bold">Foyda: +{formatCurrency(unitProfit)}</span>
+              <div className="flex items-center justify-between mt-1 pt-1.5 border-t border-dashed border-[#EAEAEA] text-[10.5px]">
+                <span className="text-[#666]">Xarid (Tan) narxi: <strong className="text-[#171717]">{formatCurrency(product.purchasePrice)}</strong></span>
+                <span className="text-emerald-700 font-extrabold">Foyda: +{formatCurrency(unitProfit)}</span>
               </div>
             </div>
           )}

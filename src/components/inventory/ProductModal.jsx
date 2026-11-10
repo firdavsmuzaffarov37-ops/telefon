@@ -19,6 +19,7 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
     sellingPrice: '',
     stock: '10',
     minStockThreshold: '5',
+    arrivalDate: new Date().toISOString().split('T')[0],
     tag: 'New Arrival',
     image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=700&q=80',
     description: ''
@@ -40,6 +41,7 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
         sellingPrice: productToEdit.sellingPrice || '',
         stock: productToEdit.stock?.toString() || '10',
         minStockThreshold: productToEdit.minStockThreshold?.toString() || '5',
+        arrivalDate: productToEdit.arrivalDate || new Date().toISOString().split('T')[0],
         tag: productToEdit.tag || 'New Arrival',
         image: productToEdit.image || '',
         description: productToEdit.description || ''
@@ -57,6 +59,7 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
         sellingPrice: '',
         stock: '10',
         minStockThreshold: '5',
+        arrivalDate: new Date().toISOString().split('T')[0],
         tag: 'New Arrival',
         image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=700&q=80',
         description: ''
@@ -258,8 +261,8 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
             )}
           </div>
 
-          {/* Stock Quantity & Threshold & IMEI */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {/* Stock Quantity & Threshold & Arrival Date */}
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
             <div>
               <label className="text-xs font-semibold text-[#171717] block mb-1.5">
                 {t('fieldAvailableStock')} *
@@ -283,6 +286,18 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
                 min="1"
                 value={formData.minStockThreshold}
                 onChange={(e) => setFormData({ ...formData, minStockThreshold: e.target.value })}
+                className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-xl px-3 py-2.5 text-xs text-[#171717] focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-[#171717] block mb-1.5">
+                Kelib tushgan sana
+              </label>
+              <input
+                type="date"
+                value={formData.arrivalDate}
+                onChange={(e) => setFormData({ ...formData, arrivalDate: e.target.value })}
                 className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-xl px-3 py-2.5 text-xs text-[#171717] focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
               />
             </div>
