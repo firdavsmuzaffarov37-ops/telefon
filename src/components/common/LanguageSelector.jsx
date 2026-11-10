@@ -9,21 +9,22 @@ export default function LanguageSelector() {
   const currentLang = AVAILABLE_LANGUAGES.find(l => l.code === language) || AVAILABLE_LANGUAGES[0];
 
   return (
-    <div className="relative">
+    <div className="relative flex-shrink-0">
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#EAEAEA] bg-white hover:bg-neutral-50 text-xs font-semibold text-[#171717] transition shadow-sm"
+        className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-[#EAEAEA] dark:border-[#27282E] bg-white dark:bg-[#1C1D22] hover:bg-neutral-50 dark:hover:bg-[#25262C] text-xs font-semibold text-[#171717] dark:text-[#F4F4F6] transition shadow-xs cursor-pointer"
+        title="Tilni tanlash / Select Language"
       >
-        <span>{currentLang.flag}</span>
-        <span className="uppercase text-[11px] font-bold">{currentLang.code}</span>
-        <ChevronDown className="w-3.5 h-3.5 text-[#888888]" />
+        <span className="text-sm leading-none">{currentLang.flag}</span>
+        <span className="uppercase text-[11px] font-bold tracking-wider">{currentLang.code}</span>
+        <ChevronDown className="w-3.5 h-3.5 text-[#888888] dark:text-[#A1A1AA]" />
       </button>
 
       {open && (
         <>
           <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 mt-1.5 w-36 bg-white rounded-2xl shadow-xl border border-[#EAEAEA] py-1.5 z-40 animate-in fade-in">
+          <div className="absolute right-0 mt-1.5 w-36 bg-white dark:bg-[#18191D] rounded-2xl shadow-xl border border-[#EAEAEA] dark:border-[#27282E] py-1.5 z-40 animate-in fade-in">
             {AVAILABLE_LANGUAGES.map((l) => (
               <button
                 key={l.code}
@@ -31,8 +32,10 @@ export default function LanguageSelector() {
                   setLanguage(l.code);
                   setOpen(false);
                 }}
-                className={`w-full px-3 py-2 text-xs text-left font-medium flex items-center justify-between transition ${
-                  language === l.code ? 'bg-orange-50/80 text-[#FF7900] font-bold' : 'text-[#171717] hover:bg-neutral-50'
+                className={`w-full px-3 py-2 text-xs text-left font-medium flex items-center justify-between transition cursor-pointer ${
+                  language === l.code 
+                    ? 'bg-orange-50/80 dark:bg-orange-500/10 text-[#FF7900] font-bold' 
+                    : 'text-[#171717] dark:text-[#F4F4F6] hover:bg-neutral-50 dark:hover:bg-[#222329]'
                 }`}
               >
                 <div className="flex items-center gap-2">

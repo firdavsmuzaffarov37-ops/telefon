@@ -98,8 +98,8 @@ export function AppProvider({ children }) {
     return products.length > 0 ? products[0] : null;
   });
 
-  // Right Side Panel visibility
-  const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(true);
+  // Right Side Panel visibility (defaults to closed so inventory grid is spacious and not crowded)
+  const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
 
   // 2. Transactions state
   const [transactions, setTransactions] = useState(() => {

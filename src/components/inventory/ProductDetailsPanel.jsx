@@ -88,9 +88,9 @@ export default function ProductDetailsPanel({
       />
 
       {/* Drawer on Mobile/Tablet, Sticky Sidebar on Laptop/Desktop */}
-      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white p-5 shadow-2xl flex flex-col overflow-y-auto lg:static lg:z-auto lg:w-[420px] xl:w-[450px] lg:flex-shrink-0 lg:border lg:border-[#EAEAEA] lg:rounded-3xl lg:shadow-card lg:h-fit lg:sticky lg:top-24 animate-in slide-in-from-right-full lg:animate-none duration-200">
+      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white dark:bg-[#18191D] p-5 shadow-2xl flex flex-col overflow-y-auto lg:static lg:z-auto lg:w-[380px] xl:w-[410px] lg:flex-shrink-0 lg:border lg:border-[#EAEAEA] dark:border-[#27282E] lg:rounded-3xl lg:shadow-card lg:h-fit lg:sticky lg:top-24 animate-in slide-in-from-right-full lg:animate-none duration-200">
         {/* Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-[#EAEAEA]">
+      <div className="flex items-center justify-between pb-3 border-b border-[#EAEAEA] dark:border-[#27282E]">
         <div className="flex items-center gap-2">
           <h2 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
             {t('productDetailsTitle')}

@@ -302,8 +302,8 @@ export default function InventoryPage() {
       {viewMode === 'grid' ? (
         /* GRID VIEW (Matching Reference Screenshot 1) */
         <div className="flex flex-col lg:flex-row gap-6 items-start">
-          {/* Left: 3-column Smartphone Cards Grid */}
-          <div className="flex-1 w-full">
+          {/* Left: Smartphone Cards Grid (Spacious, responsive & non-overflowing) */}
+          <div className="flex-1 w-full min-w-0">
             {filteredProducts.length === 0 ? (
               <div className="bg-white rounded-3xl border border-[#EAEAEA] p-12 text-center shadow-sm">
                 <div className="w-16 h-16 rounded-2xl bg-orange-50 text-[#FF7900] flex items-center justify-center mx-auto mb-4">
@@ -332,7 +332,7 @@ export default function InventoryPage() {
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+              <div className={`grid grid-cols-1 sm:grid-cols-2 ${isDetailsPanelOpen ? '2xl:grid-cols-3' : 'xl:grid-cols-3 2xl:grid-cols-4'} gap-5`}>
                 {filteredProducts.map(product => (
                   <ProductCard
                     key={product.id}
