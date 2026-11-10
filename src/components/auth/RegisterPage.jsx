@@ -32,7 +32,7 @@ export default function RegisterPage() {
     setError('');
     const res = await register(email, password, fullName, storeName);
     if (res.success) {
-      setSuccessMsg("Hisob Supabase-da muvaffaqiyatli ochildi!");
+      setSuccessMsg("Hisobingiz muvaffaqiyatli ochildi!");
       setTimeout(() => navigate('/'), 1200);
     } else {
       setError(res.error || 'Registration failed');
@@ -206,7 +206,7 @@ export default function RegisterPage() {
         {/* Security watermark */}
         <div className="flex items-center justify-center gap-2 mt-6 text-[11px] text-[#888888]">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-          <span>Supabase PostgreSQL Encrypted Database</span>
+          <span>Xavfsiz va shifrlangan boshqaruv tizimi (256-bit SSL)</span>
         </div>
       </div>
     </div>

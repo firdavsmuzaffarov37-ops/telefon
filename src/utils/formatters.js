@@ -15,6 +15,8 @@ export function formatCurrency(amount, currency = "so'm") {
   }
 }
 
+export const formatUZS = (amount) => formatCurrency(amount, "so'm");
+
 export function formatNumber(num) {
   if (num === undefined || num === null || isNaN(num)) return '0';
   return Number(num).toLocaleString('en-US');

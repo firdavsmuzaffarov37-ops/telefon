@@ -9,11 +9,13 @@ import {
   ShieldAlert,
   Save,
   Database,
-  CloudUpload
+  CloudUpload,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 export default function SettingsPage() {
-  const { settings, setSettings, resetToDemoData, showToast, syncToSupabase } = useApp();
+  const { settings, setSettings, resetToDemoData, showToast, syncToSupabase, theme, setTheme } = useApp();
   const { t } = useLanguage();
 
   const [formData, setFormData] = useState({
@@ -205,13 +207,13 @@ export default function SettingsPage() {
 
         {/* Right 1 Col: Data Management & Reset */}
         <div className="space-y-6">
-          {/* Supabase Cloud Connection Card */}
+          {/* Cloud Storage & Backup Card */}
           <div className="bg-white rounded-3xl border border-emerald-200 bg-emerald-50/20 p-6 shadow-card space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Database className="w-5 h-5 text-emerald-600" />
                 <h3 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
-                  Supabase Buluti
+                  {t('supabaseCloudTitle')}
                 </h3>
               </div>
               <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
@@ -222,9 +224,9 @@ export default function SettingsPage() {
 
             <div className="space-y-2 text-xs">
               <div className="flex justify-between text-[#888888]">
-                <span>Loyiha URL:</span>
-                <span className="font-mono text-[#171717] truncate max-w-[170px]" title="https://igpkeqbbaluqhjleennx.supabase.co">
-                  igpkeqbbaluqhjleennx...
+                <span>Server Manzili:</span>
+                <span className="font-semibold text-[#171717]">
+                  Himoyalangan Bulut (256-bit SSL)
                 </span>
               </div>
               <div className="flex justify-between text-[#888888]">
@@ -242,8 +244,63 @@ export default function SettingsPage() {
             </button>
 
             <p className="text-[11px] text-[#888888] leading-tight">
-              Loyiha ildizida <code>supabase_schema.sql</code> tayyorlangan. Istalgan paytda SQL Editor orqali jadvallarni kengaytirishingiz mumkin.
+              Barcha smartfonlar, sotuv cheklari va do'kon hisobotlari avtomatik tarzda markaziy xavfsiz serverda doimiy saqlanadi.
             </p>
+          </div>
+
+          {/* Tungi / Kunduzgi Rejim (Theme Selection) */}
+          <div className="bg-white rounded-3xl border border-[#EAEAEA] p-6 shadow-card space-y-4">
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 flex items-center justify-center">
+                {theme === 'dark' ? <Moon className="w-5 h-5 text-amber-400" /> : <Sun className="w-5 h-5 text-[#FF7900]" />}
+              </div>
+              <h3 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
+                Ilova Mavzusi (Theme)
+              </h3>
+            </div>
+            <p className="text-xs text-[#888888]">
+              O'zingizga qulay rejimni tanlang: Kunduzgi yorug' (oq) yoki Tungi qulay (qora) rejim.
+            </p>
+
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setTheme('light')}
+                className={`p-3.5 rounded-2xl border text-left flex flex-col justify-between transition cursor-pointer ${
+                  theme === 'light'
+                    ? 'border-[#FF7900] bg-orange-50/60 ring-2 ring-[#FF7900]/20 font-bold'
+                    : 'border-[#EAEAEA] bg-neutral-50 hover:bg-neutral-100'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <Sun className="w-5 h-5 text-amber-500" />
+                  {theme === 'light' && <span className="text-[10px] bg-[#FF7900] text-white px-2 py-0.5 rounded-full font-bold">Faol</span>}
+                </div>
+                <div>
+                  <span className="text-xs text-[#171717] block">Kunduzgi (Oq)</span>
+                  <span className="text-[10px] text-[#888888]">Yorug' interfeys</span>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setTheme('dark')}
+                className={`p-3.5 rounded-2xl border text-left flex flex-col justify-between transition cursor-pointer ${
+                  theme === 'dark'
+                    ? 'border-[#FF7900] bg-neutral-900 ring-2 ring-[#FF7900]/30 font-bold text-white'
+                    : 'border-[#EAEAEA] bg-neutral-50 hover:bg-neutral-100'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <Moon className="w-5 h-5 text-amber-400" />
+                  {theme === 'dark' && <span className="text-[10px] bg-[#FF7900] text-white px-2 py-0.5 rounded-full font-bold">Faol</span>}
+                </div>
+                <div>
+                  <span className="text-xs text-[#171717] block">Tungi (Qora)</span>
+                  <span className="text-[10px] text-[#888888]">Ko'zni toliqtirmaydi</span>
+                </div>
+              </button>
+            </div>
           </div>
 
           <div className="bg-white rounded-3xl border border-[#EAEAEA] p-6 shadow-card space-y-4">

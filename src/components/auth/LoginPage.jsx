@@ -6,7 +6,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import LanguageSelector from '../common/LanguageSelector';
 
 export default function LoginPage() {
-  const { login, demoLogin, signInWithGoogle, loading } = useAuth();
+  const { login, signInWithGoogle, loading } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
 
@@ -28,8 +28,8 @@ export default function LoginPage() {
     const res = await login(email, password);
     if (res.success) {
       if (res.isNew) {
-        setSuccessMsg("Foydalanuvchi Supabase-da yaratildi! Tizimga kiritilmoqda...");
-        setTimeout(() => navigate('/'), 1200);
+        setSuccessMsg("Hisobingiz muvaffaqiyatli yaratildi! Tizimga kiritilmoqda...");
+        setTimeout(() => navigate('/'), 1000);
       } else {
         navigate('/');
       }
@@ -42,13 +42,8 @@ export default function LoginPage() {
     setError('');
     const res = await signInWithGoogle();
     if (!res.success) {
-      setError(res.error || 'Google bilan kirishda xatolik yuz berdi. Supabase-da Google OAuth yoqilganligini tekshiring.');
+      setError(res.error || 'Google bilan kirishda xatolik yuz berdi.');
     }
-  };
-
-  const handleDemo = (role) => {
-    demoLogin(role);
-    navigate('/');
   };
 
   return (
@@ -169,40 +164,12 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-2xl bg-[#FF7900] hover:bg-[#EA6E00] active:scale-[0.99] text-white text-xs font-bold shadow-md shadow-orange-500/20 flex items-center justify-center gap-2 transition disabled:opacity-50"
+              className="w-full py-3 rounded-2xl bg-[#FF7900] hover:bg-[#EA6E00] active:scale-[0.99] text-white text-xs font-bold shadow-md shadow-orange-500/20 flex items-center justify-center gap-2 transition disabled:opacity-50 cursor-pointer"
             >
               <span>{loading ? t('loading') : t('signInBtn')}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
-
-          {/* Quick Demo Login Presets */}
-          <div className="pt-2">
-            <div className="relative flex py-2 items-center">
-              <div className="flex-grow border-t border-[#EAEAEA]" />
-              <span className="flex-shrink mx-3 text-[11px] text-[#888888] font-semibold uppercase tracking-wider">
-                1-Click Demo Access
-              </span>
-              <div className="flex-grow border-t border-[#EAEAEA]" />
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 mt-2">
-              <button
-                type="button"
-                onClick={() => handleDemo('admin')}
-                className="p-2.5 rounded-xl border border-[#EAEAEA] bg-neutral-50 hover:bg-neutral-100 text-[11px] font-bold text-[#171717] flex items-center justify-center gap-1.5 transition text-center"
-              >
-                <span>👔 {t('demoLoginBtn')}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDemo('cashier')}
-                className="p-2.5 rounded-xl border border-[#EAEAEA] bg-neutral-50 hover:bg-neutral-100 text-[11px] font-bold text-[#171717] flex items-center justify-center gap-1.5 transition text-center"
-              >
-                <span>🛒 {t('demoSalesLoginBtn')}</span>
-              </button>
-            </div>
-          </div>
 
           {/* Link to Register */}
           <div className="text-center pt-2 border-t border-[#F0F0F0]">
@@ -218,7 +185,7 @@ export default function LoginPage() {
         {/* Security watermark */}
         <div className="flex items-center justify-center gap-2 mt-6 text-[11px] text-[#888888]">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-          <span>Connected with Supabase Cloud & 256-bit encryption</span>
+          <span>Xavfsiz va shifrlangan boshqaruv tizimi (256-bit SSL)</span>
         </div>
       </div>
     </div>

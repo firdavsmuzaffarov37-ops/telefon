@@ -279,8 +279,8 @@ export const translations = {
     primaryCurrency: "Asosiy Valyuta",
     lowStockThreshold: "Kam qolganlik chegarasi (dona)",
     saveSettingsBtn: "Sozlamalarni Saqlash",
-    supabaseCloudTitle: "Supabase Bulutli Baza",
-    syncSupabaseBtn: "Barcha Ma'lumotlarni Supabase-ga Sinxronlash",
+    supabaseCloudTitle: "Bulutli Xotira & Baza",
+    syncSupabaseBtn: "Barcha Ma'lumotlarni Bulutga Saqlash",
     resetDemoBtn: "Demo Ma'lumotlarni Qaytarish"
   },
 
@@ -560,8 +560,8 @@ export const translations = {
     primaryCurrency: "Основная Валюта",
     lowStockThreshold: "Порог низкого запаса (шт)",
     saveSettingsBtn: "Сохранить Настройки",
-    supabaseCloudTitle: "Облачная База Supabase",
-    syncSupabaseBtn: "Синхронизировать Все Данные с Supabase",
+    supabaseCloudTitle: "Облачное Хранилище",
+    syncSupabaseBtn: "Синхронизировать Все Данные с Сервером",
     resetDemoBtn: "Сбросить на Демо-Данные"
   },
 
@@ -841,8 +841,8 @@ export const translations = {
     primaryCurrency: "Primary Currency",
     lowStockThreshold: "Low Stock Threshold Alert (Units)",
     saveSettingsBtn: "Save Store Settings",
-    supabaseCloudTitle: "Supabase Cloud Database",
-    syncSupabaseBtn: "Sync All Data to Supabase",
+    supabaseCloudTitle: "Cloud Storage & Database",
+    syncSupabaseBtn: "Sync All Data to Cloud",
     resetDemoBtn: "Reset Demo Data"
   }
 };

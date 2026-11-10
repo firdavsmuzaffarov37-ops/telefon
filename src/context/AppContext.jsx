@@ -12,35 +12,82 @@ export function AppProvider({ children }) {
     checking: true,
     message: ''
   });
-  // 1. Products state
+  // 1. Products state (Barcha telefonlar kamida 30 tadan, omabop narxlarda)
   const [products, setProducts] = useState(() => {
     try {
+      const version = localStorage.getItem('phonelytics_data_version');
       const saved = localStorage.getItem('phonelytics_products');
-      if (saved) {
+      
+      // Agar versiya yangilanmagan bo'lsa yoki birorta telefon 30 tadan kam bo'lsa, yangi omabop ro'yxatni yuklaymiz
+      if (version === 'v4_min30_omabop' && saved) {
         const parsed = JSON.parse(saved);
-        // Automatically patch legacy cached images so phones always show authentic phone images
-        return parsed.map(p => {
-          if (p.id === 'prod-012') {
-            return {
-              ...p,
-              image: 'https://images.unsplash.com/photo-1585060544812-6b45742d762f?auto=format&fit=crop&w=800&q=85'
-            };
-          }
-          if (p.id === 'prod-010') {
-            return {
-              ...p,
-              image: 'https://images.unsplash.com/photo-1591337676887-a217a6970a8a?auto=format&fit=crop&w=800&q=85'
-            };
-          }
-          return p;
-        });
+        const hasLowInitial = parsed.some(p => p.stock < 30);
+        if (!hasLowInitial) {
+          return parsed;
+        }
       }
+      
+      // Yangi ro'yxatni saqlab qo'yamiz
+      localStorage.setItem('phonelytics_data_version', 'v4_min30_omabop');
+      localStorage.setItem('phonelytics_products', JSON.stringify(initialProducts));
+      localStorage.setItem('phonelytics_transactions', JSON.stringify(initialTransactions));
       return initialProducts;
     } catch (e) {
       console.error('Error loading products from LocalStorage', e);
       return initialProducts;
     }
   });
+
+  // Client (Vitrina) rejimi yoki Ishchi (Staff) rejimi
+  const [isClientMode, setIsClientMode] = useState(() => {
+    try {
+      return localStorage.getItem('phonelytics_client_mode') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleClientMode = () => {
+    setIsClientMode(prev => {
+      const next = !prev;
+      localStorage.setItem('phonelytics_client_mode', String(next));
+      return next;
+    });
+  };
+
+  // Theme (Tungi rejim va Kunduzgi rejim)
+  const [theme, setTheme] = useState(() => {
+    try {
+      const savedTheme = localStorage.getItem('phonelytics_theme');
+      if (savedTheme === 'dark' || savedTheme === 'light') {
+        return savedTheme;
+      }
+      return 'light';
+    } catch {
+      return 'light';
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('phonelytics_theme', theme);
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    } catch (e) {
+      console.warn('Error applying theme', e);
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => {
+      const next = prev === 'dark' ? 'light' : 'dark';
+      showToast(next === 'dark' ? "🌙 Tungi rejim (Dark Mode) yoqildi" : "☀️ Kunduzgi rejim (Light Mode) yoqildi", "info");
+      return next;
+    });
+  };
 
   // Selected product for the Right Details Panel
   const [selectedProduct, setSelectedProduct] = useState(() => {
@@ -177,10 +224,10 @@ export function AppProvider({ children }) {
     initSupabase();
   }, []);
 
-  // Sync All Data to Supabase manually
+  // Sync All Data to Cloud manually
   const syncToSupabase = async () => {
     try {
-      showToast('Synchronizing store data to Supabase...', 'info');
+      showToast("Do'kon ma'lumotlari bulutli serverga saqlanmoqda...", 'info');
       for (const p of products) {
         await supabaseService.upsertProduct(p);
       }
@@ -190,9 +237,9 @@ export function AppProvider({ children }) {
       for (const r of dailyReports) {
         await supabaseService.saveDailyReport(r);
       }
-      showToast('Successfully synchronized all data to Supabase!', 'success');
+      showToast("Barcha ma'lumotlar bulutli serverga muvaffaqiyatli saqlandi!", 'success');
     } catch (e) {
-      showToast(`Sync error: ${e.message}`, 'error');
+      showToast("Sinxronlashda xatolik yuz berdi", 'error');
     }
   };
 
@@ -388,22 +435,29 @@ export function AppProvider({ children }) {
   };
 
   // POS / Sale transaction execution
-  const recordSale = ({ productId, quantity, discount = 0, paymentMethod = 'Card', customerName = 'Walk-in Customer', customerPhone = '' }) => {
+  const recordSale = ({ productId, quantity, color = null, discount = 0, paymentMethod = 'Card', customerName = 'Mijoz', customerPhone = '' }) => {
     const product = products.find(p => p.id === productId);
     if (!product) {
-      showToast('Product not found in inventory!', 'error');
+      showToast('Smartfon topilmadi!', 'error');
       return { success: false, error: 'Product not found' };
     }
 
     const qty = Number(quantity);
     if (isNaN(qty) || qty <= 0) {
-      showToast('Invalid quantity specified', 'error');
+      showToast('Noto\'g\'ri miqdor kiritildi', 'error');
       return { success: false, error: 'Invalid quantity' };
     }
 
     if (product.stock < qty) {
-      showToast(`Insufficient stock! Only ${product.stock} available.`, 'error');
+      showToast(`Omborda yetarli emas! Faqat ${product.stock} dona mavjud.`, 'error');
       return { success: false, error: `Only ${product.stock} available in stock` };
+    }
+
+    // Rang bo'yicha qoldiq tekshirish
+    const chosenColor = color || (product.colors && product.colors.length > 0 ? product.colors[0].name : product.color);
+    const targetColorObj = product.colors?.find(c => c.name === chosenColor);
+    if (targetColorObj && targetColorObj.stock < qty) {
+      showToast(`"${chosenColor}" rangidan faqat ${targetColorObj.stock} dona qolgan!`, 'warning');
     }
 
     const unitSelling = Number(product.sellingPrice);
@@ -419,6 +473,7 @@ export function AppProvider({ children }) {
       productId: product.id,
       productName: `${product.name} ${product.storage}`,
       brand: product.brand,
+      color: chosenColor,
       quantity: qty,
       purchasePrice: unitPurchase,
       sellingPrice: unitSelling,
@@ -427,14 +482,14 @@ export function AppProvider({ children }) {
       cost,
       profit,
       paymentMethod,
-      customerName: customerName || 'Walk-in Customer',
+      customerName: customerName || 'Do\'kon mijozi',
       customerPhone: customerPhone || '-',
       imei: product.imei || 'IMEI-N/A',
       date: new Date().toISOString(),
       status: 'Completed'
     };
 
-    // 1. Decrement stock
+    // 1. Decrement overall stock and color stock
     setProducts(prev => prev.map(p => {
       if (p.id === productId) {
         const remainingStock = p.stock - qty;
@@ -443,9 +498,19 @@ export function AppProvider({ children }) {
           : remainingStock <= Number(p.minStockThreshold || 5) 
             ? 'low_stock' 
             : 'in_stock';
+        
+        // Ranglar sonini ham kamaytirish
+        const updatedColors = (p.colors || []).map(c => {
+          if (c.name === chosenColor) {
+            return { ...c, stock: Math.max(0, (c.stock || 0) - qty) };
+          }
+          return c;
+        });
+
         return {
           ...p,
           stock: remainingStock,
+          colors: updatedColors,
           unitsSold: (p.unitsSold || 0) + qty,
           status
         };
@@ -467,7 +532,7 @@ export function AppProvider({ children }) {
       }).catch(console.warn);
     }
 
-    showToast(`Sale completed! ${qty}x ${product.name} (${paymentMethod})`, 'success');
+    showToast(`Savdo muvaffaqiyatli amalga oshirildi! ${qty}x ${product.name} (${chosenColor})`, 'success');
     return { success: true, transaction: newTxn };
   };
 
@@ -671,7 +736,12 @@ export function AppProvider({ children }) {
       getTodayStats,
       resetToDemoData,
       supabaseStatus,
-      syncToSupabase
+      syncToSupabase,
+      isClientMode,
+      toggleClientMode,
+      theme,
+      setTheme,
+      toggleTheme
     }}>
       {children}
     </AppContext.Provider>

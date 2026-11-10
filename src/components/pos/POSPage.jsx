@@ -36,6 +36,7 @@ export default function POSPage() {
 
   // Cart / Checkout state
   const [selectedProductId, setSelectedProductId] = useState(null);
+  const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [discount, setDiscount] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState('Card');
@@ -73,6 +74,20 @@ export default function POSPage() {
   const currentProduct = useMemo(() => {
     return products.find(p => p.id === selectedProductId) || null;
   }, [products, selectedProductId]);
+
+  // Set selected color whenever product changes or URL param specifies
+  useEffect(() => {
+    if (currentProduct) {
+      const urlColor = searchParams.get('color');
+      if (urlColor && currentProduct.colors?.some(c => c.name === urlColor)) {
+        setSelectedColor(urlColor);
+      } else if (currentProduct.colors && currentProduct.colors.length > 0) {
+        setSelectedColor(currentProduct.colors[0].name);
+      } else {
+        setSelectedColor(currentProduct.color || 'Standart');
+      }
+    }
+  }, [currentProduct, searchParams]);
 
   // Available brands
   const brands = useMemo(() => {
@@ -146,6 +161,7 @@ export default function POSPage() {
     const res = recordSale({
       productId: currentProduct.id,
       quantity,
+      color: selectedColor || currentProduct.color,
       discount: totalDiscount,
       paymentMethod: effectiveMethod,
       customerName: customerName.trim() || 'Mijoz',
@@ -306,10 +322,51 @@ export default function POSPage() {
                   <img src={currentProduct.image} alt={currentProduct.name} className="w-12 h-12 object-contain bg-white rounded-xl p-1 border" />
                   <div className="flex-1 min-w-0">
                     <h4 className="text-xs font-bold text-[#171717] truncate">{currentProduct.name}</h4>
-                    <p className="text-[11px] text-[#888888]">{currentProduct.storage} • {currentProduct.color}</p>
+                    <p className="text-[11px] text-[#888888]">{currentProduct.storage} • {selectedColor || currentProduct.color}</p>
                     <p className="text-xs font-mono text-[#666666]">IMEI: {currentProduct.imei}</p>
                   </div>
                 </div>
+
+                {/* Color Selector with Real-time Stock per Color */}
+                {currentProduct.colors && currentProduct.colors.length > 0 && (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-[#171717]">Sotilayotgan Rang:</span>
+                      <span className="text-[11px] text-[#888888]">
+                        Tanlangan: <strong className="text-[#171717]">{selectedColor}</strong>
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {currentProduct.colors.map((c, idx) => {
+                        const count = c.stock !== undefined ? c.stock : Math.ceil(currentProduct.stock / currentProduct.colors.length);
+                        const isChosen = selectedColor === c.name;
+                        return (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setSelectedColor(c.name)}
+                            className={`p-2 rounded-xl border flex items-center justify-between text-left transition cursor-pointer ${
+                              isChosen
+                                ? 'border-[#FF7900] bg-orange-50/70 ring-1 ring-[#FF7900]'
+                                : 'border-[#EAEAEA] bg-white hover:bg-neutral-50'
+                            }`}
+                          >
+                            <div className="flex items-center gap-1.5 truncate">
+                              <span 
+                                className="w-3 h-3 rounded-full border border-black/20 flex-shrink-0" 
+                                style={{ backgroundColor: c.hex }} 
+                              />
+                              <span className="text-xs font-semibold text-[#171717] truncate">{c.name.split(' ')[0]}</span>
+                            </div>
+                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${count > 0 ? 'bg-neutral-100 text-[#444]' : 'bg-red-50 text-red-600'}`}>
+                              {count} ta
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
 
                 {/* Payment Mode Selector: Full Payment vs Installment / Nasiya */}
                 <div className="flex bg-neutral-100 p-1 rounded-2xl">

@@ -14,7 +14,12 @@ import {
   Menu,
   X,
   LogOut,
-  Camera
+  Camera,
+  Sun,
+  Moon,
+  Receipt,
+  Briefcase,
+  ShoppingBag
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
@@ -24,7 +29,7 @@ import LanguageSelector from '../common/LanguageSelector';
 export default function Navbar({ onOpenAI }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { settings, getTodayStats } = useApp();
+  const { settings, getTodayStats, theme, toggleTheme } = useApp();
   const { user, logout, updateUserAvatar, isAuthenticated } = useAuth();
   const { t } = useLanguage();
   const stats = getTodayStats();
@@ -39,6 +44,7 @@ export default function Navbar({ onOpenAI }) {
     { name: t('navPOS'), path: '/pos', icon: ShoppingCart },
     { name: t('navReports'), path: '/reports', icon: FileText },
     { name: t('navHistory'), path: '/history', icon: History },
+    { name: 'Xarajatlar', path: '/expenses', icon: Receipt },
   ];
 
   // Dynamic Avatar computation
@@ -60,7 +66,7 @@ export default function Navbar({ onOpenAI }) {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#EAEAEA] px-4 md:px-8 py-3">
       <div className="max-w-[1720px] mx-auto flex items-center justify-between">
-        {/* Left: Brand Logo */}
+        {/* Left: Brand Logo & Ishchi Paneli Badge */}
         <div className="flex items-center gap-3">
           <NavLink to="/" className="flex items-center gap-2.5 group">
             <div className="w-10 h-10 rounded-2xl overflow-hidden bg-black/5 p-0.5 border border-black/10 shadow-md group-hover:scale-105 transition-transform duration-200 flex items-center justify-center">
@@ -71,8 +77,16 @@ export default function Navbar({ onOpenAI }) {
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-black tracking-tight text-[#171717] font-['Plus_Jakarta_Sans'] flex items-center gap-1">
-                Phone<span className="text-[#FF7900]">Lytics</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xl font-black tracking-tight text-[#171717] font-['Plus_Jakarta_Sans'] flex items-center gap-1">
+                  Phone<span className="text-[#FF7900]">Lytics</span>
+                </span>
+                <span className="text-[10px] font-black uppercase tracking-wider bg-[#FF7900] text-white px-2 py-0.5 rounded-full shadow-sm hidden sm:inline-block">
+                  Ishchi Paneli
+                </span>
+              </div>
+              <span className="text-[10px] text-[#888888] font-semibold -mt-0.5 hidden xl:block">
+                Magazin Xodimi Boshqaruvi
               </span>
             </div>
           </NavLink>
@@ -88,16 +102,16 @@ export default function Navbar({ onOpenAI }) {
               <NavLink
                 key={item.name}
                 to={item.path}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs xl:text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
                   isActive
                     ? 'bg-[#171717] text-white shadow-sm'
                     : 'text-[#666666] hover:text-[#171717] hover:bg-white/60'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-[#888888]'}`} />
+                <Icon className={`w-3.5 h-3.5 xl:w-4 xl:h-4 ${isActive ? 'text-white' : 'text-[#888888]'}`} />
                 <span>{item.name}</span>
                 {item.hasDropdown && (
-                  <ChevronDown className={`w-3.5 h-3.5 ml-0.5 opacity-70 ${isActive ? 'text-white' : 'text-[#888888]'}`} />
+                  <ChevronDown className={`w-3 h-3 xl:w-3.5 xl:h-3.5 ml-0.5 opacity-70 ${isActive ? 'text-white' : 'text-[#888888]'}`} />
                 )}
               </NavLink>
             );
@@ -105,27 +119,41 @@ export default function Navbar({ onOpenAI }) {
         </nav>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-2 md:gap-3">
+        <div className="flex items-center gap-1.5 xl:gap-2.5">
+          {/* Switch to Customer Online Store */}
+          <NavLink
+            to="/shop"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#FF7900] hover:bg-[#E66D00] text-white text-xs font-bold transition shadow-sm cursor-pointer whitespace-nowrap"
+            title="Mijozlar uchun mo'ljallangan internet-do'kon vitrinasiga o'tish"
+          >
+            <ShoppingBag className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Mijoz Do'koni</span>
+          </NavLink>
+
           {/* Language Switcher */}
           <LanguageSelector />
+
+          {/* Theme Toggle Button: Tungi (Dark) va Kunduzgi (Light) Rejim */}
+          <button
+            onClick={toggleTheme}
+            className="w-8.5 h-8.5 xl:w-9 xl:h-9 rounded-xl border border-[#EAEAEA] bg-white hover:bg-neutral-50 flex items-center justify-center text-[#171717] transition cursor-pointer shadow-sm active:scale-95"
+            title={theme === 'dark' ? "Kunduzgi rejimga o'tish (Light Mode)" : "Tungi rejimga o'tish (Dark Mode)"}
+          >
+            {theme === 'dark' ? (
+              <Sun className="w-4 h-4 text-amber-400 fill-amber-400 animate-in spin-in-180" />
+            ) : (
+              <Moon className="w-4 h-4 text-[#171717] animate-in spin-in-90" />
+            )}
+          </button>
 
           {/* AI Insights Button */}
           <button
             onClick={onOpenAI}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-orange-200 bg-orange-50/70 hover:bg-orange-100/70 text-[#FF7900] text-xs font-semibold transition cursor-pointer"
-            title="AI Business Assistant"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-[#FF7900]" />
-            <span className="hidden sm:inline">{t('navAI')}</span>
-          </button>
-
-          {/* Quick Chat / Notes icon */}
-          <button 
-            onClick={onOpenAI}
-            className="w-9 h-9 rounded-xl border border-[#EAEAEA] bg-white hover:bg-neutral-50 flex items-center justify-center text-[#666666] hover:text-[#171717] transition relative cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-orange-200 bg-orange-50/70 hover:bg-orange-100/70 text-[#FF7900] text-xs font-bold transition cursor-pointer whitespace-nowrap"
             title="AI Maslahatchi"
           >
-            <MessageSquare className="w-4 h-4" />
+            <Sparkles className="w-3.5 h-3.5 text-[#FF7900]" />
+            <span className="hidden 2xl:inline">{t('navAI')}</span>
           </button>
 
           {/* Notifications Bell */}
@@ -311,8 +339,40 @@ export default function Navbar({ onOpenAI }) {
               </NavLink>
             );
           })}
+          <NavLink
+            to="/shop"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold bg-[#FF7900] text-white mt-2"
+          >
+            <ShoppingBag className="w-4 h-4" />
+            <span>Mijoz Do'koniga O'tish</span>
+          </NavLink>
         </div>
       )}
+
+      {/* Mobile Bottom Tab Bar (Smartfonlar uchun qulay pastki menyu) */}
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#EAEAEA] flex items-center justify-around py-1.5 px-1 shadow-lg">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.path || (item.path === '/' && location.pathname === '');
+          return (
+            <NavLink
+              key={item.name}
+              to={item.path}
+              className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-xl text-[10px] font-bold transition cursor-pointer ${
+                isActive
+                  ? 'text-[#FF7900]'
+                  : 'text-[#888888] hover:text-[#171717]'
+              }`}
+            >
+              <div className={`p-1 rounded-xl transition ${isActive ? 'bg-orange-50 text-[#FF7900]' : ''}`}>
+                <Icon className="w-4 h-4" />
+              </div>
+              <span className="truncate max-w-[65px]">{item.name.split(' ')[0]}</span>
+            </NavLink>
+          );
+        })}
+      </nav>
     </header>
   );
 }
