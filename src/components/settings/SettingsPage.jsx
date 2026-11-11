@@ -8,14 +8,12 @@ import {
   Download, 
   ShieldAlert,
   Save,
-  Database,
-  CloudUpload,
   Sun,
   Moon
 } from 'lucide-react';
 
 export default function SettingsPage() {
-  const { settings, setSettings, resetToDemoData, showToast, syncToSupabase, theme, setTheme } = useApp();
+  const { settings, setSettings, resetToDemoData, showToast, theme, setTheme } = useApp();
   const { t } = useLanguage();
 
   const [formData, setFormData] = useState({
@@ -207,47 +205,6 @@ export default function SettingsPage() {
 
         {/* Right 1 Col: Data Management & Reset */}
         <div className="space-y-6">
-          {/* Cloud Storage & Backup Card */}
-          <div className="bg-white rounded-3xl border border-emerald-200 bg-emerald-50/20 p-6 shadow-card space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Database className="w-5 h-5 text-emerald-600" />
-                <h3 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
-                  {t('supabaseCloudTitle')}
-                </h3>
-              </div>
-              <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-                Ulangan
-              </span>
-            </div>
-
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between text-[#888888]">
-                <span>Server Manzili:</span>
-                <span className="font-semibold text-[#171717]">
-                  Himoyalangan Bulut (256-bit SSL)
-                </span>
-              </div>
-              <div className="flex justify-between text-[#888888]">
-                <span>Holat:</span>
-                <span className="font-semibold text-emerald-700">Faol (Sinxron)</span>
-              </div>
-            </div>
-
-            <button
-              onClick={syncToSupabase}
-              className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-2 transition shadow-sm cursor-pointer"
-            >
-              <CloudUpload className="w-4 h-4" />
-              <span>{t('syncSupabaseBtn')}</span>
-            </button>
-
-            <p className="text-[11px] text-[#888888] leading-tight">
-              Barcha smartfonlar, sotuv cheklari va do'kon hisobotlari avtomatik tarzda markaziy xavfsiz serverda doimiy saqlanadi.
-            </p>
-          </div>
-
           {/* Tungi / Kunduzgi Rejim (Theme Selection) */}
           <div className="bg-white rounded-3xl border border-[#EAEAEA] p-6 shadow-card space-y-4">
             <div className="flex items-center gap-2">
