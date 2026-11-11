@@ -67,13 +67,21 @@ export default function InventoryPage() {
     return ['All Storage', ...unique];
   }, [products]);
 
-  // Tab counts
+  // Real-time physical stock counts (Donalar soni har bir sotuvda avtomatik kamayadi)
   const counts = useMemo(() => {
+    const totalPhysicalUnits = products.reduce((acc, p) => acc + (Number(p.stock) || 0), 0);
+    const activePhysicalUnits = products
+      .filter(p => Number(p.stock) > 0)
+      .reduce((acc, p) => acc + (Number(p.stock) || 0), 0);
+    const lowStockModels = products.filter(p => Number(p.stock) > 0 && Number(p.stock) <= (p.minStockThreshold || 5)).length;
+    const outOfStockModels = products.filter(p => Number(p.stock) <= 0).length;
+
     return {
-      all: products.length,
-      inStock: products.filter(p => p.stock > (p.minStockThreshold || 5)).length,
-      lowStock: products.filter(p => p.stock > 0 && p.stock <= (p.minStockThreshold || 5)).length,
-      outOfStock: products.filter(p => p.stock <= 0).length,
+      all: totalPhysicalUnits, // Jami barcha smartfonlar donasi (Har bir sotuvda 1 tadan kamayadi)
+      inStock: activePhysicalUnits, // Sotuvda mavjud smartfonlar donasi (Har bir sotuvda 1 tadan kamayadi)
+      lowStock: lowStockModels,
+      outOfStock: outOfStockModels,
+      totalModels: products.length
     };
   }, [products]);
 
@@ -176,57 +184,57 @@ export default function InventoryPage() {
         onActionClick={handleOpenAddModal}
       />
 
-      {/* 2. Top 4 Stat Summary Cards (Directly matching Image 2 Apple-style design!) */}
+      {/* 2. Top 4 Stat Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Products */}
-        <div className="bg-white rounded-3xl border border-[#EAEAEA] p-5 shadow-card hover:shadow-card-hover transition-all duration-200">
-          <span className="text-xs font-semibold text-[#888888] block">
+        <div className="bg-white dark:bg-[#18191D] rounded-3xl border border-[#EAEAEA] dark:border-[#27282E] p-5 shadow-card hover:shadow-card-hover transition-all duration-200">
+          <span className="text-xs font-semibold text-[#888888] dark:text-[#A1A1AA] block">
             {t('summaryTotalProducts')}
           </span>
-          <h3 className="text-3xl font-black text-[#171717] mt-2 font-['Plus_Jakarta_Sans']">
+          <h3 className="text-3xl font-black text-[#171717] dark:text-white mt-2 font-['Plus_Jakarta_Sans']">
             {counts.all}
           </h3>
-          <p className="text-[11px] text-[#888888] mt-1">
-            {t('summaryTotalDesc')}
+          <p className="text-[11px] text-[#888888] dark:text-[#71717A] mt-1">
+            Ombordagi jami telefonlar soni
           </p>
         </div>
 
         {/* Active In Stock Products */}
-        <div className="bg-white rounded-3xl border border-[#EAEAEA] p-5 shadow-card hover:shadow-card-hover transition-all duration-200">
-          <span className="text-xs font-semibold text-[#888888] block">
+        <div className="bg-white dark:bg-[#18191D] rounded-3xl border border-[#EAEAEA] dark:border-[#27282E] p-5 shadow-card hover:shadow-card-hover transition-all duration-200">
+          <span className="text-xs font-semibold text-[#888888] dark:text-[#A1A1AA] block">
             {t('summaryActiveProducts')}
           </span>
           <h3 className="text-3xl font-black text-[#16A36A] mt-2 font-['Plus_Jakarta_Sans']">
             {counts.inStock}
           </h3>
-          <p className="text-[11px] text-[#888888] mt-1">
-            {t('summaryActiveDesc')}
+          <p className="text-[11px] text-[#888888] dark:text-[#71717A] mt-1">
+            Yetarli zaxiraga ega
           </p>
         </div>
 
         {/* Out of Stock */}
-        <div className="bg-white rounded-3xl border border-[#EAEAEA] p-5 shadow-card hover:shadow-card-hover transition-all duration-200">
-          <span className="text-xs font-semibold text-[#888888] block">
+        <div className="bg-white dark:bg-[#18191D] rounded-3xl border border-[#EAEAEA] dark:border-[#27282E] p-5 shadow-card hover:shadow-card-hover transition-all duration-200">
+          <span className="text-xs font-semibold text-[#888888] dark:text-[#A1A1AA] block">
             {t('summaryOutOfStock')}
           </span>
           <h3 className="text-3xl font-black text-[#E5484D] mt-2 font-['Plus_Jakarta_Sans']">
             {counts.outOfStock}
           </h3>
-          <p className="text-[11px] text-[#888888] mt-1">
+          <p className="text-[11px] text-[#888888] dark:text-[#71717A] mt-1">
             {t('summaryOutOfStockDesc')}
           </p>
         </div>
 
         {/* Low Stock Warning */}
-        <div className="bg-white rounded-3xl border border-[#EAEAEA] p-5 shadow-card hover:shadow-card-hover transition-all duration-200">
-          <span className="text-xs font-semibold text-[#888888] block">
+        <div className="bg-white dark:bg-[#18191D] rounded-3xl border border-[#EAEAEA] dark:border-[#27282E] p-5 shadow-card hover:shadow-card-hover transition-all duration-200">
+          <span className="text-xs font-semibold text-[#888888] dark:text-[#A1A1AA] block">
             {t('summaryLowStock')}
           </span>
           <h3 className="text-3xl font-black text-[#F5A623] mt-2 font-['Plus_Jakarta_Sans']">
             {counts.lowStock}
           </h3>
-          <p className="text-[11px] text-[#888888] mt-1">
-            {t('summaryLowStockDesc')}
+          <p className="text-[11px] text-[#888888] dark:text-[#71717A] mt-1">
+            5 donadan kam qolgan
           </p>
         </div>
       </div>

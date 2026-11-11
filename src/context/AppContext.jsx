@@ -12,30 +12,20 @@ export function AppProvider({ children }) {
     checking: true,
     message: ''
   });
-  // 1. Products state (Barcha telefonlar kamida 30 tadan, omabop narxlarda)
+  // 1. Products state (Jami 50 dona haqiqiy ombor zaxirasiga ega smartfonlar bazasi)
   const [products, setProducts] = useState(() => {
     try {
       const version = localStorage.getItem('phonelytics_data_version');
       const saved = localStorage.getItem('phonelytics_products');
       
-      // Agar versiya yangilanmagan bo'lsa yoki birorta telefon 30 tadan kam bo'lsa, yangi omabop ro'yxatni yuklaymiz
-      if (version === 'v5_arrival_and_staff' && saved) {
-        const parsed = JSON.parse(saved);
-        const hasLowInitial = parsed.some(p => p.stock < 30);
-        if (!hasLowInitial) {
-          return parsed.map(p => ({ ...p, arrivalDate: p.arrivalDate || '2026-11-08' }));
-        }
+      if (version === 'v6_50_phones_stock_sync' && saved) {
+        return JSON.parse(saved);
       }
       
-      // Yangi ro'yxatni saqlab qo'yamiz
-      const productsWithArrival = initialProducts.map(p => ({
-        ...p,
-        arrivalDate: p.arrivalDate || '2026-11-08'
-      }));
-      localStorage.setItem('phonelytics_data_version', 'v5_arrival_and_staff');
-      localStorage.setItem('phonelytics_products', JSON.stringify(productsWithArrival));
-      localStorage.setItem('phonelytics_transactions', JSON.stringify(initialTransactions));
-      return productsWithArrival;
+      // Yangi v6 versiyasi: jami 50 dona real ombor zaxirasini yuklaymiz
+      localStorage.setItem('phonelytics_data_version', 'v6_50_phones_stock_sync');
+      localStorage.setItem('phonelytics_products', JSON.stringify(initialProducts));
+      return initialProducts;
     } catch (e) {
       console.error('Error loading products from LocalStorage', e);
       return initialProducts;
