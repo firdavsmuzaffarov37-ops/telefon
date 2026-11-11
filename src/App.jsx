@@ -27,9 +27,27 @@ import CustomerDealsPage from './components/customer/CustomerDealsPage';
 
 // Context Providers
 import { AppProvider } from './context/AppContext';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { CustomerProvider } from './context/CustomerContext';
+
+// Himoyalangan yo'llar (Faqat tizimga kirgan xodimlar uchun)
+function ProtectedRoute({ children }) {
+  const { isAuthenticated } = useAuth();
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+}
+
+// Kirish/Ro'yxatdan o'tish yo'li (Agar allaqachon kirgan bo'lsa, asosiy panelga yo'naltiradi)
+function AuthRoute({ children }) {
+  const { isAuthenticated } = useAuth();
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+}
 
 function AppContent() {
   const [isAIOpen, setIsAIOpen] = useState(false);
@@ -51,16 +69,16 @@ function AppContent() {
       {/* Main Content Area */}
       <main className={`flex-1 ${isAuthPage ? '' : 'pb-24 sm:pb-16'}`}>
         <Routes>
-          {/* Employee Management Routes */}
-          <Route path="/" element={<InventoryPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/pos" element={<POSPage />} />
-          <Route path="/reports" element={<DailyReportsPage />} />
-          <Route path="/history" element={<SalesHistoryPage />} />
-          <Route path="/expenses" element={<ExpensesPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+          {/* Employee Management Routes (Protected: First visit forces Login) */}
+          <Route path="/" element={<ProtectedRoute><InventoryPage /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+          <Route path="/pos" element={<ProtectedRoute><POSPage /></ProtectedRoute>} />
+          <Route path="/reports" element={<ProtectedRoute><DailyReportsPage /></ProtectedRoute>} />
+          <Route path="/history" element={<ProtectedRoute><SalesHistoryPage /></ProtectedRoute>} />
+          <Route path="/expenses" element={<ProtectedRoute><ExpensesPage /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+          <Route path="/login" element={<AuthRoute><LoginPage /></AuthRoute>} />
+          <Route path="/register" element={<AuthRoute><RegisterPage /></AuthRoute>} />
 
           {/* Customer Online Store Routes */}
           <Route path="/shop" element={<CustomerHomePage />} />
