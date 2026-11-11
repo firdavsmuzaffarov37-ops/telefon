@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MoreVertical, Smartphone, ShoppingBag, Edit3, Trash2, Eye, ShieldCheck, Sparkles, CheckCircle2, Calendar } from 'lucide-react';
+import { MoreVertical, Smartphone, ShoppingBag, Edit3, Trash2, Eye, ShieldCheck, Sparkles, CheckCircle2, Calendar, PackageCheck } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatters';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
@@ -10,7 +10,8 @@ export default function ProductCard({
   isSelected, 
   onSelect,
   onEdit,
-  onDelete
+  onDelete,
+  onRestock
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -119,10 +120,23 @@ export default function ProductCard({
                   </button>
                   <button
                     onClick={handleQuickSale}
-                    className="w-full px-3.5 py-1.5 text-xs text-left font-medium text-[#FF7900] hover:bg-orange-50 flex items-center gap-2"
+                    disabled={isOutOfStock}
+                    className={`w-full px-3.5 py-1.5 text-xs text-left font-medium flex items-center gap-2 ${
+                      isOutOfStock ? 'text-neutral-400 cursor-not-allowed' : 'text-[#FF7900] hover:bg-orange-50'
+                    }`}
                   >
                     <ShoppingBag className="w-3.5 h-3.5" />
-                    <span>{t('quickSellBtn')}</span>
+                    <span>{isOutOfStock ? "Tugagan (Sotib bo'lmaydi)" : t('quickSellBtn')}</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      onRestock && onRestock(product);
+                    }}
+                    className="w-full px-3.5 py-1.5 text-xs text-left font-medium text-emerald-700 hover:bg-emerald-50 flex items-center gap-2"
+                  >
+                    <PackageCheck className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Zaxirani to'ldirish (+Restock)</span>
                   </button>
                   <button
                     onClick={() => {
@@ -167,14 +181,28 @@ export default function ProductCard({
         
         {/* Quick sale button on hover for staff */}
         {!isClientMode && (
-          <button
-            onClick={handleQuickSale}
-            className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#FF7900] text-white px-3 py-1.5 rounded-xl shadow-md hover:bg-[#EA6E00] flex items-center gap-1.5 text-xs font-semibold cursor-pointer"
-            title={t('sellBtn')}
-          >
-            <ShoppingBag className="w-3.5 h-3.5" />
-            <span>{t('sellBtn')}</span>
-          </button>
+          isOutOfStock ? (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onRestock && onRestock(product);
+              }}
+              className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-emerald-600 text-white px-3 py-1.5 rounded-xl shadow-md hover:bg-emerald-700 flex items-center gap-1.5 text-xs font-semibold cursor-pointer z-10"
+              title="Yangi partiya qo'shish"
+            >
+              <PackageCheck className="w-3.5 h-3.5" />
+              <span>+ Zaxira qo'shish</span>
+            </button>
+          ) : (
+            <button
+              onClick={handleQuickSale}
+              className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#FF7900] text-white px-3 py-1.5 rounded-xl shadow-md hover:bg-[#EA6E00] flex items-center gap-1.5 text-xs font-semibold cursor-pointer z-10"
+              title={t('sellBtn')}
+            >
+              <ShoppingBag className="w-3.5 h-3.5" />
+              <span>{t('sellBtn')}</span>
+            </button>
+          )
         )}
       </div>
 
@@ -296,12 +324,20 @@ export default function ProductCard({
               )}
 
               {isOutOfStock && (
-                <div className="py-1 px-2.5 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-between text-[11px] font-bold text-red-500 dark:text-red-400">
+                <div className="py-1.5 px-2.5 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-between text-[11px] font-bold text-red-500 dark:text-red-400">
                   <div className="flex items-center gap-1.5">
                     <span className="text-xs">⛔</span>
                     <span>Omborda tugagan (0 dona)!</span>
                   </div>
-                  <span className="text-[10px] bg-red-500/20 px-1.5 py-0.5 rounded-md font-extrabold">Zaxira</span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onRestock && onRestock(product);
+                    }}
+                    className="text-[10px] bg-red-600 hover:bg-red-700 text-white px-2 py-0.5 rounded-md font-bold transition shadow-sm"
+                  >
+                    + Zaxira qo'shish
+                  </button>
                 </div>
               )}
 

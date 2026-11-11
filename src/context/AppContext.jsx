@@ -376,6 +376,36 @@ export function AppProvider({ children }) {
     return true;
   };
 
+  // Yangi partiya qabul qilish (Barcha modellarga zaxira qo'shish)
+  const restockAllProducts = (qtyPerModel = 5) => {
+    setProducts(prev => prev.map(p => {
+      const newStock = Number(p.stock) + qtyPerModel;
+      const status = newStock <= 0 ? 'out_of_stock' : newStock <= 5 ? 'low_stock' : 'in_stock';
+      const updatedColors = (p.colors || []).map(c => ({
+        ...c,
+        stock: (c.stock || 0) + Math.ceil(qtyPerModel / Math.max(1, (p.colors || []).length))
+      }));
+      return {
+        ...p,
+        stock: newStock,
+        colors: updatedColors,
+        status
+      };
+    }));
+    showToast(`📦 Yangi partiya qabul qilindi! Barcha modellarga +${qtyPerModel} donadan qo'shildi.`, 'success');
+  };
+
+  // Sinov uchun: Ombordagi barcha telefonlarni sotilgan (0 dona) deb belgilash
+  const simulateSellAll = () => {
+    setProducts(prev => prev.map(p => ({
+      ...p,
+      stock: 0,
+      status: 'out_of_stock',
+      colors: (p.colors || []).map(c => ({ ...c, stock: 0 }))
+    })));
+    showToast('⚠️ Ombordagi barcha 49 ta telefon sotildi! Hamma telefonlar tugagan (0 dona) bo\'ldi.', 'warning');
+  };
+
   // Warranty lookup by IMEI or serial
   const checkWarranty = (imeiQuery) => {
     if (!imeiQuery || !imeiQuery.trim()) return null;
@@ -741,6 +771,8 @@ export function AppProvider({ children }) {
       removeToast,
       getTodayStats,
       resetToDemoData,
+      restockAllProducts,
+      simulateSellAll,
       supabaseStatus,
       syncToSupabase,
       isClientMode,

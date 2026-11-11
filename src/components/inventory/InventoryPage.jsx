@@ -4,6 +4,7 @@ import FilterBar from './FilterBar';
 import ProductCard from './ProductCard';
 import ProductDetailsPanel from './ProductDetailsPanel';
 import ProductModal from './ProductModal';
+import RestockModal from './RestockModal';
 import { useApp } from '../../context/AppContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { formatCurrency } from '../../utils/formatters';
@@ -24,7 +25,8 @@ import {
   CheckCircle2,
   AlertTriangle,
   XCircle,
-  Package
+  Package,
+  RotateCcw
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -39,10 +41,17 @@ export default function InventoryPage() {
     isAddModalOpen,
     setIsAddModalOpen,
     editingProduct,
-    setEditingProduct
+    setEditingProduct,
+    restockAllProducts,
+    simulateSellAll,
+    resetToDemoData
   } = useApp();
   const { t } = useLanguage();
   const navigate = useNavigate();
+
+  // Restock modal state
+  const [restockModalOpen, setRestockModalOpen] = useState(false);
+  const [restockProductTarget, setRestockProductTarget] = useState(null);
 
   // View mode toggle: 'grid' or 'table' (Image 2 style)
   const [viewMode, setViewMode] = useState('grid');
@@ -194,11 +203,11 @@ export default function InventoryPage() {
           <span className="text-xs font-semibold text-[#888888] dark:text-[#A1A1AA] block">
             {t('summaryTotalProducts')}
           </span>
-          <h3 className="text-3xl font-black text-[#171717] dark:text-white mt-2 font-['Plus_Jakarta_Sans']">
+          <h3 className={`text-3xl font-black mt-2 font-['Plus_Jakarta_Sans'] ${counts.all === 0 ? 'text-[#E5484D]' : 'text-[#171717] dark:text-white'}`}>
             {counts.all}
           </h3>
           <p className="text-[11px] text-[#888888] dark:text-[#71717A] mt-1">
-            Ombordagi jami telefonlar soni
+            {counts.all === 0 ? "⚠️ Omborda barcha telefonlar sotildi (0 dona)" : "Ombordagi jami telefonlar soni"}
           </p>
         </div>
 
@@ -211,7 +220,7 @@ export default function InventoryPage() {
             {counts.inStock}
           </h3>
           <p className="text-[11px] text-[#888888] dark:text-[#71717A] mt-1">
-            Yetarli zaxiraga ega
+            {counts.inStock === 0 ? "Sotuvda mavjud emas" : "Yetarli zaxiraga ega"}
           </p>
         </div>
 
@@ -224,7 +233,7 @@ export default function InventoryPage() {
             {counts.outOfStock}
           </h3>
           <p className="text-[11px] text-[#888888] dark:text-[#71717A] mt-1">
-            {t('summaryOutOfStockDesc')}
+            {counts.outOfStock > 0 ? `${counts.outOfStock} ta model tugagan (0 dona)` : t('summaryOutOfStockDesc')}
           </p>
         </div>
 
@@ -242,17 +251,52 @@ export default function InventoryPage() {
         </div>
       </div>
 
-      {/* 3. Action Bar with View Switcher (Grid / Table) & Export button */}
-      <div className="flex items-center justify-between gap-3 pt-2">
-        <div className="flex items-center gap-2">
+      {/* Special Banner: Agar ombordagi barcha telefonlar tugagan bo'lsa (0 dona qolsa) */}
+      {counts.all === 0 && (
+        <div className="bg-gradient-to-r from-red-500/10 via-orange-500/10 to-amber-500/10 border-2 border-red-500/40 rounded-3xl p-5 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm animate-in fade-in">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-red-500 text-white flex items-center justify-center flex-shrink-0 shadow-md">
+              <PackageX className="w-6 h-6 stroke-[2.2]" />
+            </div>
+            <div>
+              <h4 className="text-sm font-extrabold text-red-600 dark:text-red-400">
+                Ombordagi barcha smartfonlar sotildi va tugadi (0 dona qoldi)!
+              </h4>
+              <p className="text-xs text-[#555] dark:text-[#A1A1AA] mt-0.5">
+                POS savdo to'xtatildi. Yangi telefonlar kelgan bo'lsa, quyidagi tugmalar orqali zaxirani to'ldiring yoki yangi smartfon qo'shing.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <button
+              onClick={() => restockAllProducts(5)}
+              className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5 cursor-pointer active:scale-95"
+            >
+              <PackageCheck className="w-4 h-4" />
+              <span>Yangi partiya qabul qilish (+50 dona)</span>
+            </button>
+            <button
+              onClick={handleOpenAddModal}
+              className="px-4 py-2.5 rounded-xl bg-[#FF7900] hover:bg-[#EA6E00] text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5 cursor-pointer active:scale-95"
+            >
+              <Plus className="w-4 h-4" />
+              <span>+ Yangi Smartfon Qo'shish</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 3. Action Bar with View Switcher (Grid / Table), Restock & Export button */}
+      <div className="flex items-center justify-between gap-3 pt-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap">
           {/* View Toggle: Grid vs Table */}
-          <div className="flex items-center bg-white p-1 rounded-2xl border border-[#EAEAEA] shadow-sm">
+          <div className="flex items-center bg-white dark:bg-[#18191D] p-1 rounded-2xl border border-[#EAEAEA] dark:border-[#27282E] shadow-sm">
             <button
               onClick={() => setViewMode('grid')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition ${
                 viewMode === 'grid'
-                  ? 'bg-[#171717] text-white shadow-sm'
-                  : 'text-[#666666] hover:bg-neutral-100'
+                  ? 'bg-[#171717] text-white dark:bg-white dark:text-black shadow-sm'
+                  : 'text-[#666666] dark:text-[#A1A1AA] hover:bg-neutral-100 dark:hover:bg-neutral-800'
               }`}
               title={t('viewGrid')}
             >
@@ -263,8 +307,8 @@ export default function InventoryPage() {
               onClick={() => setViewMode('table')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition ${
                 viewMode === 'table'
-                  ? 'bg-[#171717] text-white shadow-sm'
-                  : 'text-[#666666] hover:bg-neutral-100'
+                  ? 'bg-[#171717] text-white dark:bg-white dark:text-black shadow-sm'
+                  : 'text-[#666666] dark:text-[#A1A1AA] hover:bg-neutral-100 dark:hover:bg-neutral-800'
               }`}
               title={t('viewTable')}
             >
@@ -273,9 +317,40 @@ export default function InventoryPage() {
             </button>
           </div>
 
+          {/* Yangi partiya qabul qilish (Restock) button */}
+          <button
+            onClick={() => restockAllProducts(5)}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-xs font-bold text-emerald-700 dark:text-emerald-400 shadow-sm transition active:scale-95"
+            title="Omborga yangi kelgan telefonlar partiyasini qabul qilish"
+          >
+            <PackageCheck className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Yangi partiya qabul qilish (+Restock)</span>
+          </button>
+
+          {/* Quick simulation button: test selling all 49 phones or resetting back */}
+          {counts.all > 0 ? (
+            <button
+              onClick={simulateSellAll}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-dashed border-red-300 bg-red-50/60 hover:bg-red-100/70 text-[11px] font-bold text-red-600 transition"
+              title="Sinov: Ombordagi 49 ta telefonning barchasini sotilgan deb ko'rish"
+            >
+              <PackageX className="w-3.5 h-3.5" />
+              <span>Sinov: Barchasini sotish (0 dona qilish)</span>
+            </button>
+          ) : (
+            <button
+              onClick={resetToDemoData}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-blue-300 bg-blue-50/80 hover:bg-blue-100 text-[11px] font-bold text-blue-600 transition"
+              title="Standart ombor zaxirasiga qaytarish"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Qayta tiklash (50 dona)</span>
+            </button>
+          )}
+
           <button
             onClick={handleExportCSV}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl border border-[#EAEAEA] bg-white hover:bg-neutral-50 text-xs font-bold text-[#171717] shadow-sm transition"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl border border-[#EAEAEA] dark:border-[#27282E] bg-white dark:bg-[#18191D] hover:bg-neutral-50 text-xs font-bold text-[#171717] dark:text-white shadow-sm transition"
           >
             <Download className="w-3.5 h-3.5 text-[#888888]" />
             <span>{t('exportData')}</span>
@@ -352,6 +427,10 @@ export default function InventoryPage() {
                     onSelect={() => handleCardSelect(product)}
                     onEdit={handleEdit}
                     onDelete={deleteProduct}
+                    onRestock={(prod) => {
+                      setRestockProductTarget(prod);
+                      setRestockModalOpen(true);
+                    }}
                   />
                 ))}
               </div>
@@ -491,6 +570,16 @@ export default function InventoryPage() {
           setEditingProduct(null);
         }}
         productToEdit={editingProduct}
+      />
+
+      {/* Restock Single Product Modal */}
+      <RestockModal
+        isOpen={restockModalOpen}
+        onClose={() => {
+          setRestockModalOpen(false);
+          setRestockProductTarget(null);
+        }}
+        product={restockProductTarget}
       />
     </div>
   );

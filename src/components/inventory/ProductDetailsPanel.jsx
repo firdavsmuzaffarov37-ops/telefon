@@ -353,11 +353,23 @@ export default function ProductDetailsPanel({
       <div className="pt-4 border-t border-[#EAEAEA] mt-3 space-y-2">
         {/* Primary Action Button */}
         <button
-          onClick={() => navigate(`/pos?product=${product.id}&color=${encodeURIComponent(activeColor.name)}`)}
-          className="w-full py-2.5 rounded-xl bg-[#FF7900] hover:bg-[#EA6E00] active:scale-[0.99] text-white text-xs font-bold shadow-md shadow-orange-500/10 flex items-center justify-center gap-2 transition cursor-pointer"
+          onClick={() => {
+            if (product.stock <= 0) return;
+            navigate(`/pos?product=${product.id}&color=${encodeURIComponent(activeColor.name)}`);
+          }}
+          disabled={product.stock <= 0}
+          className={`w-full py-2.5 rounded-xl text-white text-xs font-bold shadow-md flex items-center justify-center gap-2 transition ${
+            product.stock <= 0
+              ? 'bg-neutral-400 cursor-not-allowed opacity-75'
+              : 'bg-[#FF7900] hover:bg-[#EA6E00] active:scale-[0.99] cursor-pointer shadow-orange-500/10'
+          }`}
         >
           <ShoppingBag className="w-4 h-4" />
-          <span>{isClientMode ? "Sotib Olish / Rasmiylashtirish" : t('quickSellBtn')}</span>
+          <span>
+            {product.stock <= 0 
+              ? "⛔ Omborda Tugagan (0 dona — Sotuv to'xtatildi)" 
+              : (isClientMode ? "Sotib Olish / Rasmiylashtirish" : t('quickSellBtn'))}
+          </span>
         </button>
 
         {/* Secondary Edit, Restock & Delete Buttons (Only in Staff mode) */}
