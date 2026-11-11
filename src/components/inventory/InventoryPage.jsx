@@ -67,19 +67,20 @@ export default function InventoryPage() {
     return ['All Storage', ...unique];
   }, [products]);
 
-  // Real-time physical stock counts (Donalar soni har bir sotuvda avtomatik kamayadi)
+  // Real-time physical stock counts (5 tadan kam qolgan bo'lsa darhol ogohlantiradi)
   const counts = useMemo(() => {
     const totalPhysicalUnits = products.reduce((acc, p) => acc + (Number(p.stock) || 0), 0);
     const activePhysicalUnits = products
       .filter(p => Number(p.stock) > 0)
       .reduce((acc, p) => acc + (Number(p.stock) || 0), 0);
-    const lowStockModels = products.filter(p => Number(p.stock) > 0 && Number(p.stock) <= (p.minStockThreshold || 5)).length;
+    // 5 tadan kam qolgan telefonlar (<= 5 dona)
+    const lowStockModels = products.filter(p => Number(p.stock) > 0 && Number(p.stock) <= 5).length;
     const outOfStockModels = products.filter(p => Number(p.stock) <= 0).length;
 
     return {
-      all: totalPhysicalUnits, // Jami barcha smartfonlar donasi (Har bir sotuvda 1 tadan kamayadi)
-      inStock: activePhysicalUnits, // Sotuvda mavjud smartfonlar donasi (Har bir sotuvda 1 tadan kamayadi)
-      lowStock: lowStockModels,
+      all: totalPhysicalUnits, // Jami barcha smartfonlar donasi
+      inStock: activePhysicalUnits, // Sotuvda mavjud smartfonlar donasi
+      lowStock: lowStockModels, // 5 tadan kam qolgan modellar soni
       outOfStock: outOfStockModels,
       totalModels: products.length
     };
@@ -88,15 +89,17 @@ export default function InventoryPage() {
   // Filtered & Sorted products
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
-      // Tab filter
-      if (activeTab === 'in_stock' && p.stock <= (p.minStockThreshold || 5)) return false;
-      if (activeTab === 'low_stock' && (p.stock <= 0 || p.stock > (p.minStockThreshold || 5))) return false;
-      if (activeTab === 'out_of_stock' && p.stock > 0) return false;
+      const stock = Number(p.stock) || 0;
+
+      // Tab filter (5 tadan kam qolgan bo'lsa low_stock hisoblanadi)
+      if (activeTab === 'in_stock' && stock <= 0) return false;
+      if (activeTab === 'low_stock' && (stock <= 0 || stock > 5)) return false;
+      if (activeTab === 'out_of_stock' && stock > 0) return false;
 
       // Dropdown Status filter
-      if (selectedStatus === 'in_stock' && p.stock <= (p.minStockThreshold || 5)) return false;
-      if (selectedStatus === 'low_stock' && (p.stock <= 0 || p.stock > (p.minStockThreshold || 5))) return false;
-      if (selectedStatus === 'out_of_stock' && p.stock > 0) return false;
+      if (selectedStatus === 'in_stock' && stock <= 0) return false;
+      if (selectedStatus === 'low_stock' && (stock <= 0 || stock > 5)) return false;
+      if (selectedStatus === 'out_of_stock' && stock > 0) return false;
 
       // Brand filter
       if (selectedBrand !== 'All Brands' && p.brand !== selectedBrand) return false;

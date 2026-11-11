@@ -29,16 +29,20 @@ export default function ProductCard({
     tagText = t('tagBestSeller');
   }
 
-  // Stock status text & color
-  let stockText = `${t('inStockStatus')} (${product.stock} dona)`;
+  // Stock status text & color (5 tadan kam qolgan bo'lsa ogohlantirish berish)
+  const currentStock = Number(product.stock) || 0;
+  const isOutOfStock = currentStock <= 0;
+  const isLowStock = currentStock > 0 && currentStock <= 5;
+
+  let stockText = `${t('inStockStatus')} (${currentStock} dona)`;
   let stockColor = "text-[#16A36A]";
 
-  if (product.stock <= 0) {
-    stockText = t('outOfStockStatus');
-    stockColor = "text-[#E5484D]";
-  } else if (product.stock <= (product.minStockThreshold || 5)) {
-    stockText = `${t('lowStockStatus')} (${product.stock} dona)`;
-    stockColor = "text-[#F5A623]";
+  if (isOutOfStock) {
+    stockText = "Tugagan (0 dona)";
+    stockColor = "text-[#E5484D] font-bold";
+  } else if (isLowStock) {
+    stockText = `⚠️ Kam qoldi (${currentStock} dona)`;
+    stockColor = "text-[#FF7900] dark:text-amber-400 font-extrabold";
   }
 
   const handleQuickSale = (e) => {
@@ -264,7 +268,7 @@ export default function ProductCard({
             </div>
           ) : (
             /* ISHCHI / DOKON REJIMI: Sotuv, Xarid Narxi, Sof Foyda va Avtomatik Qoldiq */
-            <div>
+            <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-[10px] text-[#888888] font-bold block">Sotuv narxi:</span>
@@ -279,6 +283,28 @@ export default function ProductCard({
                   </span>
                 </div>
               </div>
+
+              {/* 5 tadan kam qolgan telefonlar uchun maxsus ogohlantirish */}
+              {isLowStock && (
+                <div className="py-1 px-2.5 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-between text-[11px] font-bold text-[#FF7900] dark:text-amber-400">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs">⚠️</span>
+                    <span>5 tadan kam qoldi ({currentStock} dona qolgan)!</span>
+                  </div>
+                  <span className="text-[10px] bg-orange-500/20 px-1.5 py-0.5 rounded-md font-extrabold">Ombor</span>
+                </div>
+              )}
+
+              {isOutOfStock && (
+                <div className="py-1 px-2.5 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-between text-[11px] font-bold text-red-500 dark:text-red-400">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs">⛔</span>
+                    <span>Omborda tugagan (0 dona)!</span>
+                  </div>
+                  <span className="text-[10px] bg-red-500/20 px-1.5 py-0.5 rounded-md font-extrabold">Zaxira</span>
+                </div>
+              )}
+
               <div className="flex items-center justify-between mt-1 pt-1.5 border-t border-dashed border-[#EAEAEA] text-[10.5px]">
                 <span className="text-[#666]">Xarid (Tan) narxi: <strong className="text-[#171717]">{formatCurrency(product.purchasePrice)}</strong></span>
                 <span className="text-emerald-700 font-extrabold">Foyda: +{formatCurrency(unitProfit)}</span>

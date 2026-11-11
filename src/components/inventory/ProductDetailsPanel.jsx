@@ -55,16 +55,17 @@ export default function ProductDetailsPanel({
 
   if (!product) return null;
 
-  // Stock status styling
+  // Stock status styling (5 tadan kam qolgan bo'lsa ogohlantirish)
+  const currentStock = Number(product.stock) || 0;
   let stockBadgeClass = "bg-emerald-50 text-[#16A36A] border-emerald-200";
-  let stockLabel = `${t('inStockStatus')} (${product.stock} dona)`;
+  let stockLabel = `${t('inStockStatus')} (${currentStock} dona)`;
 
-  if (product.stock <= 0) {
-    stockBadgeClass = "bg-red-50 text-[#E5484D] border-red-200";
-    stockLabel = `${t('outOfStockStatus')} (0)`;
-  } else if (product.stock <= (product.minStockThreshold || 5)) {
-    stockBadgeClass = "bg-amber-50 text-[#F5A623] border-amber-200";
-    stockLabel = `${t('lowStockStatus')} (${product.stock} dona)`;
+  if (currentStock <= 0) {
+    stockBadgeClass = "bg-red-50 text-[#E5484D] border-red-200 font-bold";
+    stockLabel = "Tugagan (0 dona)";
+  } else if (currentStock <= 5) {
+    stockBadgeClass = "bg-orange-50 text-[#FF7900] border-orange-300 dark:bg-orange-500/10 dark:text-amber-400 font-extrabold";
+    stockLabel = `⚠️ 5 tadan kam qoldi (${currentStock} dona)`;
   }
 
   const profitPerUnit = Number(product.sellingPrice) - Number(product.purchasePrice);
