@@ -3,6 +3,13 @@ import { initialProducts, initialTransactions, initialExpenses, initialDailyRepo
 import { getTodayDateString } from '../utils/formatters';
 import { supabase, supabaseService, testConnection } from '../lib/supabaseClient';
 
+export const initialStaffMembers = [
+  { id: "staff-1", name: "Sardor Rahimov", role: "Katta Sotuvchi", avatar: "SR", target: 15 },
+  { id: "staff-2", name: "Malika Karimova", role: "Sotuvchi-Maslahatchi", avatar: "MK", target: 12 },
+  { id: "staff-3", name: "Jasur Alimov", role: "Kassir-Operator", avatar: "JA", target: 10 },
+  { id: "staff-4", name: "Sherzod Xodiyev", role: "Do'kon Menejeri", avatar: "SX", target: 8 }
+];
+
 const AppContext = createContext();
 
 export function AppProvider({ children }) {
@@ -47,6 +54,28 @@ export function AppProvider({ children }) {
       localStorage.setItem('phonelytics_client_mode', String(next));
       return next;
     });
+  };
+
+  // Staff Members & Currently Active Seller / Cashier
+  const [staffMembers, setStaffMembers] = useState(initialStaffMembers);
+  const [activeCashier, setActiveCashier] = useState(() => {
+    try {
+      const saved = localStorage.getItem('phonelytics_active_cashier');
+      if (saved) return JSON.parse(saved);
+      return initialStaffMembers[0];
+    } catch {
+      return initialStaffMembers[0];
+    }
+  });
+
+  const selectActiveCashier = (staff) => {
+    setActiveCashier(staff);
+    try {
+      localStorage.setItem('phonelytics_active_cashier', JSON.stringify(staff));
+    } catch (e) {
+      console.warn(e);
+    }
+    showToast(`Faol sotuvchi tanlandi: ${staff.name} (${staff.role})`, 'info');
   };
 
   // Theme (Tungi rejim va Kunduzgi rejim)
@@ -467,9 +496,11 @@ export function AppProvider({ children }) {
     paymentMethod = 'Card', 
     customerName = 'Mijoz', 
     customerPhone = '',
-    cashierName = 'Sardor Rahimov',
-    cashierRole = 'Katta Sotuvchi'
+    cashierName = null,
+    cashierRole = null
   }) => {
+    const finalCashierName = cashierName || activeCashier?.name || 'Sardor Rahimov';
+    const finalCashierRole = cashierRole || activeCashier?.role || 'Katta Sotuvchi';
     const product = products.find(p => p.id === productId);
     if (!product) {
       showToast('Smartfon topilmadi!', 'error');
@@ -518,8 +549,8 @@ export function AppProvider({ children }) {
       paymentMethod,
       customerName: customerName || 'Do\'kon mijozi',
       customerPhone: customerPhone || '-',
-      cashierName: cashierName || 'Sardor Rahimov',
-      cashierRole: cashierRole || 'Katta Sotuvchi',
+      cashierName: finalCashierName,
+      cashierRole: finalCashierRole,
       imei: product.imei || 'IMEI-N/A',
       date: new Date().toISOString(),
       status: 'Completed'
@@ -773,6 +804,11 @@ export function AppProvider({ children }) {
       resetToDemoData,
       restockAllProducts,
       simulateSellAll,
+      staffMembers,
+      setStaffMembers,
+      activeCashier,
+      setActiveCashier,
+      selectActiveCashier,
       supabaseStatus,
       syncToSupabase,
       isClientMode,

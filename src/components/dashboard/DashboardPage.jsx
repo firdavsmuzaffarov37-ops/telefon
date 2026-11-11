@@ -25,7 +25,8 @@ import {
   Tag,
   Star,
   Flame,
-  AlertCircle
+  AlertCircle,
+  ShoppingBag
 } from 'lucide-react';
 import { 
   AreaChart, 
@@ -42,7 +43,16 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 export default function DashboardPage() {
-  const { products, transactions, getTodayStats, restockProduct, showToast } = useApp();
+  const { 
+    products, 
+    transactions, 
+    getTodayStats, 
+    restockProduct, 
+    showToast,
+    staffMembers,
+    activeCashier,
+    selectActiveCashier 
+  } = useApp();
   const { t } = useLanguage();
   const navigate = useNavigate();
 
@@ -195,20 +205,20 @@ export default function DashboardPage() {
   const employeePerformance = useMemo(() => {
     const staffMap = {};
 
-    // Standard staff members list
-    const defaultStaff = [
+    // Standard staff members list from context
+    const currentStaff = staffMembers || [
       { name: "Sardor Rahimov", role: "Katta Sotuvchi", avatar: "SR", target: 15 },
       { name: "Malika Karimova", role: "Sotuvchi-Maslahatchi", avatar: "MK", target: 12 },
       { name: "Jasur Alimov", role: "Kassir-Operator", avatar: "JA", target: 10 },
       { name: "Sherzod Xodiyev", role: "Do'kon Menejeri", avatar: "SX", target: 8 }
     ];
 
-    defaultStaff.forEach(s => {
+    currentStaff.forEach(s => {
       staffMap[s.name] = {
         name: s.name,
         role: s.role,
         avatar: s.avatar,
-        target: s.target,
+        target: s.target || 10,
         units: 0,
         revenue: 0,
         profit: 0
@@ -234,7 +244,7 @@ export default function DashboardPage() {
     });
 
     return Object.values(staffMap).sort((a, b) => b.revenue - a.revenue);
-  }, [periodTransactions]);
+  }, [periodTransactions, staffMembers]);
 
   // Quick Restock handler
   const handleQuickRestock = (phone) => {
@@ -603,99 +613,139 @@ export default function DashboardPage() {
               </h3>
             </div>
             <p className="text-xs text-[#888888] mt-0.5">
-              Magazin xodimlarining sotuv hajmi, tushumi va do'konga keltirgan sof foydasi
+              Istalgan xodimni bosib tanlang va uning nomidan yangi telefon sotuvini amalga oshiring
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold px-3 py-1.5 rounded-xl bg-neutral-100 dark:bg-[#202127] text-[#171717] dark:text-white border border-[#EAEAEA] dark:border-[#2E2F37]">
-              Jami Sotuvchilar: {employeePerformance.length} nafar
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs font-medium px-3 py-1.5 rounded-xl bg-orange-50 dark:bg-orange-950/40 text-[#FF7900] border border-orange-200 dark:border-orange-900/50 flex items-center gap-1.5">
+              <span>Hozirgi faol:</span>
+              <strong className="font-bold">{activeCashier?.name || 'Sardor Rahimov'}</strong>
             </span>
+            <button
+              onClick={() => navigate(`/pos?cashier=${encodeURIComponent(activeCashier?.name || 'Sardor Rahimov')}`)}
+              className="px-3.5 py-1.5 rounded-xl bg-[#FF7900] hover:bg-[#EA6E00] text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
+            >
+              <ShoppingBag className="w-3.5 h-3.5" />
+              <span>POS da Sotish</span>
+            </button>
           </div>
         </div>
 
-        {/* Staff Cards Grid */}
+        {/* Staff Cards Grid - Har bir ishchini tanlash va telefon sotish imkoniyati */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
           {employeePerformance.map((emp, index) => {
             const isLeader = index === 0 && emp.units > 0;
+            const isSelected = activeCashier?.name === emp.name;
             const progressPct = Math.min(100, Math.round((emp.units / emp.target) * 100));
 
             return (
               <div
                 key={emp.name}
-                className={`p-5 rounded-3xl border transition-all ${
-                  isLeader
-                    ? 'bg-gradient-to-b from-orange-50/70 to-white dark:from-orange-950/20 dark:to-[#18191D] border-orange-300 dark:border-orange-800 shadow-md ring-1 ring-[#FF7900]/20'
-                    : 'bg-white dark:bg-[#18191D] border-[#EAEAEA] dark:border-[#27282E]'
+                onClick={() => selectActiveCashier(emp)}
+                className={`p-5 rounded-3xl border transition-all cursor-pointer flex flex-col justify-between hover:shadow-lg ${
+                  isSelected
+                    ? 'border-[#FF7900] ring-2 ring-[#FF7900]/30 bg-orange-50/20 dark:bg-orange-950/15 shadow-md'
+                    : isLeader
+                      ? 'bg-gradient-to-b from-orange-50/70 to-white dark:from-orange-950/20 dark:to-[#18191D] border-orange-300 dark:border-orange-800 shadow-sm'
+                      : 'bg-white dark:bg-[#18191D] border-[#EAEAEA] dark:border-[#27282E] hover:border-neutral-300'
                 }`}
               >
-                {/* Employee Header */}
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-11 h-11 rounded-2xl flex items-center justify-center font-black text-sm shadow-sm ${
-                      isLeader 
-                        ? 'bg-[#FF7900] text-white ring-2 ring-orange-200' 
-                        : 'bg-neutral-100 dark:bg-[#25262C] text-[#171717] dark:text-white'
-                    }`}>
-                      {emp.avatar}
+                <div>
+                  {/* Employee Header */}
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-11 h-11 rounded-2xl flex items-center justify-center font-black text-sm shadow-sm ${
+                        isSelected || isLeader
+                          ? 'bg-[#FF7900] text-white ring-2 ring-orange-200' 
+                          : 'bg-neutral-100 dark:bg-[#25262C] text-[#171717] dark:text-white'
+                      }`}>
+                        {emp.avatar}
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-sm text-[#171717] dark:text-white line-clamp-1">
+                          {emp.name}
+                        </h4>
+                        <span className="text-[11px] text-[#888888] font-medium block">
+                          {emp.role}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-[#171717] dark:text-white line-clamp-1">
-                        {emp.name}
-                      </h4>
-                      <span className="text-[11px] text-[#888888] font-medium block">
-                        {emp.role}
+
+                    <div className="flex flex-col items-end gap-1">
+                      {isLeader && (
+                        <span className="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 text-[10px] font-black flex items-center gap-1 shadow-xs">
+                          <Award className="w-3 h-3 text-[#FF7900]" />
+                          TOP 1
+                        </span>
+                      )}
+                      {isSelected && (
+                        <span className="px-2 py-0.5 rounded-full bg-[#FF7900] text-white text-[9.5px] font-bold shadow-xs">
+                          ✓ Faol
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Key Metrics */}
+                  <div className="mt-5 space-y-2.5 pt-4 border-t border-[#F0F0F0] dark:border-[#27282E] text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#888888]">Sotilgan telefonlar:</span>
+                      <span className="font-black text-[#171717] dark:text-white text-sm">
+                        {emp.units} dona
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#888888]">Jami Savdo Tushumi:</span>
+                      <span className="font-bold text-[#171717] dark:text-white">
+                        {formatCurrency(emp.revenue)}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#888888]">Keltirilgan Sof Foyda:</span>
+                      <span className="font-black text-emerald-600 dark:text-emerald-400">
+                        +{formatCurrency(emp.profit)}
                       </span>
                     </div>
                   </div>
 
-                  {isLeader && (
-                    <span className="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 text-[10px] font-black flex items-center gap-1 shadow-xs">
-                      <Award className="w-3 h-3 text-[#FF7900]" />
-                      TOP 1
-                    </span>
-                  )}
-                </div>
-
-                {/* Key Metrics */}
-                <div className="mt-5 space-y-2.5 pt-4 border-t border-[#F0F0F0] dark:border-[#27282E] text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[#888888]">Sotilgan telefonlar:</span>
-                    <span className="font-black text-[#171717] dark:text-white text-sm">
-                      {emp.units} dona
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-[#888888]">Jami Savdo Tushumi:</span>
-                    <span className="font-bold text-[#171717] dark:text-white">
-                      {formatCurrency(emp.revenue)}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-[#888888]">Keltirilgan Sof Foyda:</span>
-                    <span className="font-black text-emerald-600 dark:text-emerald-400">
-                      +{formatCurrency(emp.profit)}
-                    </span>
+                  {/* Target Progress Bar */}
+                  <div className="mt-4 pt-3 border-t border-[#F0F0F0] dark:border-[#27282E]">
+                    <div className="flex items-center justify-between text-[11px] mb-1.5">
+                      <span className="text-[#888888] font-medium">Reja bajarilishi:</span>
+                      <span className="font-bold text-[#171717] dark:text-white">{progressPct}%</span>
+                    </div>
+                    <div className="w-full h-2 rounded-full bg-neutral-100 dark:bg-[#25262C] overflow-hidden">
+                      <div 
+                        className={`h-full rounded-full transition-all duration-500 ${
+                          isSelected || isLeader ? 'bg-[#FF7900]' : 'bg-emerald-500'
+                        }`}
+                        style={{ width: `${Math.min(100, progressPct)}%` }}
+                      />
+                    </div>
                   </div>
                 </div>
 
-                {/* Target Progress Bar */}
-                <div className="mt-4 pt-3 border-t border-[#F0F0F0] dark:border-[#27282E]">
-                  <div className="flex items-center justify-between text-[11px] mb-1.5">
-                    <span className="text-[#888888] font-medium">Reja bajarilishi:</span>
-                    <span className="font-bold text-[#171717] dark:text-white">{progressPct}%</span>
-                  </div>
-                  <div className="w-full h-2 rounded-full bg-neutral-100 dark:bg-[#25262C] overflow-hidden">
-                    <div 
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        isLeader ? 'bg-[#FF7900]' : 'bg-emerald-500'
-                      }`}
-                      style={{ width: `${Math.min(100, progressPct)}%` }}
-                    />
-                  </div>
-                </div>
+                {/* Telefon Sotish Tugmasi (Har bir xodim nomidan sotish) */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    selectActiveCashier(emp);
+                    navigate(`/pos?cashier=${encodeURIComponent(emp.name)}`);
+                  }}
+                  className={`w-full mt-4 py-2.5 px-3 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 transition active:scale-95 cursor-pointer shadow-sm ${
+                    isSelected
+                      ? 'bg-[#FF7900] hover:bg-[#EA6E00] text-white shadow-orange-500/20'
+                      : 'bg-neutral-100 dark:bg-[#23242A] hover:bg-[#FF7900] hover:text-white text-[#171717] dark:text-white'
+                  }`}
+                  title={`${emp.name} nomidan telefon sotish`}
+                >
+                  <ShoppingBag className="w-3.5 h-3.5" />
+                  <span>{emp.name.split(' ')[0]} nomidan sotish</span>
+                </button>
               </div>
             );
           })}

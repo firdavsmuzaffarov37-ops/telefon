@@ -18,16 +18,35 @@ import {
   Scan,
   Calendar,
   RefreshCw,
-  Sparkles
+  Sparkles,
+  Users
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useSearchParams } from 'react-router-dom';
 import BarcodeScannerModal from './BarcodeScannerModal';
 
 export default function POSPage() {
-  const { products, recordSale, settings } = useApp();
+  const { 
+    products, 
+    recordSale, 
+    settings,
+    staffMembers,
+    activeCashier,
+    selectActiveCashier
+  } = useApp();
   const { t } = useLanguage();
   const [searchParams] = useSearchParams();
+
+  // URL orqali kelgan xodimni avtomatik faol sotuvchi qilish
+  useEffect(() => {
+    const cashierParam = searchParams.get('cashier');
+    if (cashierParam && staffMembers) {
+      const found = staffMembers.find(s => s.name.toLowerCase() === cashierParam.toLowerCase());
+      if (found) {
+        selectActiveCashier(found);
+      }
+    }
+  }, [searchParams, staffMembers]);
 
   // Search & Brand Filter for fast product selection
   const [searchQuery, setSearchQuery] = useState('');
@@ -165,7 +184,9 @@ export default function POSPage() {
       discount: totalDiscount,
       paymentMethod: effectiveMethod,
       customerName: customerName.trim() || 'Mijoz',
-      customerPhone: customerPhone.trim()
+      customerPhone: customerPhone.trim(),
+      cashierName: activeCashier?.name || 'Sardor Rahimov',
+      cashierRole: activeCashier?.role || 'Katta Sotuvchi'
     });
 
     if (res.success) {
@@ -317,6 +338,46 @@ export default function POSPage() {
 
             {currentProduct ? (
               <form onSubmit={handleConfirmSale} className="space-y-4">
+                {/* Sotuvchi / Kassir Tanlash (Har qanday ishchini tanlab sotish imkoniyati) */}
+                <div className="p-3 rounded-2xl bg-orange-50/50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-900/60 space-y-1.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-bold text-[#171717] dark:text-white flex items-center gap-1.5">
+                      <Users className="w-3.5 h-3.5 text-[#FF7900]" />
+                      Sotuvchi (Kassir):
+                    </span>
+                    <span className="text-[11px] font-extrabold text-[#FF7900]">
+                      {activeCashier?.name || 'Sardor Rahimov'}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1.5 pt-0.5">
+                    {(staffMembers || []).map((staff) => {
+                      const isChosen = activeCashier?.name === staff.name;
+                      return (
+                        <button
+                          key={staff.name}
+                          type="button"
+                          onClick={() => selectActiveCashier(staff)}
+                          className={`p-2 rounded-xl border flex items-center gap-2 text-left transition cursor-pointer ${
+                            isChosen
+                              ? 'border-[#FF7900] bg-white dark:bg-[#18191D] ring-2 ring-[#FF7900]/30 shadow-xs'
+                              : 'border-[#EAEAEA] dark:border-[#27282E] bg-white/70 dark:bg-[#202127] hover:bg-white text-[#666]'
+                          }`}
+                        >
+                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-[10px] flex-shrink-0 ${
+                            isChosen ? 'bg-[#FF7900] text-white' : 'bg-neutral-100 dark:bg-[#2C2D35] text-[#555] dark:text-[#AAA]'
+                          }`}>
+                            {staff.avatar}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-[11px] font-bold text-[#171717] dark:text-white truncate leading-tight">{staff.name.split(' ')[0]}</p>
+                            <span className="text-[9px] text-[#888] truncate block">{staff.role.split(' ')[0]}</span>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 {/* Selected Smartphone Header */}
                 <div className="p-3.5 rounded-2xl bg-neutral-50 border border-[#EAEAEA] flex items-center gap-3">
                   <img src={currentProduct.image} alt={currentProduct.name} className="w-12 h-12 object-contain bg-white rounded-xl p-1 border" />
@@ -693,6 +754,10 @@ export default function POSPage() {
                   <span>{formatCurrency(completedTxn.monthlyPayment)} / oy</span>
                 </div>
               )}
+              <div className="flex justify-between text-[#888888]">
+                <span>Sotuvchi (Kassir):</span>
+                <span className="font-semibold text-[#171717]">{completedTxn.cashierName || 'Sardor Rahimov'} ({completedTxn.cashierRole || 'Katta Sotuvchi'})</span>
+              </div>
               <div className="flex justify-between text-[#888888]">
                 <span>{t('receiptCustomer')}</span>
                 <span className="text-[#171717]">{completedTxn.customerName} {completedTxn.customerPhone ? `(${completedTxn.customerPhone})` : ''}</span>
