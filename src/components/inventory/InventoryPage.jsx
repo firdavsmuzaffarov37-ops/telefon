@@ -26,7 +26,10 @@ import {
   AlertTriangle,
   XCircle,
   Package,
-  RotateCcw
+  RotateCcw,
+  Search,
+  Filter,
+  X
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -188,13 +191,50 @@ export default function InventoryPage() {
 
   return (
     <div className="max-w-[1720px] mx-auto px-4 md:px-8 py-6 space-y-6">
-      {/* 1. Header with 100% Translated Text */}
-      <Header
-        title={t('invTitle')}
-        subtitle={t('invSubtitle')}
-        actionText={t('newProductBtn')}
-        onActionClick={handleOpenAddModal}
-      />
+      {/* 1. Reference-Inspired Header: Products, Search & Add New Product */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-1">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#171717] dark:text-white font-['Plus_Jakarta_Sans']">
+            {t('invTitle')}
+          </h1>
+          <p className="text-xs text-[#888888] mt-1 font-medium">
+            {counts.all} dona smartfon zaxirada • {filteredProducts.length} ta model ko'rsatilmoqda
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2.5 flex-wrap">
+          {/* Pill Search */}
+          <div className="relative w-full sm:w-64">
+            <Search className="w-3.5 h-3.5 text-[#888888] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Qidirish (model, brend, IMEI)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-[#F5F5F7] dark:bg-[#1C1D24] border border-[#EAEAEF] dark:border-[#272832] rounded-2xl pl-9 pr-8 py-2.5 text-xs text-[#171717] dark:text-white placeholder:text-[#888888] focus:bg-white dark:focus:bg-[#202128] focus:outline-none focus:ring-1 focus:ring-[#FF7900] shadow-xs"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#888] hover:text-[#171717] dark:hover:text-white"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+
+          {/* Add New Product Pill Button (Vibrant Orange Gradient from Reference) */}
+          <button
+            type="button"
+            onClick={handleOpenAddModal}
+            className="flex items-center gap-1.5 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#FF7900] via-[#FF8A18] to-[#FFA03A] hover:brightness-105 active:scale-95 text-white text-xs font-bold shadow-md shadow-orange-500/25 transition-all cursor-pointer"
+          >
+            <Plus className="w-4 h-4 stroke-[2.6]" />
+            <span>+ Add New Product</span>
+          </button>
+        </div>
+      </div>
 
       {/* 2. Top 4 Stat Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -418,11 +458,12 @@ export default function InventoryPage() {
                 </div>
               </div>
             ) : (
-              <div className={`grid grid-cols-1 sm:grid-cols-2 ${isDetailsPanelOpen ? '2xl:grid-cols-3' : 'xl:grid-cols-3 2xl:grid-cols-4'} gap-5`}>
-                {filteredProducts.map(product => (
+              <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ${isDetailsPanelOpen ? 'xl:grid-cols-3 2xl:grid-cols-4' : 'lg:grid-cols-4 2xl:grid-cols-5'} gap-4 sm:gap-5`}>
+                {filteredProducts.map((product, index) => (
                   <ProductCard
                     key={product.id}
                     product={product}
+                    cardIndex={index}
                     isSelected={selectedProduct?.id === product.id && isDetailsPanelOpen}
                     onSelect={() => handleCardSelect(product)}
                     onEdit={handleEdit}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, ChevronDown, SlidersHorizontal, X } from 'lucide-react';
+import { Search, ChevronDown, SlidersHorizontal, X, Sparkles, Filter } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 export default function FilterBar({
@@ -18,103 +18,113 @@ export default function FilterBar({
   sortBy,
   setSortBy,
   counts = { all: 0, inStock: 0, lowStock: 0, outOfStock: 0 },
-  brands = ['All Brands', 'Apple', 'Samsung', 'Xiaomi', 'Honor', 'Google'],
-  storages = ['All Storage', '128GB', '256GB', '512GB']
+  brands = ['All Brands', 'Apple', 'Samsung', 'Xiaomi', 'vivo', 'Google', 'OnePlus', 'realme', 'Honor'],
+  storages = ['All Storage', '128GB', '256GB', '512GB', '1TB']
 }) {
   const { t } = useLanguage();
   const [showMoreFilters, setShowMoreFilters] = useState(false);
 
-  const tabs = [
-    { id: 'all', label: t('allProductsTab'), count: counts.all },
-    { id: 'in_stock', label: t('inStockTab'), count: counts.inStock },
-    { id: 'low_stock', label: t('lowStockTab'), count: counts.lowStock },
-    { id: 'out_of_stock', label: t('outOfStockTab'), count: counts.outOfStock },
+  // Modern category pills (Directly matching reference screenshot)
+  const categoryPills = [
+    { id: 'All Brands', label: 'Barchasi (All)' },
+    { id: 'Apple', label: 'Apple' },
+    { id: 'Samsung', label: 'Samsung' },
+    { id: 'Xiaomi', label: 'Xiaomi' },
+    { id: 'vivo', label: 'vivo' },
+    { id: 'Google', label: 'Google Pixel' },
+    { id: 'OnePlus', label: 'OnePlus' },
+    { id: 'realme', label: 'realme' },
+    { id: 'Honor', label: 'Honor' },
   ];
 
   return (
     <div className="space-y-4 mb-6">
-      {/* Top Filter Dropdown Row (Matching reference screenshot) */}
-      <div className="flex flex-wrap items-center gap-3">
-        {/* Status Dropdown */}
-        <div className="relative min-w-[140px] flex-1 sm:flex-none">
-          <select
-            value={selectedStatus}
-            onChange={(e) => setSelectedStatus(e.target.value)}
-            className="w-full appearance-none bg-white border border-[#EAEAEA] rounded-xl px-3.5 py-2 text-xs font-medium text-[#171717] pr-8 hover:border-neutral-300 focus:outline-none focus:ring-1 focus:ring-[#FF7900] shadow-sm cursor-pointer"
-          >
-            <option value="all">{t('filterStatus')}</option>
-            <option value="in_stock">{t('inStockTab')}</option>
-            <option value="low_stock">{t('lowStockTab')}</option>
-            <option value="out_of_stock">{t('outOfStockTab')}</option>
-          </select>
-          <ChevronDown className="w-3.5 h-3.5 text-[#888888] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-        </div>
+      {/* 1. Category Pill Row (Horizontal scrollable pill list like reference screenshot) */}
+      <div className="flex items-center justify-between gap-3 overflow-x-auto pb-1 no-scrollbar">
+        <div className="flex items-center gap-2 flex-nowrap min-w-max">
+          {categoryPills.map((pill) => {
+            const isSelected = selectedBrand === pill.id;
+            return (
+              <button
+                key={pill.id}
+                type="button"
+                onClick={() => setSelectedBrand(pill.id)}
+                className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all duration-200 cursor-pointer whitespace-nowrap shadow-xs ${
+                  isSelected
+                    ? 'bg-[#171717] dark:bg-white text-white dark:text-[#171717] shadow-sm scale-[1.02]'
+                    : 'bg-[#F5F5F7] dark:bg-[#1C1D24] text-[#666666] dark:text-[#A1A1AA] hover:bg-neutral-200/70 dark:hover:bg-[#252630] hover:text-[#171717] dark:hover:text-white'
+                }`}
+              >
+                {pill.label}
+              </button>
+            );
+          })}
 
-        {/* Brand Dropdown */}
-        <div className="relative min-w-[140px] flex-1 sm:flex-none">
-          <select
-            value={selectedBrand}
-            onChange={(e) => setSelectedBrand(e.target.value)}
-            className="w-full appearance-none bg-white border border-[#EAEAEA] rounded-xl px-3.5 py-2 text-xs font-medium text-[#171717] pr-8 hover:border-neutral-300 focus:outline-none focus:ring-1 focus:ring-[#FF7900] shadow-sm cursor-pointer"
-          >
-            {brands.map(b => (
-              <option key={b} value={b}>{b === 'All Brands' ? t('filterBrand') : b}</option>
-            ))}
-          </select>
-          <ChevronDown className="w-3.5 h-3.5 text-[#888888] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-        </div>
-
-        {/* Storage Capacity Dropdown */}
-        <div className="relative min-w-[140px] flex-1 sm:flex-none">
-          <select
-            value={selectedStorage}
-            onChange={(e) => setSelectedStorage(e.target.value)}
-            className="w-full appearance-none bg-white border border-[#EAEAEA] rounded-xl px-3.5 py-2 text-xs font-medium text-[#171717] pr-8 hover:border-neutral-300 focus:outline-none focus:ring-1 focus:ring-[#FF7900] shadow-sm cursor-pointer"
-          >
-            {storages.map(s => (
-              <option key={s} value={s}>{s === 'All Storage' ? t('filterStorage') : s}</option>
-            ))}
-          </select>
-          <ChevronDown className="w-3.5 h-3.5 text-[#888888] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-        </div>
-
-        {/* More Filters Toggle Pill */}
-        <button
-          onClick={() => setShowMoreFilters(!showMoreFilters)}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all duration-150 ${
-            showMoreFilters
-              ? 'bg-[#FF7900] text-white shadow-sm'
-              : 'bg-[#171717] text-white hover:bg-neutral-800'
-          }`}
-        >
-          <span>{t('moreFilters')}</span>
-          <SlidersHorizontal className="w-3.5 h-3.5" />
-        </button>
-
-        {/* Reset active filters if any are set */}
-        {(selectedBrand !== 'All Brands' || selectedStorage !== 'All Storage' || selectedStatus !== 'all' || searchQuery || priceRange.max < 25000000) && (
+          {/* Quick Hit Savdo Tab */}
           <button
-            onClick={() => {
-              setSelectedBrand('All Brands');
-              setSelectedStorage('All Storage');
-              setSelectedStatus('all');
-              setSearchQuery('');
-              setPriceRange({ min: 0, max: 25000000 });
-            }}
-            className="flex items-center gap-1 text-xs text-[#888888] hover:text-[#E5484D] px-2 py-1 transition"
+            type="button"
+            onClick={() => setSortBy(sortBy === 'popular' ? 'newest' : 'popular')}
+            className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all duration-200 cursor-pointer whitespace-nowrap shadow-xs flex items-center gap-1.5 ${
+              sortBy === 'popular'
+                ? 'bg-[#FF7900] text-white shadow-sm'
+                : 'bg-[#F5F5F7] dark:bg-[#1C1D24] text-[#666666] dark:text-[#A1A1AA] hover:bg-neutral-200/70 dark:hover:bg-[#252630]'
+            }`}
           >
-            <X className="w-3.5 h-3.5" />
-            <span>{t('resetFilters')}</span>
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Eng Ko'p Sotilgan</span>
           </button>
-        )}
+        </div>
+
+        {/* Right: Storage & Sort Dropdowns (All ⌵ from reference) */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="relative">
+            <select
+              value={selectedStorage}
+              onChange={(e) => setSelectedStorage(e.target.value)}
+              className="appearance-none bg-[#F5F5F7] dark:bg-[#1C1D24] border border-[#EAEAEF] dark:border-[#272832] rounded-2xl pl-3.5 pr-8 py-2 text-xs font-bold text-[#171717] dark:text-white hover:border-neutral-300 focus:outline-none focus:ring-1 focus:ring-[#FF7900] cursor-pointer shadow-xs"
+            >
+              {storages.map(s => (
+                <option key={s} value={s}>{s === 'All Storage' ? 'Xotira: Barchasi' : s}</option>
+              ))}
+            </select>
+            <ChevronDown className="w-3.5 h-3.5 text-[#888888] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          </div>
+
+          <div className="relative">
+            <select
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              className="appearance-none bg-[#F5F5F7] dark:bg-[#1C1D24] border border-[#EAEAEF] dark:border-[#272832] rounded-2xl pl-3.5 pr-8 py-2 text-xs font-bold text-[#171717] dark:text-white hover:border-neutral-300 focus:outline-none focus:ring-1 focus:ring-[#FF7900] cursor-pointer shadow-xs"
+            >
+              <option value="all">Holat: Barchasi</option>
+              <option value="in_stock">Sotuvda mavjud</option>
+              <option value="low_stock">5 tadan kam qolgan</option>
+              <option value="out_of_stock">Tugagan (0 dona)</option>
+            </select>
+            <ChevronDown className="w-3.5 h-3.5 text-[#888888] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setShowMoreFilters(!showMoreFilters)}
+            className={`p-2 rounded-2xl border transition cursor-pointer flex items-center justify-center ${
+              showMoreFilters
+                ? 'bg-[#FF7900] text-white border-[#FF7900]'
+                : 'bg-[#F5F5F7] dark:bg-[#1C1D24] text-[#666666] dark:text-[#A1A1AA] border-[#EAEAEF] dark:border-[#272832] hover:text-[#171717]'
+            }`}
+            title="Qo'shimcha narx filtrlari"
+          >
+            <Filter className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
-      {/* Expandable More Filters Panel */}
+      {/* 2. Expandable Advanced Filter Drawer */}
       {showMoreFilters && (
-        <div className="p-4 bg-white rounded-2xl border border-[#EAEAEA] shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-in fade-in">
+        <div className="p-4 bg-white dark:bg-[#181920] rounded-3xl border border-[#EAEAEA] dark:border-[#27282E] shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-in fade-in">
           <div>
-            <label className="text-xs font-semibold text-[#666666] block mb-1.5">
-              {t('maxPrice')}: {Number(priceRange.max).toLocaleString()} so'm
+            <label className="text-xs font-semibold text-[#666666] dark:text-[#A1A1AA] block mb-1.5">
+              Maksimal Narx: {Number(priceRange.max).toLocaleString()} so'm
             </label>
             <input
               type="range"
@@ -127,91 +137,40 @@ export default function FilterBar({
             />
           </div>
           <div className="flex items-center gap-2 pt-4">
-            <span className="text-xs text-[#888888] font-medium">Tezkor:</span>
+            <span className="text-xs text-[#888888] font-medium">Tezkor filtr:</span>
             <button
-              onClick={() => setPriceRange({ min: 0, max: 5000000 })}
-              className="text-xs px-2.5 py-1 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-[#171717] font-medium"
+              type="button"
+              onClick={() => setPriceRange({ min: 0, max: 7000000 })}
+              className="text-xs px-3 py-1.5 rounded-xl bg-neutral-100 dark:bg-[#23242A] hover:bg-neutral-200 text-[#171717] dark:text-white font-medium"
             >
-              5 mln gacha
+              7 mln gacha
             </button>
             <button
+              type="button"
               onClick={() => setPriceRange({ min: 0, max: 15000000 })}
-              className="text-xs px-2.5 py-1 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-[#171717] font-medium"
+              className="text-xs px-3 py-1.5 rounded-xl bg-neutral-100 dark:bg-[#23242A] hover:bg-neutral-200 text-[#171717] dark:text-white font-medium"
             >
               15 mln gacha
             </button>
           </div>
+          <div className="flex items-center justify-end pt-4">
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedBrand('All Brands');
+                setSelectedStorage('All Storage');
+                setSelectedStatus('all');
+                setSearchQuery('');
+                setPriceRange({ min: 0, max: 25000000 });
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-100 dark:bg-[#23242A] hover:bg-red-50 hover:text-red-600 text-xs text-[#666] font-semibold transition"
+            >
+              <X className="w-3.5 h-3.5" />
+              <span>Filtrlarni tozalash</span>
+            </button>
+          </div>
         </div>
       )}
-
-      {/* Tabs and Search / Sort Row (Matching reference screenshot) */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-2 border-b border-[#EAEAEA]">
-        {/* Tabs */}
-        <div className="flex items-center space-x-6 overflow-x-auto no-scrollbar">
-          {tabs.map((tab) => {
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`pb-3 text-xs md:text-sm font-semibold tracking-tight transition-all relative whitespace-nowrap ${
-                  isActive
-                    ? 'text-[#171717]'
-                    : 'text-[#888888] hover:text-[#171717]'
-                }`}
-              >
-                <span>{tab.label}</span>
-                <span className={`ml-1.5 text-xs ${isActive ? 'text-[#171717]' : 'text-[#888888]'}`}>
-                  ({tab.count})
-                </span>
-                {isActive && (
-                  <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#171717] rounded-full" />
-                )}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Search & Sort Controls */}
-        <div className="flex items-center gap-3 pb-2.5">
-          {/* Search bar */}
-          <div className="relative w-full sm:w-64 md:w-80">
-            <Search className="w-3.5 h-3.5 text-[#888888] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              type="text"
-              placeholder={t('searchPlaceholder')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white border border-[#EAEAEA] rounded-xl pl-9 pr-3 py-1.5 text-xs text-[#171717] placeholder:text-[#888888] hover:border-neutral-300 focus:outline-none focus:ring-1 focus:ring-[#FF7900] shadow-sm"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#888888] hover:text-[#171717]"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
-
-          {/* Sort By Dropdown */}
-          <div className="relative min-w-[130px]">
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="w-full appearance-none bg-white border border-[#EAEAEA] rounded-xl px-3 py-1.5 text-xs font-medium text-[#171717] pr-7 hover:border-neutral-300 focus:outline-none focus:ring-1 focus:ring-[#FF7900] shadow-sm cursor-pointer"
-            >
-              <option value="newest">{t('sortNewest')}</option>
-              <option value="price_low">{t('sortPriceLow')}</option>
-              <option value="price_high">{t('sortPriceHigh')}</option>
-              <option value="stock_low">{t('sortStockLow')}</option>
-              <option value="popular">{t('sortPopular')}</option>
-            </select>
-            <ChevronDown className="w-3.5 h-3.5 text-[#888888] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
-

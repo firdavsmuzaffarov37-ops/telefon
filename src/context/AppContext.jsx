@@ -25,12 +25,12 @@ export function AppProvider({ children }) {
       const version = localStorage.getItem('phonelytics_data_version');
       const saved = localStorage.getItem('phonelytics_products');
       
-      if (version === 'v7_low_stock_threshold_5' && saved) {
+      if (version === 'v9_reference_showcase' && saved) {
         return JSON.parse(saved);
       }
       
-      // Yangi v7 versiyasi: 5 tadan kam qolgan telefonlar ogohlantirishi bilan
-      localStorage.setItem('phonelytics_data_version', 'v7_low_stock_threshold_5');
+      // Yangi v9 versiyasi: Reference dizaynidagi eng so'nggi flagmanlar bilan
+      localStorage.setItem('phonelytics_data_version', 'v9_reference_showcase');
       localStorage.setItem('phonelytics_products', JSON.stringify(initialProducts));
       return initialProducts;
     } catch (e) {
