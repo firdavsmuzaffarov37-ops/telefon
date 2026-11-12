@@ -367,27 +367,6 @@ export default function InventoryPage() {
             <span>Yangi partiya qabul qilish (+Restock)</span>
           </button>
 
-          {/* Quick simulation button: test selling all 49 phones or resetting back */}
-          {counts.all > 0 ? (
-            <button
-              onClick={simulateSellAll}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-dashed border-red-300 bg-red-50/60 hover:bg-red-100/70 text-[11px] font-bold text-red-600 transition"
-              title="Sinov: Ombordagi 49 ta telefonning barchasini sotilgan deb ko'rish"
-            >
-              <PackageX className="w-3.5 h-3.5" />
-              <span>Sinov: Barchasini sotish (0 dona qilish)</span>
-            </button>
-          ) : (
-            <button
-              onClick={resetToDemoData}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-blue-300 bg-blue-50/80 hover:bg-blue-100 text-[11px] font-bold text-blue-600 transition"
-              title="Standart ombor zaxirasiga qaytarish"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>Qayta tiklash (50 dona)</span>
-            </button>
-          )}
-
           <button
             onClick={handleExportCSV}
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl border border-[#EAEAEA] dark:border-[#27282E] bg-white dark:bg-[#18191D] hover:bg-neutral-50 text-xs font-bold text-[#171717] dark:text-white shadow-sm transition"
