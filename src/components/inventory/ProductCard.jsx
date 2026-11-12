@@ -72,12 +72,12 @@ export default function ProductCard({
             {product.brand}
           </span>
           {isOutOfStock ? (
-            <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-red-100 text-red-600 border border-red-200 shadow-xs">
+            <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/60 shadow-xs">
               Tugagan
             </span>
           ) : isLowStock ? (
-            <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-200 shadow-xs">
-              Kam qoldi
+            <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-900/60 shadow-xs">
+              ⚠️ Kam qoldi: {currentStock} dona
             </span>
           ) : null}
         </div>
@@ -227,7 +227,7 @@ export default function ProductCard({
                 ? 'text-[#FF7900] dark:text-amber-400 font-extrabold' 
                 : 'text-emerald-600 dark:text-emerald-400'
           }`}>
-            {isOutOfStock ? '⛔ Tugagan' : isLowStock ? `⚠️ ${currentStock} dona` : `✓ ${currentStock} dona`}
+            {isOutOfStock ? '⛔ Tugagan (0 dona)' : isLowStock ? `⚠️ ${currentStock} dona (5 tadan kam)` : `✓ ${currentStock} dona mavjud`}
           </span>
         </div>
       </div>

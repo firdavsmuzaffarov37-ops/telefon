@@ -67,16 +67,16 @@ export default function SettingsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         {/* Left 2 Cols: Store Details Form */}
-        <div className="lg:col-span-2 bg-white rounded-3xl border border-[#EAEAEA] p-6 shadow-card space-y-6">
-          <div className="flex items-center justify-between pb-4 border-b border-[#EAEAEA]">
+        <div className="lg:col-span-2 bg-white dark:bg-[#18191D] rounded-3xl border border-[#EAEAEA] dark:border-[#27282E] p-6 shadow-card space-y-6">
+          <div className="flex items-center justify-between pb-4 border-b border-[#EAEAEA] dark:border-[#27282E]">
             <div className="flex items-center gap-2">
               <Store className="w-5 h-5 text-[#FF7900]" />
-              <h3 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
+              <h3 className="text-base font-bold text-[#171717] dark:text-white font-['Plus_Jakarta_Sans']">
                 Do'kon Profili & Ma'lumotlari
               </h3>
             </div>
             {/* Store Icon Preview */}
-            <div className="w-10 h-10 rounded-2xl overflow-hidden border border-[#EAEAEA] shadow-sm">
+            <div className="w-10 h-10 rounded-2xl overflow-hidden border border-[#EAEAEA] dark:border-[#27282E] shadow-sm">
               <img src="/logo.png" alt="Store Icon" className="w-full h-full object-cover" />
             </div>
           </div>
@@ -206,16 +206,16 @@ export default function SettingsPage() {
         {/* Right 1 Col: Data Management & Reset */}
         <div className="space-y-6">
           {/* Tungi / Kunduzgi Rejim (Theme Selection) */}
-          <div className="bg-white rounded-3xl border border-[#EAEAEA] p-6 shadow-card space-y-4">
+          <div className="bg-white dark:bg-[#18191D] rounded-3xl border border-[#EAEAEA] dark:border-[#27282E] p-6 shadow-card space-y-4">
             <div className="flex items-center gap-2">
               <div className="w-5 h-5 flex items-center justify-center">
                 {theme === 'dark' ? <Moon className="w-5 h-5 text-amber-400" /> : <Sun className="w-5 h-5 text-[#FF7900]" />}
               </div>
-              <h3 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
+              <h3 className="text-base font-bold text-[#171717] dark:text-white font-['Plus_Jakarta_Sans']">
                 Ilova Mavzusi (Theme)
               </h3>
             </div>
-            <p className="text-xs text-[#888888]">
+            <p className="text-xs text-[#888888] dark:text-neutral-400">
               O'zingizga qulay rejimni tanlang: Kunduzgi yorug' (oq) yoki Tungi qulay (qora) rejim.
             </p>
 
@@ -226,7 +226,7 @@ export default function SettingsPage() {
                 className={`p-3.5 rounded-2xl border text-left flex flex-col justify-between transition cursor-pointer ${
                   theme === 'light'
                     ? 'border-[#FF7900] bg-orange-50/60 ring-2 ring-[#FF7900]/20 font-bold'
-                    : 'border-[#EAEAEA] bg-neutral-50 hover:bg-neutral-100'
+                    : 'border-[#EAEAEA] dark:border-[#27282E] bg-neutral-50 dark:bg-[#202127] hover:bg-neutral-100 dark:hover:bg-[#25262F]'
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
@@ -234,8 +234,8 @@ export default function SettingsPage() {
                   {theme === 'light' && <span className="text-[10px] bg-[#FF7900] text-white px-2 py-0.5 rounded-full font-bold">Faol</span>}
                 </div>
                 <div>
-                  <span className="text-xs text-[#171717] block">Kunduzgi (Oq)</span>
-                  <span className="text-[10px] text-[#888888]">Yorug' interfeys</span>
+                  <span className="text-xs text-[#171717] dark:text-white block">Kunduzgi (Oq)</span>
+                  <span className="text-[10px] text-[#888888] dark:text-neutral-400">Yorug' interfeys</span>
                 </div>
               </button>
 
@@ -245,7 +245,7 @@ export default function SettingsPage() {
                 className={`p-3.5 rounded-2xl border text-left flex flex-col justify-between transition cursor-pointer ${
                   theme === 'dark'
                     ? 'border-[#FF7900] bg-neutral-900 ring-2 ring-[#FF7900]/30 font-bold text-white'
-                    : 'border-[#EAEAEA] bg-neutral-50 hover:bg-neutral-100'
+                    : 'border-[#EAEAEA] dark:border-[#27282E] bg-neutral-50 dark:bg-[#202127] hover:bg-neutral-100 dark:hover:bg-[#25262F]'
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
@@ -253,38 +253,38 @@ export default function SettingsPage() {
                   {theme === 'dark' && <span className="text-[10px] bg-[#FF7900] text-white px-2 py-0.5 rounded-full font-bold">Faol</span>}
                 </div>
                 <div>
-                  <span className="text-xs text-[#171717] block">Tungi (Qora)</span>
-                  <span className="text-[10px] text-[#888888]">Ko'zni toliqtirmaydi</span>
+                  <span className="text-xs text-[#171717] dark:text-white block">Tungi (Qora)</span>
+                  <span className="text-[10px] text-[#888888] dark:text-neutral-400">Ko'zni toliqtirmaydi</span>
                 </div>
               </button>
             </div>
           </div>
 
-          <div className="bg-white rounded-3xl border border-[#EAEAEA] p-6 shadow-card space-y-4">
-            <h3 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
+          <div className="bg-white dark:bg-[#18191D] rounded-3xl border border-[#EAEAEA] dark:border-[#27282E] p-6 shadow-card space-y-4">
+            <h3 className="text-base font-bold text-[#171717] dark:text-white font-['Plus_Jakarta_Sans']">
               Ma'lumotlar Boshqaruvi
             </h3>
-            <p className="text-xs text-[#888888]">
+            <p className="text-xs text-[#888888] dark:text-neutral-400">
               Barcha smartfonlar ombori, savdo cheklari va kunlik hisobotlar xavfsiz saqlanadi.
             </p>
 
             <button
               onClick={handleExportBackup}
-              className="w-full py-2.5 px-4 rounded-xl border border-[#EAEAEA] bg-neutral-50 hover:bg-neutral-100 text-[#171717] text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer"
+              className="w-full py-2.5 px-4 rounded-xl border border-[#EAEAEA] dark:border-[#27282E] bg-neutral-50 dark:bg-[#202127] hover:bg-neutral-100 dark:hover:bg-[#25262F] text-[#171717] dark:text-white text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer"
             >
               <Download className="w-4 h-4 text-[#888888]" />
               <span>Do'kon Zaxira Nusxasini Yuklab Olish (.json)</span>
             </button>
           </div>
 
-          <div className="bg-white rounded-3xl border border-red-200 bg-red-50/20 p-6 shadow-card space-y-4">
+          <div className="bg-white dark:bg-[#18191D] rounded-3xl border border-red-200 dark:border-red-950/60 bg-red-50/20 dark:bg-red-950/20 p-6 shadow-card space-y-4">
             <div className="flex items-center gap-2">
               <ShieldAlert className="w-5 h-5 text-[#E5484D]" />
-              <h3 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
+              <h3 className="text-base font-bold text-[#171717] dark:text-white font-['Plus_Jakarta_Sans']">
                 {t('resetDemoBtn')}
               </h3>
             </div>
-            <p className="text-xs text-[#888888]">
+            <p className="text-xs text-[#888888] dark:text-neutral-400">
               Barcha smartfonlar, tranzaksiyalar va hisobotlarni zavod demo holatiga qaytarish.
             </p>
 
@@ -294,7 +294,7 @@ export default function SettingsPage() {
                   resetToDemoData();
                 }
               }}
-              className="w-full py-2.5 px-4 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-[#E5484D] text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer"
+              className="w-full py-2.5 px-4 rounded-xl border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-950/60 text-[#E5484D] text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer"
             >
               <RotateCcw className="w-4 h-4" />
               <span>{t('resetDemoBtn')}</span>
