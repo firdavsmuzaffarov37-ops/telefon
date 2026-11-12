@@ -11,7 +11,6 @@ import SalesHistoryPage from './components/sales/SalesHistoryPage';
 import ExpensesPage from './components/expenses/ExpensesPage';
 import SettingsPage from './components/settings/SettingsPage';
 import LoginPage from './components/auth/LoginPage';
-import RegisterPage from './components/auth/RegisterPage';
 import AIInsightsPanel from './components/ai/AIInsightsPanel';
 import Toast from './components/common/Toast';
 
@@ -53,11 +52,11 @@ function AppContent() {
   const [isAIOpen, setIsAIOpen] = useState(false);
   const location = useLocation();
   const isCustomerPortal = location.pathname.startsWith('/shop');
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+  const isAuthPage = location.pathname === '/login';
 
   return (
     <div className="min-h-screen bg-[#F5F5F4] dark:bg-[#0E0F12] flex flex-col text-[#171717] dark:text-[#F4F4F6] font-['Plus_Jakarta_Sans',sans-serif] transition-colors duration-200">
-      {/* Dynamic Navigation Bar: Hidden on Login/Register pages */}
+      {/* Dynamic Navigation Bar: Hidden on Login page */}
       {!isAuthPage && (
         isCustomerPortal ? (
           <CustomerNavbar />
@@ -78,7 +77,7 @@ function AppContent() {
           <Route path="/expenses" element={<ProtectedRoute><ExpensesPage /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
           <Route path="/login" element={<AuthRoute><LoginPage /></AuthRoute>} />
-          <Route path="/register" element={<AuthRoute><RegisterPage /></AuthRoute>} />
+          <Route path="/register" element={<Navigate to="/login" replace />} />
 
           {/* Customer Online Store Routes */}
           <Route path="/shop" element={<CustomerHomePage />} />

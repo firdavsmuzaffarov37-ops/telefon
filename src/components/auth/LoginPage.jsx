@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Smartphone, Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
@@ -170,16 +170,6 @@ export default function LoginPage() {
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
-
-          {/* Link to Register */}
-          <div className="text-center pt-2 border-t border-[#F0F0F0]">
-            <p className="text-xs text-[#888888]">
-              {t('dontHaveAccount')}{' '}
-              <NavLink to="/register" className="font-bold text-[#FF7900] hover:underline">
-                {t('signUpBtn')}
-              </NavLink>
-            </p>
-          </div>
         </div>
 
         {/* Security watermark */}
