@@ -398,18 +398,6 @@ export const initialProducts = [
       warranty: "1 Yil Rasmiy Samsung Kafolati"
     }
   },
-    rating: 4.9,
-    unitsSold: 114,
-    specs: {
-      display: "6.8 dyuym Dynamic AMOLED 2X, 120Hz, 2600 nits yassi ekran",
-      chipset: "Snapdragon 8 Gen 3 for Galaxy (4nm)",
-      camera: "200MP OIS + 50MP Periskop 5x + 10MP 3x + 12MP Ultra Keng",
-      battery: "5,000 mAh 45W Tezkor quvvatlash",
-      os: "One UI 6.1 (Android 14) 7 yillik yangilanish",
-      condition: "Yangi Qadoqda (Original Sealed)",
-      warranty: "1 Yil Rasmiy Samsung Kafolati"
-    }
-  },
   {
     id: "prod-005",
     name: "Samsung Galaxy S24",
