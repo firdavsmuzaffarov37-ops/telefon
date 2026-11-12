@@ -226,3 +226,4 @@ export default function PhoneDuoShowcase({ product, activeColorHex, className = 
     </div>
   );
 }
+

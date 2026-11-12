@@ -27,6 +27,7 @@ import { useNavigate } from 'react-router-dom';
 import RestockModal from './RestockModal';
 import { useLanguage } from '../../context/LanguageContext';
 import { useApp } from '../../context/AppContext';
+import PhoneDuoShowcase from '../common/PhoneDuoShowcase';
 
 export default function ProductDetailsPanel({ 
   product, 
@@ -81,74 +82,70 @@ export default function ProductDetailsPanel({
   };
 
   return (
-    <>
-      {/* Mobile/Tablet Backdrop */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+      {/* Click outside to close backdrop */}
       <div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden animate-in fade-in duration-200"
+        className="fixed inset-0"
         onClick={onClose}
       />
 
-      {/* Drawer on Mobile/Tablet, Sticky Sidebar on Laptop/Desktop */}
-      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white dark:bg-[#18191D] p-5 shadow-2xl flex flex-col overflow-y-auto lg:static lg:z-auto lg:w-[380px] xl:w-[410px] lg:flex-shrink-0 lg:border lg:border-[#EAEAEA] dark:border-[#27282E] lg:rounded-3xl lg:shadow-card lg:h-fit lg:sticky lg:top-24 animate-in slide-in-from-right-full lg:animate-none duration-200">
+      {/* Centered Modal Content: Never squeezes or jumps the grid behind */}
+      <div className="relative z-10 w-full max-w-xl bg-white dark:bg-[#18191D] p-5 sm:p-6 shadow-2xl rounded-3xl border border-[#EAEAEA] dark:border-[#27282E] flex flex-col max-h-[92vh] overflow-hidden animate-in zoom-in-95 duration-200">
         {/* Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-[#EAEAEA] dark:border-[#27282E]">
-        <div className="flex items-center gap-2">
-          <h2 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
-            {t('productDetailsTitle')}
-          </h2>
-          {isClientMode && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-              Vitrina Ko'rinishi
-            </span>
-          )}
-        </div>
-        <button
-          onClick={onClose}
-          className="w-8 h-8 rounded-full hover:bg-neutral-100 flex items-center justify-center text-[#888888] hover:text-[#171717] transition cursor-pointer"
-          title="Close details"
-        >
-          <X className="w-4 h-4" />
-        </button>
-      </div>
-
-      <div className="overflow-y-auto max-h-[calc(100vh-210px)] pr-1 -mr-1 space-y-4 pt-3">
-        {/* Title, SKU and Stock Badge */}
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <h3 className="text-base font-bold text-[#171717] leading-tight font-['Plus_Jakarta_Sans']">
-              {product.name}
-            </h3>
-            <div className="flex items-center gap-2 text-xs text-[#888888] mt-1">
-              <span className="font-semibold text-[#555]">{product.storage} • {product.ram}</span>
-              <span>•</span>
-              <span className="font-mono text-[11px]">{product.sku}</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-[11px] text-[#666] mt-1 font-medium">
-              <Calendar className="w-3.5 h-3.5 text-[#FF7900]" />
-              <span>Kelib tushgan sana: <strong className="text-[#171717]">{product.arrivalDate || "08.11.2026"}</strong></span>
-            </div>
+        <div className="flex items-center justify-between pb-3 border-b border-[#EAEAEA] dark:border-[#27282E]">
+          <div className="flex items-center gap-2">
+            <h2 className="text-base font-bold text-[#171717] dark:text-white font-['Plus_Jakarta_Sans']">
+              {t('productDetailsTitle')}
+            </h2>
+            {isClientMode && (
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                Vitrina Ko'rinishi
+              </span>
+            )}
           </div>
-          <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border ${stockBadgeClass} whitespace-nowrap`}>
-            {stockLabel}
-          </span>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center justify-center text-[#888888] hover:text-[#171717] dark:hover:text-white transition cursor-pointer"
+            title="Yopish"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
-        {/* Large Product Image Showcase */}
-        <div className="w-full h-52 sm:h-56 bg-[#FAFAFA] rounded-2xl flex items-center justify-center p-4 border border-[#F0F0F0] relative overflow-hidden group">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="max-h-full max-w-full object-contain filter drop-shadow-lg group-hover:scale-105 transition-transform duration-300"
-          />
-          <div className="absolute top-2 left-2 flex items-center gap-1.5">
-            <span className="text-[10px] font-bold bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg border border-[#EAEAEA] text-[#171717]">
-              {product.brand}
-            </span>
-            <span className="text-[10px] font-bold bg-[#FF7900] text-white px-2 py-0.5 rounded-lg shadow-sm">
-              Original Sealed
+        <div className="overflow-y-auto pr-1 -mr-1 space-y-4 pt-3 flex-1">
+          {/* Title, SKU and Stock Badge */}
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <h3 className="text-lg font-extrabold text-[#171717] dark:text-white leading-tight font-['Plus_Jakarta_Sans']">
+                {product.name}
+              </h3>
+              <div className="flex items-center gap-2 text-xs text-[#888888] dark:text-neutral-400 mt-1">
+                <span className="font-semibold text-[#555] dark:text-neutral-300">{product.storage} • {product.ram}</span>
+                <span>•</span>
+                <span className="font-mono text-[11px]">{product.sku}</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-[11px] text-[#666] dark:text-neutral-400 mt-1 font-medium">
+                <Calendar className="w-3.5 h-3.5 text-[#FF7900]" />
+                <span>Kelib tushgan sana: <strong className="text-[#171717] dark:text-white">{product.arrivalDate || "08.11.2026"}</strong></span>
+              </div>
+            </div>
+            <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border ${stockBadgeClass} whitespace-nowrap`}>
+              {stockLabel}
             </span>
           </div>
-        </div>
+
+          {/* Large Product Duo Showcase: FRONT + BACK (ORQA VA OLDI TOMONI) */}
+          <div className="w-full h-48 sm:h-52 bg-[#F5F5F7] dark:bg-[#202127] rounded-2xl flex items-center justify-center p-2 border border-[#EAEAEA] dark:border-[#27282E] relative overflow-hidden">
+            <PhoneDuoShowcase product={product} activeColorHex={activeColor?.hex} />
+            <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 z-20">
+              <span className="text-[10px] font-bold bg-white/95 dark:bg-black/80 backdrop-blur-sm px-2.5 py-1 rounded-lg border border-[#EAEAEA] dark:border-neutral-700 text-[#171717] dark:text-white shadow-xs">
+                {product.brand}
+              </span>
+              <span className="text-[10px] font-bold bg-[#FF7900] text-white px-2 py-0.5 rounded-lg shadow-sm">
+                Oldi & Orqa Ko'rinishi
+              </span>
+            </div>
+          </div>
 
         {/* TELEFON HAQIDA (Telefoni tagida yozilgan maxsus blok) */}
         <div className="bg-[#FAF9F6] border border-[#EBE8E0] rounded-2xl p-3.5 space-y-2">
@@ -407,15 +404,15 @@ export default function ProductDetailsPanel({
         )}
       </div>
 
-      {/* Restock Modal */}
-      {isRestockOpen && (
-        <RestockModal
-          isOpen={isRestockOpen}
-          onClose={() => setIsRestockOpen(false)}
-          product={product}
-        />
-      )}
+        {/* Restock Modal */}
+        {isRestockOpen && (
+          <RestockModal
+            isOpen={isRestockOpen}
+            onClose={() => setIsRestockOpen(false)}
+            product={product}
+          />
+        )}
+      </div>
     </div>
-    </>
   );
 }
