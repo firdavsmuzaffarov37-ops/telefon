@@ -25,12 +25,12 @@ export function AppProvider({ children }) {
       const version = localStorage.getItem('phonelytics_data_version');
       const saved = localStorage.getItem('phonelytics_products');
       
-      if (version === 'v10_complete_inventory' && saved) {
+      if (version === 'v11_honor_x9b_image_fix' && saved) {
         return JSON.parse(saved);
       }
       
-      // Yangi v10 versiyasi: Barcha flagmanlar va to'liq ombor katalogi
-      localStorage.setItem('phonelytics_data_version', 'v10_complete_inventory');
+      // Yangi v11 versiyasi: Honor X9b haqiqiy smartfon rasmi bilan yangilandi
+      localStorage.setItem('phonelytics_data_version', 'v11_honor_x9b_image_fix');
       localStorage.setItem('phonelytics_products', JSON.stringify(initialProducts));
       return initialProducts;
     } catch (e) {

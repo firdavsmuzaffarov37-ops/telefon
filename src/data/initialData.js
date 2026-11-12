@@ -1,3 +1,4 @@
+
 // Initial dataset for PhoneLytics: Real Store Management System
 // Barcha telefonlar omborda kamida 30 tadan, omabop narxlarda va har birining tagida batafsil ma'lumotlari bilan
 
@@ -572,7 +573,7 @@ export const initialProducts = [
     tag: "Popular",
     tagType: "popular",
     status: "in_stock",
-    image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=800&q=85",
+    image: "/honor-x9b.jpg",
     description: "Ultra-Bounce 360° zarbaga chidamli sinmas ekran, ulkan 5800mAh sig'imli 3 kunga yetadigan batareya va zamonaviy charm teksturali dizayn.",
     highlights: ["360° Zarbaga Chidamli Ekran", "5,800 mAh 3 Kunlik Quvvat", "108MP Ultra Kamera", "1 Yil Rasmiy Kafolat"],
     views: "2.1k",
