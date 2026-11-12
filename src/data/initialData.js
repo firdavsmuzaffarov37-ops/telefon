@@ -399,7 +399,7 @@ export const initialProducts = [
     }
   },
   {
-    id: "prod-005",
+    id: "prod-011",
     name: "Samsung Galaxy S24",
     brand: "Samsung",
     model: "Galaxy S24",
@@ -437,7 +437,7 @@ export const initialProducts = [
     }
   },
   {
-    id: "prod-006",
+    id: "prod-012",
     name: "Samsung Galaxy A55 5G",
     brand: "Samsung",
     model: "Galaxy A55",
@@ -475,7 +475,7 @@ export const initialProducts = [
     }
   },
   {
-    id: "prod-007",
+    id: "prod-013",
     name: "Xiaomi 14",
     brand: "Xiaomi",
     model: "Xiaomi 14",
@@ -513,7 +513,7 @@ export const initialProducts = [
     }
   },
   {
-    id: "prod-008",
+    id: "prod-014",
     name: "Redmi Note 13 Pro 5G",
     brand: "Xiaomi",
     model: "Redmi Note 13 Pro",
@@ -551,7 +551,7 @@ export const initialProducts = [
     }
   },
   {
-    id: "prod-009",
+    id: "prod-015",
     name: "Honor X9b",
     brand: "Honor",
     model: "Honor X9b",
@@ -589,7 +589,7 @@ export const initialProducts = [
     }
   },
   {
-    id: "prod-010",
+    id: "prod-016",
     name: "Apple iPhone 16 Pro Max",
     brand: "Apple",
     model: "iPhone 16 Pro Max",
@@ -627,7 +627,7 @@ export const initialProducts = [
     }
   },
   {
-    id: "prod-011",
+    id: "prod-017",
     name: "Google Pixel 9 Pro",
     brand: "Google",
     model: "Pixel 9 Pro",
@@ -665,7 +665,7 @@ export const initialProducts = [
     }
   },
   {
-    id: "prod-012",
+    id: "prod-018",
     name: "Xiaomi Redmi 13C",
     brand: "Xiaomi",
     model: "Redmi 13C",

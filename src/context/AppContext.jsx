@@ -25,12 +25,12 @@ export function AppProvider({ children }) {
       const version = localStorage.getItem('phonelytics_data_version');
       const saved = localStorage.getItem('phonelytics_products');
       
-      if (version === 'v9_reference_showcase' && saved) {
+      if (version === 'v10_complete_inventory' && saved) {
         return JSON.parse(saved);
       }
       
-      // Yangi v9 versiyasi: Reference dizaynidagi eng so'nggi flagmanlar bilan
-      localStorage.setItem('phonelytics_data_version', 'v9_reference_showcase');
+      // Yangi v10 versiyasi: Barcha flagmanlar va to'liq ombor katalogi
+      localStorage.setItem('phonelytics_data_version', 'v10_complete_inventory');
       localStorage.setItem('phonelytics_products', JSON.stringify(initialProducts));
       return initialProducts;
     } catch (e) {

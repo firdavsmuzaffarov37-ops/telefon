@@ -18,6 +18,11 @@ import {
   Scan,
   Calendar,
   RefreshCw,
+  Receipt,
+  Eye,
+  TrendingUp,
+  Clock,
+  Layers,
   Sparkles,
   Users
 } from 'lucide-react';
@@ -28,6 +33,7 @@ import BarcodeScannerModal from './BarcodeScannerModal';
 export default function POSPage() {
   const { 
     products, 
+    transactions,
     recordSale, 
     settings,
     staffMembers,
@@ -127,6 +133,27 @@ export default function POSPage() {
       return true;
     });
   }, [products, activeBrand, searchQuery]);
+
+  // Today's POS statistics
+  const todayStats = useMemo(() => {
+    const todayStr = new Date().toISOString().split('T')[0];
+    const todayTxns = (transactions || []).filter(t => t.date && t.date.startsWith(todayStr));
+    const totalRevenue = todayTxns.reduce((sum, t) => sum + Number(t.totalAmount || 0), 0);
+    const totalProfit = todayTxns.reduce((sum, t) => sum + Number(t.profit || 0), 0);
+    const totalStock = (products || []).reduce((sum, p) => sum + Number(p.stock || 0), 0);
+    return {
+      todayCount: todayTxns.length,
+      todayRevenue: totalRevenue,
+      todayProfit: totalProfit,
+      totalStock,
+      totalModels: products.length
+    };
+  }, [transactions, products]);
+
+  // Recent transactions for quick POS ledger
+  const recentTransactions = useMemo(() => {
+    return (transactions || []).slice(0, 5);
+  }, [transactions]);
 
   // Financial calculations
   const unitPrice = currentProduct ? Number(currentProduct.sellingPrice) : 0;
@@ -275,8 +302,8 @@ export default function POSPage() {
             </div>
           </div>
 
-          {/* Product Items List */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3.5 max-h-[calc(100vh-280px)] overflow-y-auto pr-1">
+          {/* Product Items List - Clean, smooth grid showing all products without cutting off */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3.5">
             {filteredProducts.map(product => {
               const isSelected = selectedProductId === product.id;
               const isOutOfStock = product.stock <= 0;
@@ -287,29 +314,29 @@ export default function POSPage() {
                   onClick={() => !isOutOfStock && handleSelectProduct(product)}
                   className={`p-3.5 rounded-2xl border transition-all duration-150 flex flex-col justify-between ${
                     isOutOfStock
-                      ? 'bg-neutral-50/70 border-neutral-200 opacity-60 cursor-not-allowed'
+                      ? 'bg-neutral-50/70 dark:bg-neutral-900/40 border-neutral-200 dark:border-neutral-800 opacity-60 cursor-not-allowed'
                       : isSelected
-                        ? 'bg-orange-50/40 border-[#FF7900] ring-2 ring-[#FF7900]/20 cursor-pointer shadow-sm'
-                        : 'bg-white border-[#EAEAEA] hover:border-neutral-300 cursor-pointer shadow-sm hover:shadow'
+                        ? 'bg-orange-50/60 dark:bg-orange-950/30 border-[#FF7900] ring-2 ring-[#FF7900]/30 cursor-pointer shadow-sm'
+                        : 'bg-white dark:bg-[#181920] border-[#EAEAEA] dark:border-neutral-800 hover:border-[#FF7900]/60 cursor-pointer shadow-sm hover:shadow'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-14 h-14 bg-[#FAFAFA] rounded-xl flex items-center justify-center p-1 border border-[#F0F0F0] flex-shrink-0">
+                    <div className="w-14 h-14 bg-[#FAFAFA] dark:bg-[#202127] rounded-xl flex items-center justify-center p-1 border border-[#F0F0F0] dark:border-neutral-800 flex-shrink-0">
                       <img src={product.image} alt={product.name} className="max-h-full max-w-full object-contain" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-xs font-bold text-[#171717] truncate">{product.name}</h4>
-                      <p className="text-[11px] text-[#888888]">{product.storage} • {product.ram}</p>
-                      <p className="text-xs font-extrabold text-[#171717] mt-1">
+                      <h4 className="text-xs font-bold text-[#171717] dark:text-white truncate">{product.name}</h4>
+                      <p className="text-[11px] text-[#888888] dark:text-neutral-400">{product.storage} • {product.ram}</p>
+                      <p className="text-xs font-extrabold text-[#FF7900] dark:text-[#FF7900] mt-1">
                         {formatCurrency(product.sellingPrice)}
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 mt-2 border-t border-[#F0F0F0] text-[11px]">
-                    <span className="font-mono text-[#888888] truncate max-w-[120px]">{product.sku}</span>
+                  <div className="flex items-center justify-between pt-2 mt-2 border-t border-[#F0F0F0] dark:border-neutral-800 text-[11px]">
+                    <span className="font-mono text-[#888888] dark:text-neutral-400 truncate max-w-[120px]">{product.sku}</span>
                     <span className={`font-semibold ${
-                      isOutOfStock ? 'text-red-500' : product.stock <= 5 ? 'text-amber-500' : 'text-emerald-600'
+                      isOutOfStock ? 'text-red-500' : product.stock <= 5 ? 'text-amber-500' : 'text-emerald-600 dark:text-emerald-400'
                     }`}>
                       {isOutOfStock ? t('outOfStockStatus') : `${product.stock} ${t('stockAvailable')}`}
                     </span>
@@ -317,6 +344,92 @@ export default function POSPage() {
                 </div>
               );
             })}
+          </div>
+
+          {/* Quick POS Ledger & Terminal Stats: Fills the entire lower left space with rich live data */}
+          <div className="bg-white dark:bg-[#181920] rounded-3xl border border-[#EAEAEA] dark:border-neutral-800 p-5 shadow-sm space-y-4 mt-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#EAEAEA] dark:border-neutral-800">
+              <div className="flex items-center gap-2">
+                <Receipt className="w-4 h-4 text-[#FF7900]" />
+                <h4 className="text-sm font-bold text-[#171717] dark:text-white">
+                  Kassa Ko'rsatkichlari & So'nggi Savdolar
+                </h4>
+              </div>
+              <span className="text-[11px] text-[#888888] dark:text-neutral-400 flex items-center gap-1">
+                <Clock className="w-3 h-3" />
+                Bugungi kassa jurnali
+              </span>
+            </div>
+
+            {/* 4 Mini Stat Badges */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="p-3 rounded-2xl bg-neutral-50 dark:bg-[#202127] border border-[#EAEAEA] dark:border-neutral-800">
+                <span className="text-[10px] text-[#888888] dark:text-neutral-400 block mb-0.5">Mavjud Modellar</span>
+                <span className="text-sm font-extrabold text-[#171717] dark:text-white">{todayStats.totalModels} ta</span>
+              </div>
+              <div className="p-3 rounded-2xl bg-neutral-50 dark:bg-[#202127] border border-[#EAEAEA] dark:border-neutral-800">
+                <span className="text-[10px] text-[#888888] dark:text-neutral-400 block mb-0.5">Jami Zaxira</span>
+                <span className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400">{todayStats.totalStock} dona</span>
+              </div>
+              <div className="p-3 rounded-2xl bg-neutral-50 dark:bg-[#202127] border border-[#EAEAEA] dark:border-neutral-800">
+                <span className="text-[10px] text-[#888888] dark:text-neutral-400 block mb-0.5">Bugungi Cheklar</span>
+                <span className="text-sm font-extrabold text-[#FF7900]">{todayStats.todayCount} ta sotuv</span>
+              </div>
+              <div className="p-3 rounded-2xl bg-neutral-50 dark:bg-[#202127] border border-[#EAEAEA] dark:border-neutral-800">
+                <span className="text-[10px] text-[#888888] dark:text-neutral-400 block mb-0.5">Bugungi Tushum</span>
+                <span className="text-sm font-extrabold text-[#171717] dark:text-white truncate block">
+                  {formatCurrency(todayStats.todayRevenue)}
+                </span>
+              </div>
+            </div>
+
+            {/* Recent 5 Transactions Mini Table */}
+            <div className="space-y-2 pt-1">
+              <span className="text-xs font-bold text-[#171717] dark:text-white block">
+                So'nggi Sotuv Cheklari:
+              </span>
+              {recentTransactions.length > 0 ? (
+                <div className="divide-y divide-[#EAEAEA] dark:divide-neutral-800 rounded-2xl border border-[#EAEAEA] dark:border-neutral-800 overflow-hidden">
+                  {recentTransactions.map((tx) => (
+                    <div 
+                      key={tx.id} 
+                      className="p-3 flex items-center justify-between text-xs bg-white dark:bg-[#181920] hover:bg-neutral-50 dark:hover:bg-[#202127] transition"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-[#171717] dark:text-white truncate">
+                            {tx.productName || 'Smartfon'}
+                          </span>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-100/70 dark:bg-orange-950/60 text-[#FF7900] font-semibold">
+                            {tx.paymentMethod || 'Naqd'}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-[#888888] dark:text-neutral-400 mt-0.5">
+                          {tx.customerName || 'Mijoz'} • {formatDateTime(tx.date)} • Kassir: {tx.cashierName || 'Sardor'}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3 flex-shrink-0 ml-3">
+                        <span className="font-extrabold text-[#171717] dark:text-white">
+                          {formatCurrency(tx.totalAmount)}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setCompletedTxn(tx)}
+                          className="p-1.5 rounded-lg border border-[#EAEAEA] dark:border-neutral-700 hover:border-[#FF7900] text-[#666666] dark:text-neutral-300 hover:text-[#FF7900] transition cursor-pointer"
+                          title="Chekni ko'rish / Chop etish"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="py-6 text-center text-xs text-[#888888] dark:text-neutral-400">
+                  Hozircha sotuv cheklari mavjud emas
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -379,12 +492,12 @@ export default function POSPage() {
                 </div>
 
                 {/* Selected Smartphone Header */}
-                <div className="p-3.5 rounded-2xl bg-neutral-50 border border-[#EAEAEA] flex items-center gap-3">
-                  <img src={currentProduct.image} alt={currentProduct.name} className="w-12 h-12 object-contain bg-white rounded-xl p-1 border" />
+                <div className="p-3.5 rounded-2xl bg-neutral-50 dark:bg-[#202127] border border-[#EAEAEA] dark:border-neutral-800 flex items-center gap-3">
+                  <img src={currentProduct.image} alt={currentProduct.name} className="w-12 h-12 object-contain bg-white dark:bg-[#181920] rounded-xl p-1 border dark:border-neutral-700" />
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-xs font-bold text-[#171717] truncate">{currentProduct.name}</h4>
-                    <p className="text-[11px] text-[#888888]">{currentProduct.storage} • {selectedColor || currentProduct.color}</p>
-                    <p className="text-xs font-mono text-[#666666]">IMEI: {currentProduct.imei}</p>
+                    <h4 className="text-xs font-bold text-[#171717] dark:text-white truncate">{currentProduct.name}</h4>
+                    <p className="text-[11px] text-[#888888] dark:text-neutral-400">{currentProduct.storage} • {selectedColor || currentProduct.color}</p>
+                    <p className="text-xs font-mono text-[#666666] dark:text-neutral-400">IMEI: {currentProduct.imei}</p>
                   </div>
                 </div>
 
@@ -392,9 +505,9 @@ export default function POSPage() {
                 {currentProduct.colors && currentProduct.colors.length > 0 && (
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-semibold text-[#171717]">Sotilayotgan Rang:</span>
-                      <span className="text-[11px] text-[#888888]">
-                        Tanlangan: <strong className="text-[#171717]">{selectedColor}</strong>
+                      <span className="font-semibold text-[#171717] dark:text-white">Sotilayotgan Rang:</span>
+                      <span className="text-[11px] text-[#888888] dark:text-neutral-400">
+                        Tanlangan: <strong className="text-[#171717] dark:text-white">{selectedColor}</strong>
                       </span>
                     </div>
                     <div className="grid grid-cols-2 gap-1.5">
@@ -408,8 +521,8 @@ export default function POSPage() {
                             onClick={() => setSelectedColor(c.name)}
                             className={`p-2 rounded-xl border flex items-center justify-between text-left transition cursor-pointer ${
                               isChosen
-                                ? 'border-[#FF7900] bg-orange-50/70 ring-1 ring-[#FF7900]'
-                                : 'border-[#EAEAEA] bg-white hover:bg-neutral-50'
+                                ? 'border-[#FF7900] bg-orange-50/70 dark:bg-orange-950/40 ring-1 ring-[#FF7900]'
+                                : 'border-[#EAEAEA] dark:border-neutral-700 bg-white dark:bg-[#202127] hover:bg-neutral-50 dark:hover:bg-[#282932]'
                             }`}
                           >
                             <div className="flex items-center gap-1.5 truncate">
@@ -417,9 +530,9 @@ export default function POSPage() {
                                 className="w-3 h-3 rounded-full border border-black/20 flex-shrink-0" 
                                 style={{ backgroundColor: c.hex }} 
                               />
-                              <span className="text-xs font-semibold text-[#171717] truncate">{c.name.split(' ')[0]}</span>
+                              <span className="text-xs font-semibold text-[#171717] dark:text-white truncate">{c.name.split(' ')[0]}</span>
                             </div>
-                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${count > 0 ? 'bg-neutral-100 text-[#444]' : 'bg-red-50 text-red-600'}`}>
+                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${count > 0 ? 'bg-neutral-100 dark:bg-neutral-800 text-[#444] dark:text-neutral-300' : 'bg-red-50 dark:bg-red-950/40 text-red-600'}`}>
                               {count} ta
                             </span>
                           </button>
@@ -430,12 +543,12 @@ export default function POSPage() {
                 )}
 
                 {/* Payment Mode Selector: Full Payment vs Installment / Nasiya */}
-                <div className="flex bg-neutral-100 p-1 rounded-2xl">
+                <div className="flex bg-neutral-100 dark:bg-[#202127] p-1 rounded-2xl">
                   <button
                     type="button"
                     onClick={() => setIsInstallment(false)}
-                    className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition ${
-                      !isInstallment ? 'bg-white text-[#171717] shadow-sm' : 'text-[#888888] hover:text-[#171717]'
+                    className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                      !isInstallment ? 'bg-white dark:bg-[#181920] text-[#171717] dark:text-white shadow-sm' : 'text-[#888888] dark:text-neutral-400 hover:text-[#171717]'
                     }`}
                   >
                     {t('fullPaymentTab')}
@@ -443,8 +556,8 @@ export default function POSPage() {
                   <button
                     type="button"
                     onClick={() => setIsInstallment(true)}
-                    className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${
-                      isInstallment ? 'bg-[#FF7900] text-white shadow-sm' : 'text-[#888888] hover:text-[#171717]'
+                    className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                      isInstallment ? 'bg-[#FF7900] text-white shadow-sm' : 'text-[#888888] dark:text-neutral-400 hover:text-[#171717]'
                     }`}
                   >
                     <Calendar className="w-3.5 h-3.5" />
@@ -453,21 +566,21 @@ export default function POSPage() {
                 </div>
 
                 {/* Quantity Controls */}
-                <div className="flex items-center justify-between p-3 rounded-2xl border border-[#EAEAEA]">
-                  <span className="text-xs font-semibold text-[#171717]">{t('quantity')}</span>
+                <div className="flex items-center justify-between p-3 rounded-2xl border border-[#EAEAEA] dark:border-neutral-800">
+                  <span className="text-xs font-semibold text-[#171717] dark:text-white">{t('quantity')}</span>
                   <div className="flex items-center gap-3">
                     <button
                       type="button"
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="w-7 h-7 rounded-lg bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-[#171717]"
+                      className="w-7 h-7 rounded-lg bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 flex items-center justify-center text-[#171717] dark:text-white cursor-pointer"
                     >
                       <Minus className="w-3.5 h-3.5" />
                     </button>
-                    <span className="text-sm font-bold w-6 text-center">{quantity}</span>
+                    <span className="text-sm font-bold w-6 text-center text-[#171717] dark:text-white">{quantity}</span>
                     <button
                       type="button"
                       onClick={() => setQuantity(Math.min(currentProduct.stock, quantity + 1))}
-                      className="w-7 h-7 rounded-lg bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-[#171717]"
+                      className="w-7 h-7 rounded-lg bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 flex items-center justify-center text-[#171717] dark:text-white cursor-pointer"
                       disabled={quantity >= currentProduct.stock}
                     >
                       <Plus className="w-3.5 h-3.5" />
@@ -477,7 +590,7 @@ export default function POSPage() {
 
                 {/* Discount Field */}
                 <div>
-                  <label className="text-xs font-semibold text-[#171717] block mb-1.5">
+                  <label className="text-xs font-semibold text-[#171717] dark:text-white block mb-1.5">
                     {t('discount')}
                   </label>
                   <input
@@ -486,14 +599,14 @@ export default function POSPage() {
                     placeholder="0"
                     value={discount}
                     onChange={(e) => setDiscount(e.target.value)}
-                    className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-xl px-3.5 py-2 text-xs text-[#171717] font-semibold focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
+                    className="w-full bg-[#FAFAFA] dark:bg-[#202127] border border-[#EAEAEA] dark:border-neutral-800 rounded-xl px-3.5 py-2 text-xs text-[#171717] dark:text-white font-semibold focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
                   />
                 </div>
 
                 {/* Trade-In Toggle & Valuation */}
-                <div className="p-3 bg-neutral-50 rounded-2xl border border-[#EAEAEA] space-y-2">
+                <div className="p-3 bg-neutral-50 dark:bg-[#202127] rounded-2xl border border-[#EAEAEA] dark:border-neutral-800 space-y-2">
                   <label className="flex items-center justify-between cursor-pointer">
-                    <span className="text-xs font-bold text-[#171717] flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-[#171717] dark:text-white flex items-center gap-1.5">
                       <RefreshCw className="w-3.5 h-3.5 text-[#FF7900]" />
                       {t('tradeInTitle')}
                     </span>
@@ -507,24 +620,24 @@ export default function POSPage() {
                   {tradeInActive && (
                     <div className="grid grid-cols-2 gap-2 pt-1">
                       <div>
-                        <label className="text-[10px] text-[#888888] block mb-1">{t('tradeInModelLabel')}</label>
+                        <label className="text-[10px] text-[#888888] dark:text-neutral-400 block mb-1">{t('tradeInModelLabel')}</label>
                         <input
                           type="text"
                           placeholder="masalan: iPhone 11"
                           value={tradeInModel}
                           onChange={(e) => setTradeInModel(e.target.value)}
-                          className="w-full bg-white border border-[#EAEAEA] rounded-xl px-2.5 py-1.5 text-xs text-[#171717] focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
+                          className="w-full bg-white dark:bg-[#181920] border border-[#EAEAEA] dark:border-neutral-700 rounded-xl px-2.5 py-1.5 text-xs text-[#171717] dark:text-white focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] text-[#888888] block mb-1">{t('tradeInValueLabel')}</label>
+                        <label className="text-[10px] text-[#888888] dark:text-neutral-400 block mb-1">{t('tradeInValueLabel')}</label>
                         <input
                           type="number"
                           min="0"
                           placeholder="0"
                           value={tradeInValue}
                           onChange={(e) => setTradeInValue(e.target.value)}
-                          className="w-full bg-white border border-[#EAEAEA] rounded-xl px-2.5 py-1.5 text-xs text-[#171717] font-semibold focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
+                          className="w-full bg-white dark:bg-[#181920] border border-[#EAEAEA] dark:border-neutral-700 rounded-xl px-2.5 py-1.5 text-xs text-[#171717] dark:text-white font-semibold focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
                         />
                       </div>
                     </div>
@@ -533,13 +646,13 @@ export default function POSPage() {
 
                 {/* Installment Configuration (if Installment selected) */}
                 {isInstallment ? (
-                  <div className="p-3.5 bg-orange-50/50 rounded-2xl border border-orange-200 space-y-2.5">
+                  <div className="p-3.5 bg-orange-50/50 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-900/60 space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-[#171717]">{t('financingPartner')}</span>
+                      <span className="text-xs font-bold text-[#171717] dark:text-white">{t('financingPartner')}</span>
                       <select
                         value={financingPartner}
                         onChange={(e) => setFinancingPartner(e.target.value)}
-                        className="bg-white border border-[#EAEAEA] rounded-xl px-2 py-1 text-xs font-semibold text-[#171717] focus:outline-none"
+                        className="bg-white dark:bg-[#181920] border border-[#EAEAEA] dark:border-neutral-700 rounded-xl px-2 py-1 text-xs font-semibold text-[#171717] dark:text-white focus:outline-none"
                       >
                         <option value="Uzum Nasiya">Uzum Nasiya</option>
                         <option value="Anorbank">Anorbank</option>
@@ -549,17 +662,17 @@ export default function POSPage() {
                     </div>
 
                     <div>
-                      <span className="text-[11px] font-semibold text-[#666666] block mb-1">{t('installmentMonths')}</span>
+                      <span className="text-[11px] font-semibold text-[#666666] dark:text-neutral-400 block mb-1">{t('installmentMonths')}</span>
                       <div className="grid grid-cols-4 gap-1.5">
                         {[3, 6, 12, 24].map(m => (
                           <button
                             key={m}
                             type="button"
                             onClick={() => setInstallmentTerm(m)}
-                            className={`py-1 rounded-xl text-xs font-bold border transition ${
+                            className={`py-1 rounded-xl text-xs font-bold border transition cursor-pointer ${
                               installmentTerm === m
                                 ? 'bg-[#FF7900] text-white border-[#FF7900]'
-                                : 'bg-white text-[#666666] border-[#EAEAEA] hover:border-neutral-300'
+                                : 'bg-white dark:bg-[#181920] text-[#666666] dark:text-neutral-300 border-[#EAEAEA] dark:border-neutral-700 hover:border-neutral-300'
                             }`}
                           >
                             {m} oy
@@ -568,8 +681,8 @@ export default function POSPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-1 border-t border-orange-200/60 text-xs">
-                      <span className="text-[#888888] font-medium">{t('monthlyPayment')}:</span>
+                    <div className="flex items-center justify-between pt-1 border-t border-orange-200/60 dark:border-orange-900/40 text-xs">
+                      <span className="text-[#888888] dark:text-neutral-400 font-medium">{t('monthlyPayment')}:</span>
                       <span className="font-extrabold text-[#FF7900] text-sm">
                         {formatCurrency(monthlyPayment)} / oy
                       </span>
@@ -578,7 +691,7 @@ export default function POSPage() {
                 ) : (
                   /* Standard Payment Methods */
                   <div>
-                    <label className="text-xs font-semibold text-[#171717] block mb-2">
+                    <label className="text-xs font-semibold text-[#171717] dark:text-white block mb-2">
                       {t('paymentMethod')}
                     </label>
                     <div className="grid grid-cols-3 gap-2">
@@ -594,10 +707,10 @@ export default function POSPage() {
                             key={method.id}
                             type="button"
                             onClick={() => setPaymentMethod(method.id)}
-                            className={`p-2.5 rounded-2xl border text-xs font-semibold flex flex-col items-center gap-1.5 transition ${
+                            className={`p-2.5 rounded-2xl border text-xs font-semibold flex flex-col items-center gap-1.5 transition cursor-pointer ${
                               isSelected
-                                ? 'border-[#FF7900] bg-orange-50/70 text-[#FF7900]'
-                                : 'border-[#EAEAEA] bg-white text-[#666666] hover:border-neutral-300'
+                                ? 'border-[#FF7900] bg-orange-50/70 dark:bg-orange-950/40 text-[#FF7900]'
+                                : 'border-[#EAEAEA] dark:border-neutral-700 bg-white dark:bg-[#202127] text-[#666666] dark:text-neutral-300 hover:border-neutral-300'
                             }`}
                           >
                             <Icon className="w-4 h-4" />
@@ -612,7 +725,7 @@ export default function POSPage() {
                 {/* Customer Details */}
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-[11px] font-semibold text-[#666666] block mb-1">
+                    <label className="text-[11px] font-semibold text-[#666666] dark:text-neutral-400 block mb-1">
                       {t('customerName')}
                     </label>
                     <input
@@ -620,11 +733,11 @@ export default function POSPage() {
                       placeholder="Mijoz ismi"
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
-                      className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-xl px-3 py-1.5 text-xs text-[#171717] focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
+                      className="w-full bg-[#FAFAFA] dark:bg-[#202127] border border-[#EAEAEA] dark:border-neutral-800 rounded-xl px-3 py-1.5 text-xs text-[#171717] dark:text-white focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-semibold text-[#666666] block mb-1">
+                    <label className="text-[11px] font-semibold text-[#666666] dark:text-neutral-400 block mb-1">
                       {t('customerPhone')}
                     </label>
                     <input
@@ -632,20 +745,20 @@ export default function POSPage() {
                       placeholder="+998 90..."
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
-                      className="w-full bg-[#FAFAFA] border border-[#EAEAEA] rounded-xl px-3 py-1.5 text-xs text-[#171717] focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
+                      className="w-full bg-[#FAFAFA] dark:bg-[#202127] border border-[#EAEAEA] dark:border-neutral-800 rounded-xl px-3 py-1.5 text-xs text-[#171717] dark:text-white focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
                     />
                   </div>
                 </div>
 
                 {/* Checkout Summary Box */}
-                <div className="p-4 rounded-2xl bg-[#FAFAFA] border border-[#F0F0F0] space-y-2 text-xs">
-                  <div className="flex justify-between text-[#888888]">
+                <div className="p-4 rounded-2xl bg-[#FAFAFA] dark:bg-[#202127] border border-[#F0F0F0] dark:border-neutral-800 space-y-2 text-xs">
+                  <div className="flex justify-between text-[#888888] dark:text-neutral-400">
                     <span>{t('unitPriceLabel')}</span>
-                    <span className="font-semibold text-[#171717]">{formatCurrency(unitPrice)}</span>
+                    <span className="font-semibold text-[#171717] dark:text-white">{formatCurrency(unitPrice)}</span>
                   </div>
-                  <div className="flex justify-between text-[#888888]">
+                  <div className="flex justify-between text-[#888888] dark:text-neutral-400">
                     <span>{t('quantity')}:</span>
-                    <span className="font-semibold text-[#171717]">{quantity}x</span>
+                    <span className="font-semibold text-[#171717] dark:text-white">{quantity}x</span>
                   </div>
                   {rawDiscount > 0 && (
                     <div className="flex justify-between text-[#E5484D]">
@@ -654,16 +767,16 @@ export default function POSPage() {
                     </div>
                   )}
                   {tradeInCredit > 0 && (
-                    <div className="flex justify-between text-indigo-600">
+                    <div className="flex justify-between text-indigo-600 dark:text-indigo-400">
                       <span>{t('tradeInDeduction')}:</span>
                       <span className="font-semibold">-{formatCurrency(tradeInCredit)}</span>
                     </div>
                   )}
-                  <div className="border-t border-[#EAEAEA] pt-2 flex justify-between text-sm font-bold text-[#171717]">
+                  <div className="border-t border-[#EAEAEA] dark:border-neutral-800 pt-2 flex justify-between text-sm font-bold text-[#171717] dark:text-white">
                     <span>{t('totalAmount')}:</span>
                     <span className="text-[#FF7900] text-base">{formatCurrency(totalAmount)}</span>
                   </div>
-                  <div className="flex justify-between text-[11px] text-emerald-600 font-semibold pt-1">
+                  <div className="flex justify-between text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold pt-1">
                     <span>{t('estimatedProfit')}:</span>
                     <span>+{formatCurrency(estimatedProfit)}</span>
                   </div>
