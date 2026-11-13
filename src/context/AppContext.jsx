@@ -25,12 +25,12 @@ export function AppProvider({ children }) {
       const version = localStorage.getItem('phonelytics_data_version');
       const saved = localStorage.getItem('phonelytics_products');
       
-      if (version === 'v13_real_photos_clean' && saved) {
+      if (version === 'v14_pos_clean_cashier' && saved) {
         return JSON.parse(saved);
       }
       
-      // Yangi v13 versiyasi: Haqiqiy fotosuratlar va toza vitrina
-      localStorage.setItem('phonelytics_data_version', 'v13_real_photos_clean');
+      // Yangi v14 versiyasi: POS ixcham kassir tanlash va haqiqiy rasmlar
+      localStorage.setItem('phonelytics_data_version', 'v14_pos_clean_cashier');
       localStorage.setItem('phonelytics_products', JSON.stringify(initialProducts));
       return initialProducts;
     } catch (e) {

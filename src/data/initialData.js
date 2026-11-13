@@ -146,7 +146,7 @@ export const initialProducts = [
     tag: "Popular",
     tagType: "popular",
     status: "in_stock",
-    image: "https://images.unsplash.com/photo-1598327105741-f7ea71a93ff7?auto=format&fit=crop&w=800&q=85",
+    image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=800&q=85",
     description: "Google Tensor G5 (TSMC 3nm) chipi, Gemini Nano sun'iy intellekti va dunyodagi eng toza Android tajribasi.",
     highlights: ["6.3\" Actua 120Hz OLED", "Google Tensor G5", "50MP Dual Pixel OIS", "1 Yil Rasmiy Kafolat"],
     views: "4.2k",

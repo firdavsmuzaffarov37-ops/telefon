@@ -322,7 +322,15 @@ export default function POSPage() {
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-14 h-14 bg-[#FAFAFA] dark:bg-[#202127] rounded-xl flex items-center justify-center p-1 border border-[#F0F0F0] dark:border-neutral-800 flex-shrink-0">
-                      <img src={product.image} alt={product.name} className="max-h-full max-w-full object-contain" />
+                      <img 
+                        src={product.image} 
+                        alt={product.name} 
+                        className="max-h-full max-w-full object-contain"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=700&q=80";
+                        }}
+                      />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="text-xs font-bold text-[#171717] dark:text-white truncate">{product.name}</h4>
@@ -451,49 +459,49 @@ export default function POSPage() {
 
             {currentProduct ? (
               <form onSubmit={handleConfirmSale} className="space-y-4">
-                {/* Sotuvchi / Kassir Tanlash (Har qanday ishchini tanlab sotish imkoniyati) */}
-                <div className="p-3 rounded-2xl bg-orange-50/50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-900/60 space-y-1.5">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-[#171717] dark:text-white flex items-center gap-1.5">
-                      <Users className="w-3.5 h-3.5 text-[#FF7900]" />
-                      Sotuvchi (Kassir):
-                    </span>
-                    <span className="text-[11px] font-extrabold text-[#FF7900]">
-                      {activeCashier?.name || 'Sardor Rahimov'}
-                    </span>
+                {/* Sotuvchi / Kassir (Ixcham va tushunarli) */}
+                <div className="flex items-center justify-between p-3 rounded-2xl bg-neutral-50 dark:bg-[#202127] border border-[#EAEAEA] dark:border-neutral-800">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#FF7900] to-[#FFA03A] text-white flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-xs">
+                      {activeCashier?.avatar || 'SR'}
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] text-[#888888] dark:text-neutral-400 block font-medium">Sotuvchi (Kassir):</span>
+                      <span className="text-xs font-bold text-[#171717] dark:text-white truncate block">
+                        {activeCashier?.name || 'Sardor Rahimov'}
+                      </span>
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-1.5 pt-0.5">
-                    {(staffMembers || []).map((staff) => {
-                      const isChosen = activeCashier?.name === staff.name;
-                      return (
-                        <button
-                          key={staff.name}
-                          type="button"
-                          onClick={() => selectActiveCashier(staff)}
-                          className={`p-2 rounded-xl border flex items-center gap-2 text-left transition cursor-pointer ${
-                            isChosen
-                              ? 'border-[#FF7900] bg-white dark:bg-[#18191D] ring-2 ring-[#FF7900]/30 shadow-xs'
-                              : 'border-[#EAEAEA] dark:border-[#27282E] bg-white/70 dark:bg-[#202127] hover:bg-white text-[#666]'
-                          }`}
-                        >
-                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-[10px] flex-shrink-0 ${
-                            isChosen ? 'bg-[#FF7900] text-white' : 'bg-neutral-100 dark:bg-[#2C2D35] text-[#555] dark:text-[#AAA]'
-                          }`}>
-                            {staff.avatar}
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="text-[11px] font-bold text-[#171717] dark:text-white truncate leading-tight">{staff.name.split(' ')[0]}</p>
-                            <span className="text-[9px] text-[#888] truncate block">{staff.role.split(' ')[0]}</span>
-                          </div>
-                        </button>
-                      );
-                    })}
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <select
+                      value={activeCashier?.name || ''}
+                      onChange={(e) => {
+                        const found = (staffMembers || []).find(s => s.name === e.target.value);
+                        if (found) selectActiveCashier(found);
+                      }}
+                      className="text-xs font-bold bg-white dark:bg-[#181920] border border-[#E0E0E0] dark:border-neutral-700 text-[#FF7900] rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-[#FF7900] cursor-pointer shadow-xs"
+                      title="Kassirni almashtirish"
+                    >
+                      {(staffMembers || []).map(staff => (
+                        <option key={staff.name} value={staff.name}>
+                          {staff.name} ({staff.role})
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
 
                 {/* Selected Smartphone Header */}
                 <div className="p-3.5 rounded-2xl bg-neutral-50 dark:bg-[#202127] border border-[#EAEAEA] dark:border-neutral-800 flex items-center gap-3">
-                  <img src={currentProduct.image} alt={currentProduct.name} className="w-12 h-12 object-contain bg-white dark:bg-[#181920] rounded-xl p-1 border dark:border-neutral-700" />
+                  <img 
+                    src={currentProduct.image} 
+                    alt={currentProduct.name} 
+                    className="w-12 h-12 object-contain bg-white dark:bg-[#181920] rounded-xl p-1 border dark:border-neutral-700" 
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=700&q=80";
+                    }}
+                  />
                   <div className="flex-1 min-w-0">
                     <h4 className="text-xs font-bold text-[#171717] dark:text-white truncate">{currentProduct.name}</h4>
                     <p className="text-[11px] text-[#888888] dark:text-neutral-400">{currentProduct.storage} • {selectedColor || currentProduct.color}</p>
