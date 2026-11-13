@@ -25,12 +25,12 @@ export function AppProvider({ children }) {
       const version = localStorage.getItem('phonelytics_data_version');
       const saved = localStorage.getItem('phonelytics_products');
       
-      if (version === 'v12_duo_showcase_modal' && saved) {
+      if (version === 'v13_real_photos_clean' && saved) {
         return JSON.parse(saved);
       }
       
-      // Yangi v12 versiyasi: Duo Showcase va yangi tafsilotlar modali
-      localStorage.setItem('phonelytics_data_version', 'v12_duo_showcase_modal');
+      // Yangi v13 versiyasi: Haqiqiy fotosuratlar va toza vitrina
+      localStorage.setItem('phonelytics_data_version', 'v13_real_photos_clean');
       localStorage.setItem('phonelytics_products', JSON.stringify(initialProducts));
       return initialProducts;
     } catch (e) {

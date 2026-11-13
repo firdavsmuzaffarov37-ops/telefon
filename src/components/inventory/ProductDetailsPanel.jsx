@@ -27,7 +27,6 @@ import { useNavigate } from 'react-router-dom';
 import RestockModal from './RestockModal';
 import { useLanguage } from '../../context/LanguageContext';
 import { useApp } from '../../context/AppContext';
-import PhoneDuoShowcase from '../common/PhoneDuoShowcase';
 
 export default function ProductDetailsPanel({ 
   product, 
@@ -134,15 +133,23 @@ export default function ProductDetailsPanel({
             </span>
           </div>
 
-          {/* Large Product Duo Showcase: FRONT + BACK (ORQA VA OLDI TOMONI) */}
-          <div className="w-full h-48 sm:h-52 bg-[#F5F5F7] dark:bg-[#202127] rounded-2xl flex items-center justify-center p-2 border border-[#EAEAEA] dark:border-[#27282E] relative overflow-hidden">
-            <PhoneDuoShowcase product={product} activeColorHex={activeColor?.hex} />
+          {/* Large Product Image Showcase */}
+          <div className="w-full h-52 sm:h-56 bg-[#FAFAFA] dark:bg-[#202127] rounded-2xl flex items-center justify-center p-4 border border-[#F0F0F0] dark:border-neutral-800 relative overflow-hidden group">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="max-h-full max-w-full object-contain filter drop-shadow-lg group-hover:scale-105 transition-transform duration-300"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=700&q=80";
+              }}
+            />
             <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 z-20">
               <span className="text-[10px] font-bold bg-white/95 dark:bg-black/80 backdrop-blur-sm px-2.5 py-1 rounded-lg border border-[#EAEAEA] dark:border-neutral-700 text-[#171717] dark:text-white shadow-xs">
                 {product.brand}
               </span>
               <span className="text-[10px] font-bold bg-[#FF7900] text-white px-2 py-0.5 rounded-lg shadow-sm">
-                Oldi & Orqa Ko'rinishi
+                Original Sealed
               </span>
             </div>
           </div>

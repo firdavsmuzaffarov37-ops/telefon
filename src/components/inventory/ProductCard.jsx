@@ -16,7 +16,6 @@ import { formatCurrency } from '../../utils/formatters';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import { useApp } from '../../context/AppContext';
-import PhoneDuoShowcase from '../common/PhoneDuoShowcase';
 
 export default function ProductCard({ 
   product, 
@@ -162,9 +161,18 @@ export default function ProductCard({
         </div>
       </div>
 
-      {/* 2. Center Phone Showcase: Sleek duo presentation (ORQA VA OLDI TOMONI) floating on card */}
-      <div className="relative w-full h-44 sm:h-52 my-2 flex items-center justify-center p-1">
-        <PhoneDuoShowcase product={product} />
+      {/* 2. Center Phone Showcase: Sleek presentation floating on card */}
+      <div className="relative w-full h-44 sm:h-52 my-3 flex items-center justify-center p-2">
+        <img
+          src={product.image}
+          alt={product.name}
+          loading="lazy"
+          className="max-h-full max-w-full object-contain filter drop-shadow-lg group-hover:scale-105 transition-transform duration-300"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=700&q=80";
+          }}
+        />
       </div>
 
       {/* 3. Bottom Information & Circular Arrow Action Button (Matching Reference) */}

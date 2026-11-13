@@ -611,7 +611,7 @@ export const initialProducts = [
     tag: "New Arrival",
     tagType: "new-arrival",
     status: "in_stock",
-    image: "https://images.unsplash.com/photo-1591337676887-a217a6970a8a?auto=format&fit=crop&w=800&q=85",
+    image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=800&q=85",
     description: "Katta 6.9 dyuymli ulug'vor Super Retina ekran, yengil titan ramka, A18 Pro chipi, 5x optik periskop zoom va iPhone tarixidagi eng baquvvat batareya.",
     highlights: ["6.9\" Katta ProMotion 120Hz", "Apple A18 Pro (3nm)", "48MP Fusion 5x Optik Zoom", "1 Yil Rasmiy Kafolat"],
     views: "7.8k",
