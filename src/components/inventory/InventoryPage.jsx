@@ -357,15 +357,17 @@ export default function InventoryPage() {
             </button>
           </div>
 
-          {/* Yangi partiya qabul qilish (Restock) button */}
-          <button
-            onClick={() => restockAllProducts(5)}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-xs font-bold text-emerald-700 dark:text-emerald-400 shadow-sm transition active:scale-95"
-            title="Omborga yangi kelgan telefonlar partiyasini qabul qilish"
-          >
-            <PackageCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Yangi partiya qabul qilish (+Restock)</span>
-          </button>
+          {/* Yangi partiya qabul qilish (Restock) button - Faqat telefonlar tugaganda chiqadi */}
+          {counts.all === 0 && (
+            <button
+              onClick={() => restockAllProducts(5)}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-xs font-bold text-emerald-700 dark:text-emerald-400 shadow-sm transition active:scale-95 animate-pulse cursor-pointer"
+              title="Omborga yangi kelgan telefonlar partiyasini qabul qilish"
+            >
+              <PackageCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Yangi partiya qabul qilish (+Restock)</span>
+            </button>
+          )}
 
           <button
             onClick={handleExportCSV}
