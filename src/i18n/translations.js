@@ -376,7 +376,13 @@ export const translations = {
     slowMovingPhonesSub: "Omborda uzoq turib qolgan yoki sust sotilayotgan modellar",
     attentionNeeded: "E'tibor Talab",
     onlySoldThisPeriod: "Bu davrda faqat",
-    inWarehousePrefix: "Omborda:"
+    inWarehousePrefix: "Omborda:",
+    signInGoogle: "Google orqali kirish (Gmail)",
+    orEmailPassword: "yoki email va parol orqali",
+    sslSecurityNotice: "Xavfsiz va shifrlangan boshqaruv tizimi (256-bit SSL)",
+    signingInWait: "Hisob ma'lumotlari tekshirilmoqda...",
+    loginSuccessRedirect: "Muvaffaqiyatli! Tizimga yo'naltirilmoqda...",
+    fillAllFields: "Barcha maydonlarni to'ldiring"
   },
 
   ru: {
@@ -752,7 +758,13 @@ export const translations = {
     slowMovingPhonesSub: "Залежавшиеся товары или низкий спрос",
     attentionNeeded: "Внимание",
     onlySoldThisPeriod: "За этот период всего",
-    inWarehousePrefix: "На складе:"
+    inWarehousePrefix: "На складе:",
+    signInGoogle: "Войти через Google (Gmail)",
+    orEmailPassword: "или через email и пароль",
+    sslSecurityNotice: "Безопасная зашифрованная система (256-bit SSL)",
+    signingInWait: "Проверка данных и вход...",
+    loginSuccessRedirect: "Успешно! Перенаправление в систему...",
+    fillAllFields: "Пожалуйста, заполните все поля"
   },
 
   en: {
@@ -1128,7 +1140,13 @@ export const translations = {
     slowMovingPhonesSub: "Items in stock for long or low demand",
     attentionNeeded: "Attention Needed",
     onlySoldThisPeriod: "In this period only",
-    inWarehousePrefix: "In stock:"
+    inWarehousePrefix: "In stock:",
+    signInGoogle: "Sign in with Google (Gmail)",
+    orEmailPassword: "or with email and password",
+    sslSecurityNotice: "Secure and encrypted management system (256-bit SSL)",
+    signingInWait: "Verifying credentials & signing in...",
+    loginSuccessRedirect: "Success! Redirecting to dashboard...",
+    fillAllFields: "Please fill in all fields"
   }
 };
 
