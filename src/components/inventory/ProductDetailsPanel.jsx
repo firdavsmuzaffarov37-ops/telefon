@@ -58,14 +58,14 @@ export default function ProductDetailsPanel({
   // Stock status styling (5 tadan kam qolgan bo'lsa ogohlantirish)
   const currentStock = Number(product.stock) || 0;
   let stockBadgeClass = "bg-emerald-50 text-[#16A36A] border-emerald-200";
-  let stockLabel = `${t('inStockStatus')} (${currentStock} dona)`;
+  let stockLabel = `${t('inStockStatus')} (${currentStock} ${t('unitPieces')})`;
 
   if (currentStock <= 0) {
     stockBadgeClass = "bg-red-50 text-[#E5484D] border-red-200 font-bold";
-    stockLabel = "Tugagan (0 dona)";
+    stockLabel = `${t('outOfStockStatus')} (0 ${t('unitPieces')})`;
   } else if (currentStock <= 5) {
     stockBadgeClass = "bg-orange-50 text-[#FF7900] border-orange-300 dark:bg-orange-500/10 dark:text-amber-400 font-extrabold";
-    stockLabel = `⚠️ 5 tadan kam qoldi (${currentStock} dona)`;
+    stockLabel = `⚠️ ${t('stockThresholdUnder')} (${currentStock} ${t('unitPieces')})`;
   }
 
   const profitPerUnit = Number(product.sellingPrice) - Number(product.purchasePrice);
@@ -98,14 +98,14 @@ export default function ProductDetailsPanel({
             </h2>
             {isClientMode && (
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                Vitrina Ko'rinishi
+                {t('vitrinaBadge')}
               </span>
             )}
           </div>
           <button
             onClick={onClose}
             className="w-8 h-8 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center justify-center text-[#888888] hover:text-[#171717] dark:hover:text-white transition cursor-pointer"
-            title="Yopish"
+            title={t('close')}
           >
             <X className="w-4 h-4" />
           </button>
@@ -125,7 +125,7 @@ export default function ProductDetailsPanel({
               </div>
               <div className="flex items-center gap-1.5 text-[11px] text-[#666] dark:text-neutral-400 mt-1 font-medium">
                 <Calendar className="w-3.5 h-3.5 text-[#FF7900]" />
-                <span>Kelib tushgan sana: <strong className="text-[#171717] dark:text-white">{product.arrivalDate || "08.11.2026"}</strong></span>
+                <span>{t('arrivalDateLabel')} <strong className="text-[#171717] dark:text-white">{product.arrivalDate || "08.11.2026"}</strong></span>
               </div>
             </div>
             <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border ${stockBadgeClass} whitespace-nowrap`}>
@@ -149,7 +149,7 @@ export default function ProductDetailsPanel({
                 {product.brand}
               </span>
               <span className="text-[10px] font-bold bg-[#FF7900] text-white px-2 py-0.5 rounded-lg shadow-sm">
-                Original Sealed
+                {t('originalSealedBadge')}
               </span>
             </div>
           </div>
@@ -159,10 +159,10 @@ export default function ProductDetailsPanel({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-xs font-bold text-[#171717]">
               <Sparkles className="w-3.5 h-3.5 text-[#FF7900]" />
-              <span>Telefon haqida:</span>
+              <span>{t('aboutPhone')}</span>
             </div>
             <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-              1 Yillik Kafolat
+              {t('warrantyOneYear')}
             </span>
           </div>
           <p className="text-xs text-[#555555] leading-relaxed">
@@ -371,8 +371,8 @@ export default function ProductDetailsPanel({
           <ShoppingBag className="w-4 h-4" />
           <span>
             {product.stock <= 0 
-              ? "⛔ Omborda Tugagan (0 dona — Sotuv to'xtatildi)" 
-              : (isClientMode ? "Sotib Olish / Rasmiylashtirish" : t('quickSellBtn'))}
+              ? `⛔ ${t('outOfStockStopped')}` 
+              : (isClientMode ? (t('clientBuyNow') || "Sotib Olish / Rasmiylashtirish") : t('quickSellBtn'))}
           </span>
         </button>
 

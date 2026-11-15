@@ -339,7 +339,7 @@ export default function SalesHistoryPage() {
               </div>
               <div className="flex justify-between text-[#888888]">
                 <span>{t('quantity')}:</span>
-                <span className="text-[#171717]">{viewTxn.quantity} dona</span>
+                <span className="text-[#171717]">{viewTxn.quantity} {t('unitPieces')}</span>
               </div>
               <div className="flex justify-between text-[#888888]">
                 <span>{t('purchaseCost')}:</span>

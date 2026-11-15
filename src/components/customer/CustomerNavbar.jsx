@@ -18,10 +18,13 @@ import {
 } from 'lucide-react';
 import { useCustomer } from '../../context/CustomerContext';
 import { useApp } from '../../context/AppContext';
+import { useLanguage } from '../../context/LanguageContext';
+import LanguageSelector from '../common/LanguageSelector';
 
 export default function CustomerNavbar() {
   const { cartCount } = useCustomer();
   const { theme, toggleTheme } = useApp();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -35,11 +38,11 @@ export default function CustomerNavbar() {
   };
 
   const navLinks = [
-    { name: 'Bosh Sahifa', path: '/shop' },
-    { name: 'Smartfonlar', path: '/shop/catalog' },
-    { name: 'Chegirmalar', path: '/shop/deals' },
-    { name: 'Buyurtmalarim', path: '/shop/orders' },
-    { name: 'Profilim', path: '/shop/profile' },
+    { name: t('navHome'), path: '/shop' },
+    { name: t('navCatalog'), path: '/shop/catalog' },
+    { name: t('navDeals'), path: '/shop/deals' },
+    { name: t('navOrders'), path: '/shop/orders' },
+    { name: t('navProfile'), path: '/shop/profile' },
   ];
 
   return (
@@ -47,7 +50,7 @@ export default function CustomerNavbar() {
       {/* Top Banner (Free delivery & Guarantee) */}
       <div className="bg-[#171717] dark:bg-black text-white text-[11px] py-1.5 px-4 text-center font-medium flex items-center justify-center gap-2">
         <Sparkles className="w-3.5 h-3.5 text-[#FF7900]" />
-        <span>Barcha smartfonlarga <strong>1 Yillik Rasmiy Kafolat</strong> va butun O'zbekiston bo'ylab <strong>Bepul Yetkazib Berish</strong>!</span>
+        <span>{t('topDeliveryBanner')}</span>
       </div>
 
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
@@ -61,7 +64,7 @@ export default function CustomerNavbar() {
               Phone<span className="text-[#FF7900]">Lytics</span>
             </span>
             <span className="text-[10px] text-[#888888] font-semibold -mt-1 tracking-wider uppercase">
-              Rasmiy Do'kon
+              {t('officialStore')}
             </span>
           </div>
         </NavLink>
@@ -72,7 +75,7 @@ export default function CustomerNavbar() {
             const isActive = location.pathname === link.path;
             return (
               <NavLink
-                key={link.name}
+                key={link.path}
                 to={link.path}
                 className={`transition hover:text-[#FF7900] relative py-1 ${
                   isActive ? 'text-[#171717] dark:text-white font-bold' : ''
@@ -87,13 +90,13 @@ export default function CustomerNavbar() {
           })}
         </nav>
 
-        {/* Right: Search, Cart, Theme & Employee Panel Switcher */}
+        {/* Right: Search, Cart, Theme & Language Switcher */}
         <div className="flex items-center gap-2.5 sm:gap-3">
           {/* Quick Search Input */}
           <form onSubmit={handleSearchSubmit} className="relative hidden xl:block w-52">
             <input
               type="text"
-              placeholder="Smartfon qidirish..."
+              placeholder={t('searchPlaceholderShop')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-[#FAFAFA] dark:bg-[#1E1F24] border border-[#EAEAEA] dark:border-[#2E2F37] rounded-xl pl-8 pr-3 py-1.5 text-xs text-[#171717] dark:text-white placeholder:text-[#888888] focus:bg-white dark:focus:bg-[#25262C] focus:outline-none focus:ring-1 focus:ring-[#FF7900]"
@@ -101,11 +104,14 @@ export default function CustomerNavbar() {
             <Search className="w-3.5 h-3.5 text-[#888888] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </form>
 
+          {/* Language Selector */}
+          <LanguageSelector />
+
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
             className="w-9 h-9 rounded-xl border border-[#EAEAEA] dark:border-[#27282E] bg-white dark:bg-[#1C1D22] flex items-center justify-center text-[#171717] dark:text-white transition cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800"
-            title={theme === 'dark' ? "Kunduzgi rejim" : "Tungi rejim"}
+            title={theme === 'dark' ? t('lightMode') : t('darkMode')}
           >
             {theme === 'dark' ? (
               <Sun className="w-4 h-4 text-amber-400 fill-amber-400" />
@@ -118,7 +124,7 @@ export default function CustomerNavbar() {
           <NavLink
             to="/shop/cart"
             className="relative flex items-center justify-center w-9 h-9 rounded-xl border border-[#EAEAEA] dark:border-[#27282E] bg-white dark:bg-[#1C1D22] hover:bg-neutral-50 dark:hover:bg-neutral-800 transition cursor-pointer"
-            title="Savatcha"
+            title={t('cartTitle')}
           >
             <ShoppingCart className="w-4 h-4 text-[#171717] dark:text-white" />
             {cartCount > 0 && (
@@ -132,7 +138,7 @@ export default function CustomerNavbar() {
           <NavLink
             to="/shop/profile"
             className="flex items-center justify-center w-9 h-9 rounded-xl border border-[#EAEAEA] dark:border-[#27282E] bg-white dark:bg-[#1C1D22] hover:bg-neutral-50 dark:hover:bg-neutral-800 transition text-[#171717] dark:text-white cursor-pointer"
-            title="Mening Profilim"
+            title={t('myProfileTooltip')}
           >
             <User className="w-4 h-4" />
           </NavLink>
@@ -153,7 +159,7 @@ export default function CustomerNavbar() {
           <form onSubmit={handleSearchSubmit} className="relative w-full">
             <input
               type="text"
-              placeholder="Smartfon qidirish..."
+              placeholder={t('searchPlaceholderShop')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-[#FAFAFA] dark:bg-[#1E1F24] border border-[#EAEAEA] dark:border-[#2E2F37] rounded-xl pl-9 pr-3 py-2 text-xs text-[#171717] dark:text-white placeholder:text-[#888888]"
@@ -164,7 +170,7 @@ export default function CustomerNavbar() {
           <div className="flex flex-col space-y-1.5 pt-1">
             {navLinks.map((link) => (
               <NavLink
-                key={link.name}
+                key={link.path}
                 to={link.path}
                 onClick={() => setMobileMenuOpen(false)}
                 className="px-3 py-2 rounded-xl text-xs font-bold text-[#171717] dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"

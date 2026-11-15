@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, ChevronDown, SlidersHorizontal, X, Sparkles, Filter } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import { formatCurrency } from '../../utils/formatters';
 
 export default function FilterBar({
   selectedBrand,
@@ -26,7 +27,7 @@ export default function FilterBar({
 
   // Modern category pills (Directly matching reference screenshot)
   const categoryPills = [
-    { id: 'All Brands', label: 'Barchasi (All)' },
+    { id: 'All Brands', label: `${t('filterAllBrands')} (All)` },
     { id: 'Apple', label: 'Apple' },
     { id: 'Samsung', label: 'Samsung' },
     { id: 'Xiaomi', label: 'Xiaomi' },
@@ -71,7 +72,7 @@ export default function FilterBar({
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Eng Ko'p Sotilgan</span>
+            <span>{t('filterHitSavdo')}</span>
           </button>
         </div>
 
@@ -84,7 +85,7 @@ export default function FilterBar({
               className="appearance-none bg-[#F5F5F7] dark:bg-[#1C1D24] border border-[#EAEAEF] dark:border-[#272832] rounded-2xl pl-3.5 pr-8 py-2 text-xs font-bold text-[#171717] dark:text-white hover:border-neutral-300 focus:outline-none focus:ring-1 focus:ring-[#FF7900] cursor-pointer shadow-xs"
             >
               {storages.map(s => (
-                <option key={s} value={s}>{s === 'All Storage' ? 'Xotira: Barchasi' : s}</option>
+                <option key={s} value={s}>{s === 'All Storage' ? t('storageFilterAll') : s}</option>
               ))}
             </select>
             <ChevronDown className="w-3.5 h-3.5 text-[#888888] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -96,10 +97,10 @@ export default function FilterBar({
               onChange={(e) => setSelectedStatus(e.target.value)}
               className="appearance-none bg-[#F5F5F7] dark:bg-[#1C1D24] border border-[#EAEAEF] dark:border-[#272832] rounded-2xl pl-3.5 pr-8 py-2 text-xs font-bold text-[#171717] dark:text-white hover:border-neutral-300 focus:outline-none focus:ring-1 focus:ring-[#FF7900] cursor-pointer shadow-xs"
             >
-              <option value="all">Holat: Barchasi</option>
-              <option value="in_stock">Sotuvda mavjud</option>
-              <option value="low_stock">5 tadan kam qolgan</option>
-              <option value="out_of_stock">Tugagan (0 dona)</option>
+              <option value="all">{t('statusFilterAll')}</option>
+              <option value="in_stock">{t('statusInStock')}</option>
+              <option value="low_stock">{t('statusLowStock')}</option>
+              <option value="out_of_stock">{t('statusOutOfStock')}</option>
             </select>
             <ChevronDown className="w-3.5 h-3.5 text-[#888888] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
@@ -112,7 +113,7 @@ export default function FilterBar({
                 ? 'bg-[#FF7900] text-white border-[#FF7900]'
                 : 'bg-[#F5F5F7] dark:bg-[#1C1D24] text-[#666666] dark:text-[#A1A1AA] border-[#EAEAEF] dark:border-[#272832] hover:text-[#171717]'
             }`}
-            title="Qo'shimcha narx filtrlari"
+            title={t('filter')}
           >
             <Filter className="w-4 h-4" />
           </button>
@@ -124,7 +125,7 @@ export default function FilterBar({
         <div className="p-4 bg-white dark:bg-[#181920] rounded-3xl border border-[#EAEAEA] dark:border-[#27282E] shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-in fade-in">
           <div>
             <label className="text-xs font-semibold text-[#666666] dark:text-[#A1A1AA] block mb-1.5">
-              Maksimal Narx: {Number(priceRange.max).toLocaleString()} so'm
+              {t('maxPriceLabel')} {formatCurrency(priceRange.max)}
             </label>
             <input
               type="range"
@@ -137,20 +138,20 @@ export default function FilterBar({
             />
           </div>
           <div className="flex items-center gap-2 pt-4">
-            <span className="text-xs text-[#888888] font-medium">Tezkor filtr:</span>
+            <span className="text-xs text-[#888888] font-medium">{t('quickFilterLabel')}</span>
             <button
               type="button"
               onClick={() => setPriceRange({ min: 0, max: 7000000 })}
               className="text-xs px-3 py-1.5 rounded-xl bg-neutral-100 dark:bg-[#23242A] hover:bg-neutral-200 text-[#171717] dark:text-white font-medium"
             >
-              7 mln gacha
+              {t('upTo7M')}
             </button>
             <button
               type="button"
               onClick={() => setPriceRange({ min: 0, max: 15000000 })}
               className="text-xs px-3 py-1.5 rounded-xl bg-neutral-100 dark:bg-[#23242A] hover:bg-neutral-200 text-[#171717] dark:text-white font-medium"
             >
-              15 mln gacha
+              {t('upTo15M')}
             </button>
           </div>
           <div className="flex items-center justify-end pt-4">
@@ -166,7 +167,7 @@ export default function FilterBar({
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-100 dark:bg-[#23242A] hover:bg-red-50 hover:text-red-600 text-xs text-[#666] font-semibold transition"
             >
               <X className="w-3.5 h-3.5" />
-              <span>Filtrlarni tozalash</span>
+              <span>{t('clearFilters')}</span>
             </button>
           </div>
         </div>

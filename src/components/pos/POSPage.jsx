@@ -65,7 +65,7 @@ export default function POSPage() {
   const [quantity, setQuantity] = useState(1);
   const [discount, setDiscount] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState('Card');
-  const [customerName, setCustomerName] = useState('Mijoz');
+  const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
 
   // Installment (Nasiya) State
@@ -167,6 +167,14 @@ export default function POSPage() {
   const estimatedProfit = totalAmount - totalCost;
   const monthlyPayment = installmentTerm > 0 ? Math.round(totalAmount / installmentTerm) : 0;
 
+  const getStaffRole = (role) => {
+    if (role === 'Katta Sotuvchi') return t('roleSeniorSeller');
+    if (role === 'Sotuvchi-Maslahatchi') return t('roleSalesConsultant');
+    if (role === 'Kassir-Operator') return t('roleCashierOperator');
+    if (role === "Do'kon Menejeri") return t('roleStoreManager');
+    return role;
+  };
+
   const handleSelectProduct = (product) => {
     if (product.stock <= 0) return;
     setSelectedProductId(product.id);
@@ -210,7 +218,7 @@ export default function POSPage() {
       color: selectedColor || currentProduct.color,
       discount: totalDiscount,
       paymentMethod: effectiveMethod,
-      customerName: customerName.trim() || 'Mijoz',
+      customerName: customerName.trim() || t('defaultCustomerName'),
       customerPhone: customerPhone.trim(),
       cashierName: activeCashier?.name || 'Sardor Rahimov',
       cashierRole: activeCashier?.role || 'Katta Sotuvchi'
@@ -239,7 +247,7 @@ export default function POSPage() {
       setTradeInActive(false);
       setTradeInModel('');
       setTradeInValue(0);
-      setCustomerName('Mijoz');
+      setCustomerName('');
       setCustomerPhone('');
     }
   };
@@ -277,10 +285,10 @@ export default function POSPage() {
                 type="button"
                 onClick={() => setIsScannerOpen(true)}
                 className="flex items-center gap-1.5 px-3.5 py-2.5 bg-orange-50 hover:bg-orange-100 text-[#FF7900] border border-[#FF7900]/30 rounded-2xl text-xs font-bold transition shadow-sm active:scale-95"
-                title={t('scanBarcodeBtn')}
+                title={t('scanBarcodeButton')}
               >
                 <Scan className="w-4 h-4" />
-                <span className="hidden sm:inline">{t('scanBarcodeBtn')}</span>
+                <span className="hidden sm:inline">{t('scanBarcodeButton')}</span>
               </button>
             </div>
 
@@ -296,7 +304,7 @@ export default function POSPage() {
                       : 'bg-neutral-100 hover:bg-neutral-200 text-[#666666]'
                   }`}
                 >
-                  {brand === 'All' ? t('all') : brand}
+                  {brand === 'All' ? t('filterAllBrands') : brand}
                 </button>
               ))}
             </div>
@@ -360,31 +368,31 @@ export default function POSPage() {
               <div className="flex items-center gap-2">
                 <Receipt className="w-4 h-4 text-[#FF7900]" />
                 <h4 className="text-sm font-bold text-[#171717] dark:text-white">
-                  Kassa Ko'rsatkichlari & So'nggi Savdolar
+                  {t('posStatsTitle')}
                 </h4>
               </div>
               <span className="text-[11px] text-[#888888] dark:text-neutral-400 flex items-center gap-1">
                 <Clock className="w-3 h-3" />
-                Bugungi kassa jurnali
+                {t('posJournalLabel')}
               </span>
             </div>
 
             {/* 4 Mini Stat Badges */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="p-3 rounded-2xl bg-neutral-50 dark:bg-[#202127] border border-[#EAEAEA] dark:border-neutral-800">
-                <span className="text-[10px] text-[#888888] dark:text-neutral-400 block mb-0.5">Mavjud Modellar</span>
-                <span className="text-sm font-extrabold text-[#171717] dark:text-white">{todayStats.totalModels} ta</span>
+                <span className="text-[10px] text-[#888888] dark:text-neutral-400 block mb-0.5">{t('posAvailableModels')}</span>
+                <span className="text-sm font-extrabold text-[#171717] dark:text-white">{todayStats.totalModels} {t('unitCount')}</span>
               </div>
               <div className="p-3 rounded-2xl bg-neutral-50 dark:bg-[#202127] border border-[#EAEAEA] dark:border-neutral-800">
-                <span className="text-[10px] text-[#888888] dark:text-neutral-400 block mb-0.5">Jami Zaxira</span>
-                <span className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400">{todayStats.totalStock} dona</span>
+                <span className="text-[10px] text-[#888888] dark:text-neutral-400 block mb-0.5">{t('posTotalStock')}</span>
+                <span className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400">{todayStats.totalStock} {t('unitPieces')}</span>
               </div>
               <div className="p-3 rounded-2xl bg-neutral-50 dark:bg-[#202127] border border-[#EAEAEA] dark:border-neutral-800">
-                <span className="text-[10px] text-[#888888] dark:text-neutral-400 block mb-0.5">Bugungi Cheklar</span>
-                <span className="text-sm font-extrabold text-[#FF7900]">{todayStats.todayCount} ta sotuv</span>
+                <span className="text-[10px] text-[#888888] dark:text-neutral-400 block mb-0.5">{t('posTodayReceipts')}</span>
+                <span className="text-sm font-extrabold text-[#FF7900]">{todayStats.todayCount} {t('unitSalesCount')}</span>
               </div>
               <div className="p-3 rounded-2xl bg-neutral-50 dark:bg-[#202127] border border-[#EAEAEA] dark:border-neutral-800">
-                <span className="text-[10px] text-[#888888] dark:text-neutral-400 block mb-0.5">Bugungi Tushum</span>
+                <span className="text-[10px] text-[#888888] dark:text-neutral-400 block mb-0.5">{t('posTodayRevenue')}</span>
                 <span className="text-sm font-extrabold text-[#171717] dark:text-white truncate block">
                   {formatCurrency(todayStats.todayRevenue)}
                 </span>
@@ -394,7 +402,7 @@ export default function POSPage() {
             {/* Recent 5 Transactions Mini Table */}
             <div className="space-y-2 pt-1">
               <span className="text-xs font-bold text-[#171717] dark:text-white block">
-                So'nggi Sotuv Cheklari:
+                {t('posRecentReceiptsTitle')}
               </span>
               {recentTransactions.length > 0 ? (
                 <div className="divide-y divide-[#EAEAEA] dark:divide-neutral-800 rounded-2xl border border-[#EAEAEA] dark:border-neutral-800 overflow-hidden">
@@ -409,11 +417,11 @@ export default function POSPage() {
                             {tx.productName || 'Smartfon'}
                           </span>
                           <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-100/70 dark:bg-orange-950/60 text-[#FF7900] font-semibold">
-                            {tx.paymentMethod || 'Naqd'}
+                            {tx.paymentMethod === 'Card' ? t('paymentCard') : tx.paymentMethod === 'Cash' ? t('paymentCash') : tx.paymentMethod}
                           </span>
                         </div>
                         <p className="text-[11px] text-[#888888] dark:text-neutral-400 mt-0.5">
-                          {tx.customerName || 'Mijoz'} • {formatDateTime(tx.date)} • Kassir: {tx.cashierName || 'Sardor'}
+                          {tx.customerName || t('defaultCustomerName')} • {formatDateTime(tx.date)} • {t('cashierPrefix')} {tx.cashierName || 'Sardor'}
                         </p>
                       </div>
                       <div className="flex items-center gap-3 flex-shrink-0 ml-3">
@@ -424,7 +432,7 @@ export default function POSPage() {
                           type="button"
                           onClick={() => setCompletedTxn(tx)}
                           className="p-1.5 rounded-lg border border-[#EAEAEA] dark:border-neutral-700 hover:border-[#FF7900] text-[#666666] dark:text-neutral-300 hover:text-[#FF7900] transition cursor-pointer"
-                          title="Chekni ko'rish / Chop etish"
+                          title={t('posViewReceipt')}
                         >
                           <Eye className="w-3.5 h-3.5" />
                         </button>
@@ -434,7 +442,7 @@ export default function POSPage() {
                 </div>
               ) : (
                 <div className="py-6 text-center text-xs text-[#888888] dark:text-neutral-400">
-                  Hozircha sotuv cheklari mavjud emas
+                  {t('posNoSalesToday')}
                 </div>
               )}
             </div>
@@ -466,7 +474,7 @@ export default function POSPage() {
                       {activeCashier?.avatar || 'SR'}
                     </div>
                     <div className="min-w-0">
-                      <span className="text-[10px] text-[#888888] dark:text-neutral-400 block font-medium">Sotuvchi (Kassir):</span>
+                      <span className="text-[10px] text-[#888888] dark:text-neutral-400 block font-medium">{t('posSellerCashier')}</span>
                       <span className="text-xs font-bold text-[#171717] dark:text-white truncate block">
                         {activeCashier?.name || 'Sardor Rahimov'}
                       </span>
@@ -480,11 +488,11 @@ export default function POSPage() {
                         if (found) selectActiveCashier(found);
                       }}
                       className="text-xs font-bold bg-white dark:bg-[#181920] border border-[#E0E0E0] dark:border-neutral-700 text-[#FF7900] rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-[#FF7900] cursor-pointer shadow-xs"
-                      title="Kassirni almashtirish"
+                      title={t('posSwitchCashier')}
                     >
                       {(staffMembers || []).map(staff => (
                         <option key={staff.name} value={staff.name}>
-                          {staff.name} ({staff.role})
+                          {staff.name} ({getStaffRole(staff.role)})
                         </option>
                       ))}
                     </select>
@@ -513,9 +521,9 @@ export default function POSPage() {
                 {currentProduct.colors && currentProduct.colors.length > 0 && (
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-semibold text-[#171717] dark:text-white">Sotilayotgan Rang:</span>
+                      <span className="font-semibold text-[#171717] dark:text-white">{t('posSelectedColor')}</span>
                       <span className="text-[11px] text-[#888888] dark:text-neutral-400">
-                        Tanlangan: <strong className="text-[#171717] dark:text-white">{selectedColor}</strong>
+                        {t('posColorChosen')} <strong className="text-[#171717] dark:text-white">{selectedColor}</strong>
                       </span>
                     </div>
                     <div className="grid grid-cols-2 gap-1.5">
@@ -541,7 +549,7 @@ export default function POSPage() {
                               <span className="text-xs font-semibold text-[#171717] dark:text-white truncate">{c.name.split(' ')[0]}</span>
                             </div>
                             <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${count > 0 ? 'bg-neutral-100 dark:bg-neutral-800 text-[#444] dark:text-neutral-300' : 'bg-red-50 dark:bg-red-950/40 text-red-600'}`}>
-                              {count} ta
+                              {count} {t('unitCount')}
                             </span>
                           </button>
                         );
@@ -631,7 +639,7 @@ export default function POSPage() {
                         <label className="text-[10px] text-[#888888] dark:text-neutral-400 block mb-1">{t('tradeInModelLabel')}</label>
                         <input
                           type="text"
-                          placeholder="masalan: iPhone 11"
+                          placeholder={t('tradeInModelPlaceholder')}
                           value={tradeInModel}
                           onChange={(e) => setTradeInModel(e.target.value)}
                           className="w-full bg-white dark:bg-[#181920] border border-[#EAEAEA] dark:border-neutral-700 rounded-xl px-2.5 py-1.5 text-xs text-[#171717] dark:text-white focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
@@ -683,7 +691,7 @@ export default function POSPage() {
                                 : 'bg-white dark:bg-[#181920] text-[#666666] dark:text-neutral-300 border-[#EAEAEA] dark:border-neutral-700 hover:border-neutral-300'
                             }`}
                           >
-                            {m} oy
+                            {m} {t('unitMonth')}
                           </button>
                         ))}
                       </div>
@@ -692,7 +700,7 @@ export default function POSPage() {
                     <div className="flex items-center justify-between pt-1 border-t border-orange-200/60 dark:border-orange-900/40 text-xs">
                       <span className="text-[#888888] dark:text-neutral-400 font-medium">{t('monthlyPayment')}:</span>
                       <span className="font-extrabold text-[#FF7900] text-sm">
-                        {formatCurrency(monthlyPayment)} / oy
+                        {formatCurrency(monthlyPayment)} {t('perMonth')}
                       </span>
                     </div>
                   </div>
@@ -738,7 +746,7 @@ export default function POSPage() {
                     </label>
                     <input
                       type="text"
-                      placeholder="Mijoz ismi"
+                      placeholder={t('customerNamePlaceholder')}
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
                       className="w-full bg-[#FAFAFA] dark:bg-[#202127] border border-[#EAEAEA] dark:border-neutral-800 rounded-xl px-3 py-1.5 text-xs text-[#171717] dark:text-white focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
@@ -750,7 +758,7 @@ export default function POSPage() {
                     </label>
                     <input
                       type="text"
-                      placeholder="+998 90..."
+                      placeholder={t('customerPhonePlaceholder')}
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
                       className="w-full bg-[#FAFAFA] dark:bg-[#202127] border border-[#EAEAEA] dark:border-neutral-800 rounded-xl px-3 py-1.5 text-xs text-[#171717] dark:text-white focus:ring-1 focus:ring-[#FF7900] focus:outline-none"
@@ -872,12 +880,12 @@ export default function POSPage() {
               {completedTxn.isInstallment && (
                 <div className="flex justify-between text-[#FF7900] font-semibold">
                   <span>{t('monthlyPayment')}:</span>
-                  <span>{formatCurrency(completedTxn.monthlyPayment)} / oy</span>
+                  <span>{formatCurrency(completedTxn.monthlyPayment)} {t('perMonth')}</span>
                 </div>
               )}
               <div className="flex justify-between text-[#888888]">
-                <span>Sotuvchi (Kassir):</span>
-                <span className="font-semibold text-[#171717]">{completedTxn.cashierName || 'Sardor Rahimov'} ({completedTxn.cashierRole || 'Katta Sotuvchi'})</span>
+                <span>{t('posSellerCashier')}</span>
+                <span className="font-semibold text-[#171717]">{completedTxn.cashierName || 'Sardor Rahimov'} ({getStaffRole(completedTxn.cashierRole)})</span>
               </div>
               <div className="flex justify-between text-[#888888]">
                 <span>{t('receiptCustomer')}</span>

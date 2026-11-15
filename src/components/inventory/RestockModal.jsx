@@ -39,7 +39,7 @@ export default function RestockModal({ isOpen, onClose, product }) {
             <h3 className="text-base font-bold text-[#171717] font-['Plus_Jakarta_Sans']">
               {t('restockBtn')}
             </h3>
-            <p className="text-xs text-[#888888]">Yetkazib beruvchidan yangi partiya qabul qilish</p>
+            <p className="text-xs text-[#888888]">{t('restockSupplierSubtitle')}</p>
           </div>
         </div>
 
@@ -49,13 +49,13 @@ export default function RestockModal({ isOpen, onClose, product }) {
             <img src={product.image} alt={product.name} className="w-12 h-12 object-contain bg-white rounded-xl p-1 border" />
             <div>
               <h4 className="text-xs font-bold text-[#171717]">{product.name}</h4>
-              <p className="text-[11px] text-[#888888]">{product.storage} • {t('tableStock')}: {product.stock} dona</p>
+              <p className="text-[11px] text-[#888888]">{product.storage} • {t('tableStock')}: {product.stock} {t('unitPieces')}</p>
             </div>
           </div>
 
           <div>
             <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-              Qo'shiladigan miqdor (dona) *
+              {t('quantityToAdd')}
             </label>
             <input
               type="number"
@@ -70,7 +70,7 @@ export default function RestockModal({ isOpen, onClose, product }) {
 
           <div>
             <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-              Yetkazib beruvchi / Manba
+              {t('supplierSource')}
             </label>
             <input
               type="text"
@@ -95,11 +95,11 @@ export default function RestockModal({ isOpen, onClose, product }) {
           {/* Shipment Cost Summary */}
           <div className="p-3.5 rounded-2xl bg-orange-50/50 border border-orange-200/60 space-y-1 text-xs">
             <div className="flex justify-between text-[#888888]">
-              <span>To'ldirilgandan keyingi yangi zaxira:</span>
-              <strong className="text-[#171717] font-bold">{Number(product.stock) + Number(quantity || 0)} dona</strong>
+              <span>{t('newStockAfter')}</span>
+              <strong className="text-[#171717] font-bold">{Number(product.stock) + Number(quantity || 0)} {t('unitPieces')}</strong>
             </div>
             <div className="flex justify-between text-[#888888]">
-              <span>Partiyaning umumiy qiymati:</span>
+              <span>{t('batchTotalValue')}</span>
               <strong className="text-[#FF7900] font-black">{formatCurrency(totalCost)}</strong>
             </div>
           </div>
@@ -116,7 +116,7 @@ export default function RestockModal({ isOpen, onClose, product }) {
               type="submit"
               className="px-5 py-2 rounded-xl bg-[#16A36A] hover:bg-emerald-700 text-white text-xs font-bold transition shadow-sm"
             >
-              Tasdiqlash (+{quantity})
+              {t('confirmRestockQty')} (+{quantity})
             </button>
           </div>
         </form>

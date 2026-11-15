@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Smartphone, DollarSign, Image, Hash, AlertCircle, Check } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useLanguage } from '../../context/LanguageContext';
+import { formatCurrency } from '../../utils/formatters';
 
 export default function ProductModal({ isOpen, onClose, productToEdit = null }) {
   const { addProduct, updateProduct } = useApp();
@@ -255,7 +256,7 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
               <div className="col-span-1 sm:col-span-2 text-xs flex items-center justify-between pt-1">
                 <span className="text-[#888888]">{t('unitProfit')}:</span>
                 <span className="font-bold text-emerald-600">
-                  +{(Number(formData.sellingPrice) - Number(formData.purchasePrice)).toLocaleString()} so'm
+                  +{formatCurrency(Number(formData.sellingPrice) - Number(formData.purchasePrice))}
                 </span>
               </div>
             )}
@@ -292,7 +293,7 @@ export default function ProductModal({ isOpen, onClose, productToEdit = null }) 
 
             <div>
               <label className="text-xs font-semibold text-[#171717] block mb-1.5">
-                Kelib tushgan sana
+                {t('arrivalDateLabel').replace(':', '')}
               </label>
               <input
                 type="date"

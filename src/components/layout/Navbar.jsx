@@ -50,22 +50,14 @@ export default function Navbar({ onOpenAI }) {
       icon: Smartphone, 
       hasDropdown: true,
       label: t('navInventory'),
-      renderName: () => (
-        <span>
-          <span className="hidden 2xl:inline">Smartfonlar </span>Ombor
-        </span>
-      )
+      renderName: () => <span>{t('navInventory')}</span>
     },
     { 
       id: 'pos',
       path: '/pos', 
       icon: ShoppingCart,
       label: t('navPOS'),
-      renderName: () => (
-        <span>
-          <span className="hidden xl:inline">Savdo / </span>POS
-        </span>
-      )
+      renderName: () => <span>{t('navPOS')}</span>
     },
     { 
       id: 'reports',
@@ -79,18 +71,14 @@ export default function Navbar({ onOpenAI }) {
       path: '/history', 
       icon: History,
       label: t('navHistory'),
-      renderName: () => (
-        <span>
-          <span className="hidden 2xl:inline">Savdo </span>Tarixi
-        </span>
-      )
+      renderName: () => <span>{t('navHistory')}</span>
     },
     { 
       id: 'expenses',
       path: '/expenses', 
       icon: Receipt,
-      label: 'Xarajatlar',
-      renderName: () => <span>Xarajatlar</span>
+      label: t('navExpenses'),
+      renderName: () => <span>{t('navExpenses')}</span>
     },
   ];
 
@@ -178,11 +166,11 @@ export default function Navbar({ onOpenAI }) {
           <button
             onClick={onOpenAI}
             className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-orange-200 dark:border-orange-500/30 bg-orange-50/80 dark:bg-orange-500/10 hover:bg-orange-100 dark:hover:bg-orange-500/20 text-[#FF7900] text-xs font-bold transition cursor-pointer whitespace-nowrap shadow-xs flex-shrink-0"
-            title="AI Maslahatchi"
+            title={t('navAI')}
           >
             <Sparkles className="w-3.5 h-3.5 text-[#FF7900]" />
             <span className="hidden sm:inline">
-              <span className="hidden 2xl:inline">AI </span>Maslahatchi
+              {t('navAI')}
             </span>
           </button>
 
@@ -191,7 +179,7 @@ export default function Navbar({ onOpenAI }) {
             <button
               onClick={() => setNotificationsOpen(!notificationsOpen)}
               className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl border border-[#EAEAEA] dark:border-[#27282E] bg-white dark:bg-[#1C1D22] hover:bg-neutral-50 dark:hover:bg-[#25262C] flex items-center justify-center text-[#666666] dark:text-[#A1A1AA] hover:text-[#171717] dark:hover:text-white transition relative cursor-pointer"
-              title="Do'kon Bildirishnomalari"
+              title={t('notificationsTitle')}
             >
               <Bell className="w-4 h-4" />
               {stats.lowStockCount > 0 && (
@@ -203,7 +191,7 @@ export default function Navbar({ onOpenAI }) {
             {notificationsOpen && (
               <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-[#18191D] rounded-2xl shadow-xl border border-[#EAEAEA] dark:border-[#27282E] p-4 z-50 animate-in fade-in slide-in-from-top-2">
                 <div className="flex items-center justify-between pb-3 border-b border-[#EAEAEA] dark:border-[#27282E]">
-                  <h4 className="text-sm font-semibold text-[#171717] dark:text-white">Do'kon Bildirishnomalari</h4>
+                  <h4 className="text-sm font-semibold text-[#171717] dark:text-white">{t('notificationsTitle')}</h4>
                   <span className="text-xs bg-orange-50 dark:bg-orange-500/10 text-[#FF7900] font-medium px-2 py-0.5 rounded-full">
                     {stats.lowStockCount} ta
                   </span>

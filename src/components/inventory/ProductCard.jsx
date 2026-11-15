@@ -73,11 +73,11 @@ export default function ProductCard({
           </span>
           {isOutOfStock ? (
             <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/60 shadow-xs">
-              Tugagan
+              {t('outOfStockStatus')}
             </span>
           ) : isLowStock ? (
             <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-900/60 shadow-xs">
-              ⚠️ Kam qoldi: {currentStock} dona
+              ⚠️ {t('stockRemainingWarning')}: {currentStock} {t('unitPieces')}
             </span>
           ) : null}
         </div>
@@ -92,7 +92,7 @@ export default function ProductCard({
                 ? 'text-[#FF7900]' 
                 : 'text-[#999999] dark:text-[#77777F] hover:text-[#FF7900]'
             }`}
-            title={isLiked ? "Saralanganlardan o'chirish" : "Saralanganlarga qo'shish"}
+            title={isLiked ? t('favoriteRemove') : t('favoriteAdd')}
           >
             <Heart 
               className={`w-3.5 h-3.5 transition-colors ${
@@ -108,7 +108,7 @@ export default function ProductCard({
                 type="button"
                 onClick={() => setMenuOpen(!menuOpen)}
                 className="w-8 h-8 rounded-full bg-white dark:bg-[#23242C] text-[#888888] hover:text-[#171717] dark:hover:text-white shadow-sm flex items-center justify-center transition hover:scale-105 border border-black/5 dark:border-white/5 cursor-pointer"
-                title="Boshqaruv menyusi"
+                title={t('manageMenu')}
               >
                 <MoreVertical className="w-3.5 h-3.5" />
               </button>
@@ -134,7 +134,7 @@ export default function ProductCard({
                       className="w-full px-3.5 py-1.5 text-xs text-left font-medium text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 flex items-center gap-2 cursor-pointer"
                     >
                       <PackageCheck className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Zaxirani to'ldirish (+Restock)</span>
+                      <span>{t('restockButton')}</span>
                     </button>
                     <button
                       type="button"
@@ -204,7 +204,7 @@ export default function ProductCard({
                   ? 'bg-gradient-to-tr from-[#FF7900] to-[#FFA03A] text-white shadow-orange-500/25'
                   : 'bg-[#171717] dark:bg-white text-white dark:text-[#171717] hover:bg-[#333]'
             }`}
-            title={isOutOfStock ? "Omborda tugagan (Zaxira to'ldirish)" : "POS da tezkor sotish"}
+            title={isOutOfStock ? t('outOfStockAction') : t('quickSellAction')}
           >
             {isOutOfStock ? (
               <PackageCheck className="w-4 h-4 stroke-[2.2]" />
@@ -227,7 +227,11 @@ export default function ProductCard({
                 ? 'text-[#FF7900] dark:text-amber-400 font-extrabold' 
                 : 'text-emerald-600 dark:text-emerald-400'
           }`}>
-            {isOutOfStock ? '⛔ Tugagan (0 dona)' : isLowStock ? `⚠️ ${currentStock} dona (5 tadan kam)` : `✓ ${currentStock} dona mavjud`}
+            {isOutOfStock 
+              ? `⛔ ${t('outOfStockStatus')} (0 ${t('unitPieces')})` 
+              : isLowStock 
+                ? `⚠️ ${currentStock} ${t('unitPieces')} (${t('stockThresholdUnder')})` 
+                : `✓ ${currentStock} ${t('unitPieces')} ${t('inStockStatus')}`}
           </span>
         </div>
       </div>

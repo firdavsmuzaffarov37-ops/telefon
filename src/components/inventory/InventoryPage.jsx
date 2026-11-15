@@ -198,7 +198,7 @@ export default function InventoryPage() {
             {t('invTitle')}
           </h1>
           <p className="text-xs text-[#888888] mt-1 font-medium">
-            {counts.all} dona smartfon zaxirada • {filteredProducts.length} ta model ko'rsatilmoqda
+            {counts.all} {t('unitPieces')} {t('invTotalStockSub')} • {filteredProducts.length} {t('unitCount')}
           </p>
         </div>
 
@@ -208,7 +208,7 @@ export default function InventoryPage() {
             <Search className="w-3.5 h-3.5 text-[#888888] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
-              placeholder="Qidirish (model, brend, IMEI)..."
+              placeholder={t('searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-[#F5F5F7] dark:bg-[#1C1D24] border border-[#EAEAEF] dark:border-[#272832] rounded-2xl pl-9 pr-8 py-2.5 text-xs text-[#171717] dark:text-white placeholder:text-[#888888] focus:bg-white dark:focus:bg-[#202128] focus:outline-none focus:ring-1 focus:ring-[#FF7900] shadow-xs"
@@ -231,7 +231,7 @@ export default function InventoryPage() {
             className="flex items-center gap-1.5 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#FF7900] via-[#FF8A18] to-[#FFA03A] hover:brightness-105 active:scale-95 text-white text-xs font-bold shadow-md shadow-orange-500/25 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4 stroke-[2.6]" />
-            <span>+ Add New Product</span>
+            <span>{t('addNewProduct')}</span>
           </button>
         </div>
       </div>
@@ -247,7 +247,7 @@ export default function InventoryPage() {
             {counts.all}
           </h3>
           <p className="text-[11px] text-[#888888] dark:text-[#71717A] mt-1">
-            {counts.all === 0 ? "⚠️ Omborda barcha telefonlar sotildi (0 dona)" : "Ombordagi jami telefonlar soni"}
+            {counts.all === 0 ? t('invAllSoldOutAlert') : t('invTotalStockSub')}
           </p>
         </div>
 
@@ -260,7 +260,7 @@ export default function InventoryPage() {
             {counts.inStock}
           </h3>
           <p className="text-[11px] text-[#888888] dark:text-[#71717A] mt-1">
-            {counts.inStock === 0 ? "Sotuvda mavjud emas" : "Yetarli zaxiraga ega"}
+            {counts.inStock === 0 ? t('outOfStockStatus') : t('summaryActiveDesc')}
           </p>
         </div>
 
@@ -273,7 +273,7 @@ export default function InventoryPage() {
             {counts.outOfStock}
           </h3>
           <p className="text-[11px] text-[#888888] dark:text-[#71717A] mt-1">
-            {counts.outOfStock > 0 ? `${counts.outOfStock} ta model tugagan (0 dona)` : t('summaryOutOfStockDesc')}
+            {counts.outOfStock > 0 ? `${counts.outOfStock} ${t('unitCount')} ${t('outOfStockStatus')}` : t('summaryOutOfStockDesc')}
           </p>
         </div>
 
@@ -286,7 +286,7 @@ export default function InventoryPage() {
             {counts.lowStock}
           </h3>
           <p className="text-[11px] text-[#888888] dark:text-[#71717A] mt-1">
-            5 donadan kam qolgan
+            {t('summaryLowStockDesc')}
           </p>
         </div>
       </div>
@@ -300,10 +300,10 @@ export default function InventoryPage() {
             </div>
             <div>
               <h4 className="text-sm font-extrabold text-red-600 dark:text-red-400">
-                Ombordagi barcha smartfonlar sotildi va tugadi (0 dona qoldi)!
+                {t('allStockSoldTitle')}
               </h4>
               <p className="text-xs text-[#555] dark:text-[#A1A1AA] mt-0.5">
-                POS savdo to'xtatildi. Yangi telefonlar kelgan bo'lsa, quyidagi tugmalar orqali zaxirani to'ldiring yoki yangi smartfon qo'shing.
+                {t('allStockSoldDesc')}
               </p>
             </div>
           </div>
@@ -313,14 +313,14 @@ export default function InventoryPage() {
               className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5 cursor-pointer active:scale-95"
             >
               <PackageCheck className="w-4 h-4" />
-              <span>Yangi partiya qabul qilish (+50 dona)</span>
+              <span>{t('restock50Batch')}</span>
             </button>
             <button
               onClick={handleOpenAddModal}
               className="px-4 py-2.5 rounded-xl bg-[#FF7900] hover:bg-[#EA6E00] text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5 cursor-pointer active:scale-95"
             >
               <Plus className="w-4 h-4" />
-              <span>+ Yangi Smartfon Qo'shish</span>
+              <span>{t('addNewProduct')}</span>
             </button>
           </div>
         </div>
@@ -362,10 +362,10 @@ export default function InventoryPage() {
             <button
               onClick={() => restockAllProducts(5)}
               className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-xs font-bold text-emerald-700 dark:text-emerald-400 shadow-sm transition active:scale-95 animate-pulse cursor-pointer"
-              title="Omborga yangi kelgan telefonlar partiyasini qabul qilish"
+              title={t('restockBatchBtn')}
             >
               <PackageCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Yangi partiya qabul qilish (+Restock)</span>
+              <span>{t('restockBatchBtn')}</span>
             </button>
           )}
 
@@ -535,7 +535,7 @@ export default function InventoryPage() {
 
                       {/* Stock Quantity */}
                       <td className="py-3 px-4 font-black text-[#171717]">
-                        {p.stock} <span className="text-[11px] font-normal text-[#888888]">dona</span>
+                        {p.stock} <span className="text-[11px] font-normal text-[#888888]">{t('unitPieces')}</span>
                       </td>
 
                       {/* Status Badge */}
