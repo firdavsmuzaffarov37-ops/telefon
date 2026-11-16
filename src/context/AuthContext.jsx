@@ -25,7 +25,13 @@ const defaultDemoUser = {
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
-      const saved = localStorage.getItem('phonelytics_auth_user');
+      // Birinchi kirganda yoki yangi brauzer sessiyasida har doim Login sahifasi talab qilinadi
+      const isSessionActive = sessionStorage.getItem('phonelytics_session_active') === 'true';
+      if (!isSessionActive) {
+        return null;
+      }
+
+      const saved = sessionStorage.getItem('phonelytics_auth_user') || localStorage.getItem('phonelytics_auth_user');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.avatar?.includes('photo-1534528741775-53994a69daeb')) {
@@ -33,7 +39,6 @@ export function AuthProvider({ children }) {
         }
         return parsed;
       }
-      // Dastlabki kirishda foydalanuvchi tizimga kirmagan bo'ladi va Login sahifasi ochiladi
       return null;
     } catch (e) {
       return null;
@@ -47,7 +52,12 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     try {
       const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-        if (session?.user) {
+        // Faqat faol sessiya bo'lsa yoki SIGNED_IN (masalan Google OAuth orqali qaytish) bo'lsa profil qabul qilinadi
+        const isSessionActive = sessionStorage.getItem('phonelytics_session_active') === 'true';
+
+        if (session?.user && (isSessionActive || event === 'SIGNED_IN')) {
+          sessionStorage.setItem('phonelytics_session_active', 'true');
+
           const meta = session.user.user_metadata || {};
           const name = meta.full_name || meta.name || session.user.email?.split('@')[0] || 'User';
           const avatar = resolveAvatar(meta, session.user.email, name);
@@ -61,9 +71,13 @@ export function AuthProvider({ children }) {
             avatar: avatar
           };
           setUser(profile);
+          sessionStorage.setItem('phonelytics_auth_user', JSON.stringify(profile));
           localStorage.setItem('phonelytics_auth_user', JSON.stringify(profile));
         } else if (event === 'SIGNED_OUT') {
-          // If explicitly signed out
+          setUser(null);
+          sessionStorage.removeItem('phonelytics_session_active');
+          sessionStorage.removeItem('phonelytics_auth_user');
+          localStorage.removeItem('phonelytics_auth_user');
         }
       });
 
@@ -75,11 +89,15 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  // Save to local storage
+  // Save to storage
   useEffect(() => {
     if (user) {
+      sessionStorage.setItem('phonelytics_session_active', 'true');
+      sessionStorage.setItem('phonelytics_auth_user', JSON.stringify(user));
       localStorage.setItem('phonelytics_auth_user', JSON.stringify(user));
     } else {
+      sessionStorage.removeItem('phonelytics_session_active');
+      sessionStorage.removeItem('phonelytics_auth_user');
       localStorage.removeItem('phonelytics_auth_user');
     }
   }, [user]);
@@ -319,8 +337,10 @@ export function AuthProvider({ children }) {
     } catch (e) {
       console.warn('Signout warning:', e.message);
     }
-    setUser(null);
+    sessionStorage.removeItem('phonelytics_session_active');
+    sessionStorage.removeItem('phonelytics_auth_user');
     localStorage.removeItem('phonelytics_auth_user');
+    setUser(null);
   };
 
   return (

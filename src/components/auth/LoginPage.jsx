@@ -10,8 +10,8 @@ export default function LoginPage() {
   const { t } = useLanguage();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('admin@phonelytics.uz');
-  const [password, setPassword] = useState('admin123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
@@ -218,6 +218,20 @@ export default function LoginPage() {
                 </>
               )}
             </button>
+
+            {/* Quick Demo Credentials Pill */}
+            <div className="pt-2 text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail('admin@phonelytics.uz');
+                  setPassword('admin123');
+                }}
+                className="text-[11px] text-[#888888] hover:text-[#FF7900] transition cursor-pointer underline underline-offset-2"
+              >
+                Demo Admin: <strong className="text-[#FF7900]">admin@phonelytics.uz</strong> / <strong>admin123</strong>
+              </button>
+            </div>
           </form>
         </div>
 
