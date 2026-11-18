@@ -124,6 +124,14 @@ export const translations = {
     restockBtn: "Omborni to'ldirish",
     imeiLabel: "IMEI / Seriya raqami",
     descriptionLabel: "Mahsulot tavsifi",
+    warrantyShort: "1 Yil Kafolat",
+    installmentEstPrefix: "Nasiya",
+    installmentMonthShort: "oy",
+    colorsCount: "xil rang",
+    specsChip: "Chip",
+    specsRamRom: "Xotira & RAM",
+    specsBattery: "Akkumulyator",
+    specsCamera: "Kamera",
 
     // Dashboard
     statSoldToday: "Bugun Sotilgan Smartfonlar",
@@ -506,6 +514,14 @@ export const translations = {
     restockBtn: "Пополнить склад",
     imeiLabel: "IMEI / Серийный номер",
     descriptionLabel: "Описание устройства",
+    warrantyShort: "1 Год Гарантии",
+    installmentEstPrefix: "В рассрочку",
+    installmentMonthShort: "мес",
+    colorsCount: "цветов",
+    specsChip: "Чип",
+    specsRamRom: "Память и ОЗУ",
+    specsBattery: "Аккумулятор",
+    specsCamera: "Камера",
 
     // Dashboard
     statSoldToday: "Продано Смартфонов Сегодня",
@@ -888,6 +904,14 @@ export const translations = {
     restockBtn: "Restock Units",
     imeiLabel: "IMEI / Serial Number",
     descriptionLabel: "Product Description",
+    warrantyShort: "1 Year Warranty",
+    installmentEstPrefix: "Installment",
+    installmentMonthShort: "mo",
+    colorsCount: "colors",
+    specsChip: "Chip",
+    specsRamRom: "Storage & RAM",
+    specsBattery: "Battery",
+    specsCamera: "Camera",
 
     // Dashboard
     statSoldToday: "Phones Sold Today",

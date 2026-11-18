@@ -10,7 +10,11 @@ import {
   ShieldCheck, 
   Sparkles, 
   PackageCheck,
-  Check
+  Check,
+  Cpu,
+  Zap,
+  Battery,
+  Camera
 } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatters';
 import { useNavigate } from 'react-router-dom';
@@ -175,21 +179,34 @@ export default function ProductCard({
         />
       </div>
 
-      {/* 3. Bottom Information & Circular Arrow Action Button (Matching Reference) */}
-      <div className="pt-1 flex flex-col space-y-1.5">
-        {/* Product Title */}
-        <h3 className="font-bold text-[14px] sm:text-[15px] text-[#171717] dark:text-white truncate font-['Plus_Jakarta_Sans'] group-hover:text-[#FF7900] transition-colors">
-          {product.name}
-        </h3>
+      {/* 3. Bottom Information & Specifications Area */}
+      <div className="pt-1 flex flex-col space-y-2">
+        {/* Product Title & Brand/SKU */}
+        <div>
+          <h3 className="font-bold text-[14px] sm:text-[15px] text-[#171717] dark:text-white truncate font-['Plus_Jakarta_Sans'] group-hover:text-[#FF7900] transition-colors">
+            {product.name}
+          </h3>
+          <div className="flex items-center gap-1.5 text-[11px] text-[#888888] dark:text-[#A1A1AA] mt-0.5">
+            <span className="font-mono text-[10.5px] font-medium">{product.sku}</span>
+            <span>•</span>
+            <span className="truncate">{product.color || (product.colors?.[0]?.name) || ''}</span>
+          </div>
+        </div>
 
         {/* Price Row with Strikethrough Old Price + Signature Circular ↗ Button */}
         <div className="flex items-center justify-between pt-0.5">
-          <div className="flex items-baseline gap-1.5 flex-wrap">
-            <span className="text-[#FF7900] font-black text-sm sm:text-base font-['Plus_Jakarta_Sans']">
-              {formatCurrency(product.sellingPrice)}
-            </span>
-            <span className="text-[#9E9EA7] dark:text-[#7A7A84] line-through text-[11px] sm:text-xs font-semibold">
-              {formatCurrency(oldPrice)}
+          <div className="flex flex-col">
+            <div className="flex items-baseline gap-1.5 flex-wrap">
+              <span className="text-[#FF7900] font-black text-sm sm:text-base font-['Plus_Jakarta_Sans']">
+                {formatCurrency(product.sellingPrice)}
+              </span>
+              <span className="text-[#9E9EA7] dark:text-[#7A7A84] line-through text-[11px] sm:text-xs font-semibold">
+                {formatCurrency(oldPrice)}
+              </span>
+            </div>
+            {/* Monthly Installment (Nasiya) Estimate */}
+            <span className="text-[10px] font-semibold text-[#888888] dark:text-[#A1A1AA]">
+              {t('installmentEstPrefix')}: ~{formatCurrency(Math.round(product.sellingPrice / 12))}/{t('installmentMonthShort')} (12 {t('installmentMonthShort')})
             </span>
           </div>
 
@@ -214,13 +231,84 @@ export default function ProductCard({
           </button>
         </div>
 
-        {/* 4. Retail Shop Metadata: Storage, Available Colors and Stock Quantity */}
-        <div className="pt-2 border-t border-[#EAEAEF] dark:border-[#262730] flex items-center justify-between text-[11px]">
-          <span className="font-semibold text-[#666666] dark:text-[#A1A1AA] truncate max-w-[120px]">
-            {product.storage} • {product.color?.split(' ')[0]}
-          </span>
+        {/* 4. Complete Hardware Specifications Grid (RAM & Storage, Warranty, Chipset, Battery) */}
+        <div className="grid grid-cols-2 gap-1.5 pt-2 border-t border-[#EAEAEF] dark:border-[#262730] text-[10.5px]">
+          {/* RAM & Storage */}
+          <div className="flex items-center gap-1.5 p-1.5 rounded-xl bg-white/80 dark:bg-[#202128] border border-black/5 dark:border-white/5 shadow-2xs">
+            <Cpu className="w-3.5 h-3.5 text-[#FF7900] flex-shrink-0" />
+            <div className="min-w-0">
+              <span className="text-[8.5px] uppercase font-bold text-[#888888] dark:text-[#7E7E88] block leading-none mb-0.5">
+                {t('specsRamRom')}
+              </span>
+              <span className="font-bold text-[#171717] dark:text-[#E2E2E6] truncate block leading-tight">
+                {product.storage} • {product.ram || '8GB'}
+              </span>
+            </div>
+          </div>
 
-          <span className={`font-black ${
+          {/* Warranty */}
+          <div className="flex items-center gap-1.5 p-1.5 rounded-xl bg-white/80 dark:bg-[#202128] border border-black/5 dark:border-white/5 shadow-2xs">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+            <div className="min-w-0">
+              <span className="text-[8.5px] uppercase font-bold text-[#888888] dark:text-[#7E7E88] block leading-none mb-0.5">
+                {t('warrantyShort')}
+              </span>
+              <span className="font-bold text-emerald-700 dark:text-emerald-400 truncate block leading-tight">
+                {product.specs?.warranty ? (product.specs.warranty.includes('1 Yil') || product.specs.warranty.includes('1 Год') ? t('warrantyShort') : product.specs.warranty) : t('warrantyShort')}
+              </span>
+            </div>
+          </div>
+
+          {/* Processor / Chipset */}
+          <div className="flex items-center gap-1.5 p-1.5 rounded-xl bg-white/80 dark:bg-[#202128] border border-black/5 dark:border-white/5 shadow-2xs">
+            <Zap className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
+            <div className="min-w-0">
+              <span className="text-[8.5px] uppercase font-bold text-[#888888] dark:text-[#7E7E88] block leading-none mb-0.5">
+                {t('specsChip')}
+              </span>
+              <span className="font-semibold text-[#333333] dark:text-[#CCCCCC] truncate block leading-tight">
+                {product.specs?.chipset ? product.specs.chipset.split('(')[0].trim() : `${product.brand} CPU`}
+              </span>
+            </div>
+          </div>
+
+          {/* Battery */}
+          <div className="flex items-center gap-1.5 p-1.5 rounded-xl bg-white/80 dark:bg-[#202128] border border-black/5 dark:border-white/5 shadow-2xs">
+            <Battery className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
+            <div className="min-w-0">
+              <span className="text-[8.5px] uppercase font-bold text-[#888888] dark:text-[#7E7E88] block leading-none mb-0.5">
+                {t('specsBattery')}
+              </span>
+              <span className="font-semibold text-[#333333] dark:text-[#CCCCCC] truncate block leading-tight">
+                {product.specs?.battery ? product.specs.battery.split(',')[0].trim() : (product.specs?.camera ? product.specs.camera.split('+')[0].trim() : '5,000 mAh')}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* 5. Color Swatches & Stock Status */}
+        <div className="pt-2 border-t border-[#EAEAEF] dark:border-[#262730] flex items-center justify-between text-[11px] gap-2">
+          {/* Colors swatch */}
+          <div className="flex items-center gap-1.5 min-w-0">
+            {product.colors && product.colors.length > 0 ? (
+              <div className="flex items-center -space-x-1.5 flex-shrink-0">
+                {product.colors.slice(0, 3).map((col, idx) => (
+                  <span
+                    key={idx}
+                    title={col.name}
+                    className="w-3.5 h-3.5 rounded-full border border-white dark:border-[#181920] shadow-2xs flex-shrink-0"
+                    style={{ backgroundColor: col.hex || '#444' }}
+                  />
+                ))}
+              </div>
+            ) : null}
+            <span className="text-[10px] font-semibold text-[#666666] dark:text-[#A1A1AA] truncate">
+              {product.colors?.length ? `${product.colors.length} ${t('colorsCount')}` : (product.color?.split(' ')[0] || '')}
+            </span>
+          </div>
+
+          {/* Stock Count Badge */}
+          <span className={`font-black text-[10.5px] flex-shrink-0 ${
             isOutOfStock 
               ? 'text-red-500' 
               : isLowStock 
